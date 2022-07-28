@@ -1,0 +1,51 @@
+:root {
+  --button-primary-hover: #ccae65;
+  --button-primary-active: #eeeeee;
+  --button-primary-default: #ab9152;
+  --button-radius: none;
+  --button-default-padding: 0.3rem 1rem;
+  --button-default-font-size: 1.125rem;
+  --button-default-border: none;
+  --button-default-width: fit-content;
+
+  --background-primary: #313134;
+  --background-secondary: #141517;
+
+  --text-primary: #eeeeee;
+  --text-inverted: #222831;
+  --font-family: Arial, Helvetica, sans-serif;
+
+  --gutter: 1rem;
+
+  --listing-card-background: #141517;
+  --listing-card-radius: 1rem;
+  --listing-card-infotag-bg: rgba(255, 255, 255, 0.5);
+  --listing-card-status-bg: #ab9152;
+  --listing-card-price-bg: rgba(255, 255, 255, 0.5);
+  --listing-card-icon-color: #222831;
+}
+
+$button-primary-hover: var(--button-primary-hover);
+$button-primary-default: var(--button-primary-default);
+$button-primary-active: var(--button-primary-active);
+$button-radius: var(--button-radius);
+$button-default-padding: var(--button-default-padding);
+$button-default-font-size: var(--button-default-font-size);
+$button-default-border: var(--button-default-border);
+$button-default-width: var(--button-default-width);
+
+$background-primary: var(--background-primary);
+$background-secondary: var(--background-secondary);
+
+$text-primary: var(--text-primary);
+$text-inverted: var(--text-inverted);
+$font-family: var(--font-family);
+
+$gutter: var(--gutter);
+
+$listing-card-background: var(--listing-card-background);
+$listing-card-radius: var(--listing-card-radius);
+$listing-card-infotag-bg: var(--listing-card-infotag-bg);
+$listing-card-status-bg: var(--listing-card-status-bg);
+$listing-card-price-bg: var(--listing-card-price-bg);
+$listing-card-icon-color: var(--listing-card-icon-color);

@@ -1,0 +1,160 @@
+@use "../abstracts" as *;
+
+/*
+
+*/
+.top-nav__container {
+  position: absolute;
+  top: 0;
+  z-index: 100;
+  background-color: $background-secondary;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 60px;
+  padding: 0.72rem 1rem;
+  transition: height 350ms ease-in-out;
+
+  &.open {
+    height: 100vh;
+  }
+}
+
+.top-nav__icon-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: fit-content;
+}
+
+/*
+    I couldn't make display block/none work with opening
+    and closing the menu, so I just turned down the opacity.
+    There's a small issue when you drop out of the min-width: 675px
+    media query, where you can see main-nav__list all squished.
+    I'm sure no one will ever see, but it bugs me.
+*/
+
+.main-nav__list {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  line-height: inherit;
+  padding: 0;
+}
+
+/*
+    This media query takes care of styling and animating actual menu content.
+*/
+
+@media screen and (max-width: 694px) {
+    .main-nav__list {
+        flex-direction: column;
+        opacity: 0%;
+        line-height: 0rem;
+        margin-top: 4rem;
+        padding: 0;
+        transition: all 300ms ease-in-out;
+
+        &.animate-forward {
+          animation: openMenu 300ms ease-in-out;
+          animation-fill-mode: forwards;
+        }
+        &.animate-backward {
+          animation: closeMenu 300ms ease-in-out;
+          animation-fill-mode: forwards;
+        }
+      }
+  }
+
+/*
+    These animation expand and squish the menu on mobile. I couldn't make it work with by using
+    animation-direction. In the MainMenu compoment, when menu is closed, it uses the animate-backward
+    class, and swithced when the menu is opened. No perfect, I'm sure. I might have to move the animation
+    a media query, to keep it from messing with desktop view.
+*/
+
+@keyframes openMenu {
+  from {
+    line-height: 0rem;
+    opacity: 0%;
+  }
+  to {
+    line-height: 4rem;
+    opacity: 100%;
+  }
+}
+
+@keyframes closeMenu {
+  from {
+    line-height: 4rem;
+    opacity: 100%;
+  }
+  to {
+    line-height: 0rem;
+    opacity: 0%;
+  }
+}
+
+/* The padding left and right is so the underline runs
+   past a little. */
+
+.main-nav__item {
+  text-decoration: none;
+  color: $text-primary;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+  position: relative;
+
+  &.active-link::after {
+    content: "";
+    position:absolute;
+    bottom: -3px;
+    height: 3px;
+    background-color: $text-primary;
+    animation: activateLink 200ms ease-in-out;
+    animation-fill-mode: forwards;
+  }
+}
+
+@keyframes activateLink {
+    from {
+        left: 50%;
+        width: 0px;
+    }
+    to {
+        left: 0;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 694px) {
+  .btn.btn-contact {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 695px) {
+  .main-nav__list {
+    opacity: 100%;
+
+    flex-direction: row;
+    align-self: center;
+    gap: 2rem;
+    line-height: inherit;
+  }
+
+  .top-nav__container {
+    flex-direction: row;
+  }
+
+  .top-nav__icon-container {
+    flex-grow: 1;
+  }
+
+  .mantine-Burger-root {
+    display: none;
+  }
+}

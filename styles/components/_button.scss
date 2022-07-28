@@ -1,0 +1,38 @@
+@use "../abstracts" as *;
+
+.btn {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 1rem;
+  text-decoration: none;
+  border: $button-default-border;
+  width: $button-default-width;
+  font-size: $button-default-font-size;
+  border-radius: $button-radius;
+  padding: $button-default-padding;
+  height: fit-content;
+  align-self: center;
+}
+
+.btn-primary {
+  color: $text-primary;
+  background-color: $button-primary-default;
+
+  &:hover {
+    background-color: $button-primary-hover;
+  }
+
+  .active {
+    color: $text-inverted;
+    background: $button-primary-active;
+  }
+}
+
+.btn-icon {
+    color: $text-primary;
+    background: none;
+    padding: 8px;
+    border: none;
+}

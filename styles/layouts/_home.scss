@@ -1,0 +1,11 @@
+.landing-page__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 70vh;
+}
+
+.landing-page__logo-container {
+    width: clamp(300px, 100vw, 700px);
+}

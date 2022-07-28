@@ -1,0 +1,12 @@
+@use "../abstracts" as *;
+
+html {
+    font-size: 1.125rem;
+}
+
+body {
+    background-color: $background-primary;
+    color: $text-primary;
+    text-align: center;
+    font-family: $font-family;
+}

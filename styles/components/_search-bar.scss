@@ -1,0 +1,75 @@
+@use "../abstracts" as *;
+
+/* ===============
+   SEARCH-BAR
+   =============== */
+   @media screen and (min-width: 695px) {
+    .search-bar__container {
+        margin-right: .75rem;
+        margin-left: .75rem;
+    }
+   }
+
+.search-bar__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .3rem;
+  width: min(100%, 350px);
+  height: 2rem;
+  background-color: #fff;
+  padding: 0.2rem 0.75rem 0.2rem 0.75rem;
+  border-radius: 1rem;
+  transition: all 250ms ease-in-out;
+  animation: fadeIn 200ms ease-in;
+
+  &.closed {
+    background-color: rgba($color: #fff, $alpha: 0);
+    width: 52px;
+    padding-right: 0rem;
+    margin-right: 0rem;
+  }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100%;
+    }
+}
+
+.search-bar__form {
+    width: 100%;
+}
+
+.search-bar__input {
+    display: block;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  background: none;
+  width: 100%;
+}
+
+.search-bar__icon-container {
+  width: 25px;
+  z-index: 1;
+}
+
+.search-bar__exit-icon {
+  fill: $text-inverted;
+}
+
+.search-bar__icon {
+  fill: $text-primary;
+}
+
+.back-icon {
+  fill: none;
+  stroke: $text-inverted;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2px;
+}

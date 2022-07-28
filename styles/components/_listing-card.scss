@@ -1,0 +1,158 @@
+@use "../abstracts" as *;
+
+/* =================
+   LISTING CARD BASE
+   ================= */
+
+.listing-card {
+  display: flex;
+  background-color: $listing-card-background;
+  color: $text-primary;
+  border-radius: $listing-card-radius;
+}
+
+.listing-card--full {
+  flex-direction: column;
+}
+
+.listing-card--map {
+  flex-direction: row;
+}
+
+.listing-card--minimal {
+    flex-direction: column;
+}
+
+/* ======================
+   LISTING CARD THUMBNAIL
+   ====================== */
+
+.listing-card__thumbnail {
+    height: 168px;
+    position: relative;
+    overflow: hidden;
+    border-top-left-radius: $listing-card-radius;
+    border-top-right-radius: $listing-card-radius;
+}
+
+.listing-card__thumbnail-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: .6rem;
+    z-index: 10;
+    height: 168px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.listing-card--flex-between {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.listing-card__status {
+    background-color: $listing-card-status-bg;
+    width: fit-content;
+    height: fit-content;
+    padding: .1rem .5rem;
+    border-radius: 1rem;
+}
+
+.listing-card__price {
+    align-self: flex-end;
+    background-color: $listing-card-price-bg;
+    color: $text-inverted;
+    border-radius: 1rem;
+    width: fit-content;
+    padding: .1rem .5rem;
+}
+
+
+/* =========================
+   LISTING CARD ACTION ITEMS
+   ========================= */
+
+.listing-card__action-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.action-item__bg {
+    fill: #fff;
+  fill-opacity: 0.8;
+  box-shadow: -3px 3px 32px -10px rgba(0, 0, 0, 0.25);;
+}
+
+.action-item__share-icon {
+  fill: $listing-card-icon-color;
+}
+
+.action-item__heart-icon {
+  fill: none;
+  stroke: $listing-card-icon-color;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2px;
+}
+
+/* =====================
+   LISTING CARD LOCATION
+   ===================== */
+
+.listing-card__location{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.listing-card__location-icon {
+    fill: $text-primary;
+}
+
+/* ==================
+   LISTING CARD INFO
+   ================== */
+
+.listing-card__info-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    padding: .6rem;
+}
+
+.listing-card__h3 {
+    align-self: flex-start;
+}
+
+.listing-card__info-tag-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    overflow: hidden;
+    column-gap: .5rem;
+}
+
+.listing-card__info-tag {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    gap: .5rem;
+    background-color: $listing-card-infotag-bg;
+    color: $text-inverted;
+    border-radius: 10px;
+    padding: .2rem .5rem;
+}
+
+.bed-icon {
+    fill: $background-primary;
+}
+.shower-icon {
+    fill: $background-primary;
+}
