@@ -1,0 +1,79 @@
+@use "../abstracts" as *;
+
+.filter-menu__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: $gutter auto;
+  background-color: #191A1C;
+  width: 100%;
+  border-radius: 1rem;
+}
+
+@media screen and (max-width: 694px) {
+    .filter-menu__container {
+        margin: $gutter .5rem;
+        width: auto;
+    }
+}
+
+.filter-menu__form {
+  width: min(90%, 350px);
+}
+
+fieldset {
+    border: none;
+    display: flex;
+    justify-content: center;
+}
+
+legend {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.radio-button-group {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    column-gap: .75rem;
+    row-gap: .25rem;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.radio-button-container {
+  display: grid;
+  place-items: center;
+  width: fit-content;
+}
+
+.radio-button-container > label {
+  grid-column: 1;
+  grid-row: 1;
+  color: $text-primary;
+  padding: 0 .75rem;
+}
+
+input[type="radio"] {
+  grid-column: 1;
+  grid-row: 1;
+
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: rgba($color: #fff, $alpha: 0);
+  margin: 0;
+
+  height: 1.5rem;
+  width: 100%;
+  border-radius: 1rem;
+  background-color: $background-primary;
+}
+
+input[type="radio"]:checked {
+    background-color: $button-primary-default;
+}
+
+input[type="radio"]:checked ~ label{
+    color: $text-primary;
+}

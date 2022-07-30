@@ -3,18 +3,18 @@
 /* ===============
    SEARCH-BAR
    =============== */
-   @media screen and (min-width: 695px) {
-    .search-bar__container {
-        margin-right: .75rem;
-        margin-left: .75rem;
-    }
-   }
+@media screen and (min-width: 695px) {
+  .search-bar__container {
+    margin-right: 0.75rem;
+    margin-left: 0.75rem;
+  }
+}
 
 .search-bar__container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: .3rem;
+  gap: 0.3rem;
   width: min(100%, 350px);
   height: 2rem;
   background-color: #fff;
@@ -28,24 +28,39 @@
     width: 52px;
     padding-right: 0rem;
     margin-right: 0rem;
+    justify-content: flex-end;
+  }
+
+}
+
+.search-bar__button {
+    width: 100%;
+    height: 1.5rem;
+    border-radius: 1rem;
+    background-color: rgba($color: #fff, $alpha: .2);
+}
+
+@media screen and (max-width: 694px) {
+  .search-bar__container.closed {
+    padding: 0;
   }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 100%;
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 100%;
+  }
 }
 
 .search-bar__form {
-    width: 100%;
+  width: 100%;
 }
 
 .search-bar__input {
-    display: block;
+  display: block;
   border: none;
   outline: none;
   font-size: inherit;
@@ -69,6 +84,13 @@
 .back-icon {
   fill: none;
   stroke: $text-inverted;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2px;
+}
+.back-icon--inverse {
+  fill: none;
+  stroke: $text-primary;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2px;

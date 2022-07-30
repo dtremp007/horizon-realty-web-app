@@ -1,13 +1,13 @@
 type Props = {
-    variant: "bedroom" | "bathroom";
-    quantity: number;
-}
+  variant: "bedroom" | "bathroom" | "area";
+  quantity: number;
+};
 
-export default function ListingInfotag({variant, quantity}: Props) {
+export default function ListingInfotag({ variant, quantity }: Props) {
   return (
     <div className="listing-card__info-tag">
       {getIcon(variant)}
-      {getDescription(quantity, variant)}
+      {variant === "area" ? `${quantity} sq.ft.` : quantity}
     </div>
   );
 }
@@ -36,13 +36,28 @@ function getIcon(variant: string) {
         />
       </svg>
     );
+  } else if (variant === "area") {
+    return (
+      <svg
+        width={23}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 97.65 97.65"
+      >
+        <g id="icons">
+          <path
+            className=".bed-icon"
+            d="M80,80,74.6,85.38a1.39,1.39,0,0,1-2,0,1.41,1.41,0,0,1,0-2L78,78,68,68,62.62,73.4a1.39,1.39,0,0,1-2,0,1.41,1.41,0,0,1,0-2L66,66,56,56l-5.39,5.39a1.39,1.39,0,0,1-2,0,1.41,1.41,0,0,1,0-2l5.39-5.39-10-10-5.39,5.39a1.4,1.4,0,0,1-2-2l5.39-5.39-10-10-5.39,5.39a1.4,1.4,0,1,1-2-2l5.39-5.39-9-9-5.39,5.39a1.39,1.39,0,0,1-2,0,1.41,1.41,0,0,1,0-2L19.1,19.1,0,0V97.65H97.65ZM16,83V39.77L59.17,83Z"
+          />
+        </g>
+      </svg>
+    );
   }
 }
 
-function getDescription(quantity:number, variant: string) {
-    if (variant === "bedroom") {
-        return quantity === 1 ? "1 Bedroom" : `${quantity} Bedrooms`;
-    } else if (variant === "bathroom") {
-        return quantity === 1 ? "1 Bathroom" : `${quantity} Bathrooms`;
-    }
+function getDescription(quantity: number, variant: string) {
+  if (variant === "bedroom") {
+    return quantity === 1 ? "1 Bedroom" : `${quantity} Bedrooms`;
+  } else if (variant === "bathroom") {
+    return quantity === 1 ? "1 Bathroom" : `${quantity} Bathrooms`;
+  }
 }

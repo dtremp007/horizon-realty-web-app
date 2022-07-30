@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useContext, useEffect, useState, useRef } from "react";
-import { atom, useAtom } from "jotai";
 import { useRouter } from "next/router";
 import NavigationContext from "../../context/navigationContext";
 
@@ -46,11 +45,11 @@ export default function MainMenu() {
           <a className={`main-nav__item ${activeLink === "/listings" ? "active-link" : ""}`}>Listings</a>
         </Link>
       </li>
-      <li>
-        <Link href="/Settings">
+      {/* <li>
+        <Link href="/settings">
           <a className={`main-nav__item ${activeLink === "/settings" ? "active-link" : ""}`}>Settings</a>
         </Link>
-      </li>
+      </li> */}
     </ul>
   );
 }

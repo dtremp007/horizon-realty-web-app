@@ -25,6 +25,7 @@
   justify-content: space-between;
   align-items: center;
   height: fit-content;
+  gap: 1rem;
 }
 
 /*
@@ -94,6 +95,10 @@
     line-height: 0rem;
     opacity: 0%;
   }
+}
+
+.btn.btn-contact {
+    background-color: #25D366;
 }
 
 /* The padding left and right is so the underline runs

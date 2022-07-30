@@ -1,9 +1,9 @@
 :root {
-  --button-primary-hover: #ccae65;
+  --button-primary-hover: #18549a;
   --button-primary-active: #eeeeee;
-  --button-primary-default: #ab9152;
-  --button-radius: none;
-  --button-default-padding: 0.3rem 1rem;
+  --button-primary-default: #1864AB;
+  --button-radius: .25rem;
+  --button-default-padding: 0.2rem 1rem;
   --button-default-font-size: 1.125rem;
   --button-default-border: none;
   --button-default-width: fit-content;
@@ -12,6 +12,7 @@
   --background-secondary: #141517;
 
   --text-primary: #eeeeee;
+
   --text-inverted: #222831;
   --font-family: Arial, Helvetica, sans-serif;
 
@@ -21,7 +22,7 @@
   --listing-card-radius: 1rem;
   --listing-card-infotag-bg: rgba(255, 255, 255, 0.5);
   --listing-card-status-bg: #ab9152;
-  --listing-card-price-bg: rgba(255, 255, 255, 0.5);
+  --listing-card-price-bg: rgba(255, 255, 255, 0.8);
   --listing-card-icon-color: #222831;
 }
 

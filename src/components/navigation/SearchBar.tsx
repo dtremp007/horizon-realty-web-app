@@ -1,9 +1,15 @@
 import { useState, useContext } from "react";
+import { useRouter } from "next/router";
 import { useAtom } from "jotai";
 import NavigationContext from "../../context/navigationContext";
 
-export default function SearchBar() {
+type Props = {
+    mobileBrowsingMode: boolean
+}
+
+export default function SearchBar({mobileBrowsingMode}: Props) {
     const {state, dispatch} = useContext(NavigationContext);
+
 
 
   const searchModeToggle = () => {
@@ -11,7 +17,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div className={`search-bar__container ${state.searchMode ? "" : "closed"}`}>
+    <div style={mobileBrowsingMode ? {flexGrow: "1"} : {}} className={`search-bar__container ${state.searchMode ? "" : "closed"}`}>
       {state.searchMode ? (
         <>
           <svg
@@ -26,7 +32,7 @@ export default function SearchBar() {
             />
           </svg>
           <form className="search-bar__form">
-            <input className="search-bar__input" type="text" />
+            <input className="search-bar__input" type="search" />
           </form>
           <svg
             height={16}
@@ -40,8 +46,17 @@ export default function SearchBar() {
           </svg>
         </>
       ) : (
+        getVariant(mobileBrowsingMode, searchModeToggle)
+      )}
+    </div>
+  );
+}
+
+const getVariant = (mobileBrowsingMode: boolean, onClick: () => void) => {
+    if (!mobileBrowsingMode) {
+        return (
         <svg
-          onClick={searchModeToggle}
+          onClick={onClick}
           className="search-bar__icon-container"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -51,7 +66,10 @@ export default function SearchBar() {
             d="M23.45,20.8l-5.61-5.61a9.76,9.76,0,1,0-2.65,2.65l5.61,5.61a1.87,1.87,0,0,0,2.65-2.65ZM3.71,9.75a6,6,0,1,1,6,6,6,6,0,0,1-6-6Z"
           />
         </svg>
-      )}
-    </div>
-  );
+        )
+    } else {
+        return (
+            <div onClick={onClick} className="search-bar__button">Search</div>
+        )
+    }
 }

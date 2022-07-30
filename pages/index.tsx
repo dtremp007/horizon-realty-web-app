@@ -3,10 +3,15 @@ import Head from "next/head";
 import Image from "next/image";
 import { Button } from "@mantine/core";
 import imgSrc from "../public/golden-horizon-logo.png";
+import { useRouter } from "next/router";
+import { useMediaQuery } from "@mantine/hooks";
 import DefaultButton from "../src/components/buttons/DefaultButton";
 import { FaSearch, FaWhatsapp } from "react-icons/fa";
 
 const Home: NextPage = () => {
+    const router = useRouter()
+  const isDesktop = useMediaQuery("(min-width: 695px)", false);
+
   return (
     <div className="landing-page__container">
       <Head>
@@ -17,7 +22,7 @@ const Home: NextPage = () => {
       <div className="landing-page__logo-container">
         <Image priority={true} src={imgSrc} layout="responsive" />
       </div>
-      <DefaultButton>Get Started</DefaultButton>
+      <Button onClick={() => router.push(isDesktop ? "/listings" : "/filter")}>Browse Listings</Button>
     </div>
   );
 };

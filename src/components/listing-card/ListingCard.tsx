@@ -30,6 +30,7 @@ export default function ListingCard({
           <div className="listing-card__info-tag-wrapper">
               <ListingInfotag quantity={3} variant="bedroom" />
               <ListingInfotag quantity={2} variant="bathroom" />
+              <ListingInfotag quantity={1234} variant="area" />
           </div>
       </div>
     </div>
