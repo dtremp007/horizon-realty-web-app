@@ -9,6 +9,8 @@ import { useMediaQuery } from "@mantine/hooks";
 import NavigationContext from "../../context/navigationContext";
 import { TbAdjustmentsHorizontal } from "react-icons/tb";
 import { useRouter } from "next/router";
+import Show from "../HOC/Show";
+import BackButton from "./BackButton";
 
 export default function Navbar() {
   const { state, dispatch } = useContext(NavigationContext);
@@ -35,7 +37,13 @@ export default function Navbar() {
   return (
     <>
       <div className={state.navbarClass}>
-        {isDesktop && <MainMenu />}
+
+        {/*
+            Renders desktop menu
+        */}
+        <Show breakpoint="(min-width: 695px)">
+          <MainMenu />
+        </Show>
         <div
           className="top-nav__icon-container"
           style={{
@@ -43,21 +51,30 @@ export default function Navbar() {
               state.searchMode || isDesktop ? "flex-end" : "space-between",
           }}
         >
-          {!state.searchMode && (
+
+
+        {/*
+            Renders Burger or Backbutton based on route and searchMode
+        */}
+          <Show when={!state.searchMode} breakpoint="(max-width: 694px)" alt={<BackButton/>} altOptions="force" forceAlt={state.youHaveToGoBack}>
             <Burger
               opened={state.menuOpen}
               size="md"
               onClick={handleDropdown}
             />
-          )}
-          {!state.menuOpen && <SearchBar mobileBrowsingMode={mobileBrowsingMode} />}
-          {((mobileBrowsingMode && !state.searchMode) && !state.menuOpen) && (
+          </Show>
+          <Show when={!state.menuOpen} blacklistRoutes={["/listings/[id]"]}>
+            <SearchBar mobileBrowsingMode={mobileBrowsingMode} />
+          </Show>
+          <Show when={!state.searchMode && !state.menuOpen} blacklistRoutes={["/", "/listings/[id]"]} breakpoint="(max-width: 694px)">
             <ActionIcon size="lg" onClick={() => router.push("/filter")}>
               <TbAdjustmentsHorizontal size={30} strokeWidth="1.5" />
             </ActionIcon>
-          )}
+          </Show>
         </div>
-        {state.mountMenu && <MainMenu />}
+        <Show when={state.mountMenu}>
+          <MainMenu />
+        </Show>
         <DefaultButton className="btn-contact">
           Contact Us
           <FaWhatsapp size={32} />

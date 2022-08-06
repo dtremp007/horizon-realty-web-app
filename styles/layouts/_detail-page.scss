@@ -1,0 +1,58 @@
+@use "../abstracts" as *;
+
+.detail-page__main-content {
+    margin: .5rem $gutter;
+    text-align: left;
+    color: #C1C2C5;
+}
+
+.detail-page__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.detail-page__price {
+    text-align: left;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.detail-page__accordion-label {
+    font-size: 2rem;
+}
+
+.detail-page__cta {
+    position: fixed;
+    z-index: 100;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 3.5rem;
+    background-color: $background-secondary;
+    line-height: 3rem;
+    box-shadow: 0 -2px 5px 1px rgba($color: #000, $alpha: .2);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
+}
+
+.detail-page__map-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: $gutter;
+    margin: $gutter auto;
+    background-color: $background-secondary;
+    width: fit-content;
+    padding: .5rem $gutter;
+    border-radius: $button-radius;
+
+    a {
+        text-decoration: none;
+        color: $text-primary;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+}

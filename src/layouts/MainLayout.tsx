@@ -9,9 +9,11 @@ export default function MainLayout({ children }: Props) {
   return (
     <>
       <NavigationProvider>
-        <Navbar />
+        <>
+          <Navbar />
+          <main>{children}</main>
+        </>
       </NavigationProvider>
-      <main>{children}</main>
     </>
   );
 }

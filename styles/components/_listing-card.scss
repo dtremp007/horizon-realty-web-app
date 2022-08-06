@@ -147,7 +147,7 @@
   background-color: $listing-card-infotag-bg;
   color: $text-inverted;
   border-radius: 10px;
-  padding: 0.2rem 0.5rem;
+  padding: 0 0.5rem;
 }
 
 .bed-icon {
@@ -170,4 +170,35 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2px;
+}
+
+/* ===============
+   LAND AREA ICON
+   =============== */
+
+.land-area-1,
+.land-area-3,
+.land-area-4,
+.land-area-5 {
+  fill: none;
+  stroke: $text-inverted;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.land-area-1 {
+  stroke-width: 2px;
+}
+.land-area-2 {
+  fill: $text-inverted;
+}
+.land-area-3,
+.land-area-4,
+.land-area-5 {
+  stroke-width: 1.5px;
+}
+.land-area-4 {
+  stroke-dasharray: 3.11 3.11;
+}
+.land-area-5 {
+  stroke-dasharray: 3.12 3.12;
 }

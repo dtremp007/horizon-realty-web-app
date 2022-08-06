@@ -18,6 +18,7 @@ type NavigationState = {
   mountMenu: boolean;
   searchMode: boolean;
   navbarClass: "top-nav__container" | "top-nav__container open";
+  youHaveToGoBack: boolean;
 };
 
 type NavigationAction = {
@@ -26,7 +27,8 @@ type NavigationAction = {
     | "CLOSE_MENU"
     | "MOUNT_MENU"
     | "UNMOUNT_MENU"
-    | "TOGGLE_SEARCH_MODE";
+    | "TOGGLE_SEARCH_MODE"
+    | "TOGGLE_BACK_BUTTON"
 };
 
 export const NavigationProvider = ({ children }: Props) => {
@@ -35,6 +37,7 @@ export const NavigationProvider = ({ children }: Props) => {
     mountMenu: false,
     searchMode: false,
     navbarClass: "top-nav__container",
+    youHaveToGoBack: false,
   };
 
   const [state, dispatch] = useReducer(navigationReducer, initialState);
@@ -79,6 +82,11 @@ const navigationReducer: Reducer<NavigationState, NavigationAction> = (
         ...state,
         searchMode: !state.searchMode,
       };
+    case "TOGGLE_BACK_BUTTON":
+        return {
+            ...state,
+            youHaveToGoBack: !state.youHaveToGoBack
+        }
     default:
       return state;
   }

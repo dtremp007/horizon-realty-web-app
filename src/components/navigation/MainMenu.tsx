@@ -45,11 +45,16 @@ export default function MainMenu() {
           <a className={`main-nav__item ${activeLink === "/listings" ? "active-link" : ""}`}>Listings</a>
         </Link>
       </li>
-      {/* <li>
-        <Link href="/settings">
-          <a className={`main-nav__item ${activeLink === "/settings" ? "active-link" : ""}`}>Settings</a>
+      <li>
+        <Link href="/map">
+          <a className={`main-nav__item ${activeLink === "/map" ? "active-link" : ""}`}>Map</a>
         </Link>
-      </li> */}
+      </li>
+      <li>
+        <Link href="/admin">
+          <a className={`main-nav__item ${activeLink === "/admin" ? "active-link" : ""}`}>Admin</a>
+        </Link>
+      </li>
     </ul>
   );
 }

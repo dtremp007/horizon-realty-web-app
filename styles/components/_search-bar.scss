@@ -27,17 +27,22 @@
     background-color: rgba($color: #fff, $alpha: 0);
     width: 52px;
     padding-right: 0rem;
-    margin-right: 0rem;
+    margin-right: 0;
     justify-content: flex-end;
   }
 
+  @media screen and (min-width: 695px) {
+    &.closed {
+      margin-right: 1rem;
+    }
+  }
 }
 
 .search-bar__button {
-    width: 100%;
-    height: 1.5rem;
-    border-radius: 1rem;
-    background-color: rgba($color: #fff, $alpha: .2);
+  width: 100%;
+  height: 1.5rem;
+  border-radius: 1rem;
+  background-color: rgba($color: #fff, $alpha: 0.2);
 }
 
 @media screen and (max-width: 694px) {

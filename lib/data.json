@@ -1,0 +1,22 @@
+{
+    "listings": [
+        {
+            "id": 1,
+            "name": "Two story home",
+            "price": 350000,
+            "geolocation": [28.51331722301662, -106.93857281396777]
+        },
+        {
+            "id": 2,
+            "name": "Two story home",
+            "price": 350000,
+            "geolocation": [28.50884347072923, -106.9318986255884]
+        },
+        {
+            "id": 3,
+            "name": "Two story home",
+            "price": 350000,
+            "geolocation": [28.509861741028956, -106.91313112824646]
+        }
+    ]
+}

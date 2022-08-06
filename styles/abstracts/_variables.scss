@@ -2,7 +2,7 @@
   --button-primary-hover: #18549a;
   --button-primary-active: #eeeeee;
   --button-primary-default: #1864AB;
-  --button-radius: .25rem;
+  --button-radius: .5rem;
   --button-default-padding: 0.2rem 1rem;
   --button-default-font-size: 1.125rem;
   --button-default-border: none;
@@ -12,6 +12,7 @@
   --background-secondary: #141517;
 
   --text-primary: #eeeeee;
+  --logo-red: #D10005;
 
   --text-inverted: #222831;
   --font-family: Arial, Helvetica, sans-serif;
@@ -24,6 +25,8 @@
   --listing-card-status-bg: #ab9152;
   --listing-card-price-bg: rgba(255, 255, 255, 0.8);
   --listing-card-icon-color: #222831;
+
+  --swiper-navigation-color: #fff
 }
 
 $button-primary-hover: var(--button-primary-hover);
@@ -50,3 +53,4 @@ $listing-card-infotag-bg: var(--listing-card-infotag-bg);
 $listing-card-status-bg: var(--listing-card-status-bg);
 $listing-card-price-bg: var(--listing-card-price-bg);
 $listing-card-icon-color: var(--listing-card-icon-color);
+$logo-red: var(--logo-red);

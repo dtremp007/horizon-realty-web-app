@@ -1,6 +1,6 @@
 export{}
 
-interface ListingSchema {
+export interface ListingSchema {
     id: number,
     timestamp: Date,
     user: string,
@@ -20,4 +20,11 @@ interface ListingSchema {
     description: string,
     yearBuilt: number,
     imageUrls: Array<string>,
+}
+
+export interface SampleListing {
+    id: number,
+    name: string,
+    price: number,
+    geolocation: number[]
 }

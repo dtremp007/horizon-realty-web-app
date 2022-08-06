@@ -22,7 +22,7 @@ export default function ListingCard({
   onClick,
 }: Props) {
   return (
-    <div className={createClassList(variant, className)}>
+    <div onClick={onClick} className={createClassList(variant, className)}>
       <ListingThumbnail />
       <div className="listing-card__info-wrapper">
           <h3 className="listing-card__h3">#40 Campo 3B</h3>

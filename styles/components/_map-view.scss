@@ -1,0 +1,16 @@
+@use "../abstracts" as *;
+
+.map-view__cluster-marker {
+    color: $text-primary;
+    background-color: $background-secondary;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.map__location-icon {
+    fill: $background-secondary;
+}

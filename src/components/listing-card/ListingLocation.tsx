@@ -1,7 +1,7 @@
 export default function ListingLocation() {
   return (
     <div className="listing-card__location">
-      <svg height={25} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.89 23">
+      <svg height={20} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.89 23">
         <g>
           <path
             className="listing-card__location-icon"
