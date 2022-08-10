@@ -65,7 +65,7 @@ const AddListing = () => {
     }
   }, [uploaded])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: any) => {
     if (e.target.files) {
         setFormData(prevState => ({
             ...prevState,
