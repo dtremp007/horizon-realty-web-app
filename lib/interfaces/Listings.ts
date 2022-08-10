@@ -5,11 +5,20 @@ export interface ListingSchema {
     timestamp: Date,
     user: string,
     type: "Home" | "Building Lot" | "Farm Land" | "Rent",
-    price: number,
-    currency: "USD" | "MXN",
+    price: {
+        amount: number,
+        units: string,
+    },
     bedrooms: number,
     bathrooms: number,
-    area: string,
+    houseSize: {
+        amount: number,
+        units: string,
+    },
+    landArea: {
+        amount: number,
+        units: string,
+    }
     furnished: boolean,
     lawn: boolean,
     trees: boolean,

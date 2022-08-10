@@ -1,0 +1,18 @@
+@use "../abstracts" as *;
+
+.sign-in__container {
+    margin: auto;
+    background-color: $background-secondary;
+    padding: $gutter;
+    border-radius: $button-radius;
+    max-width: 350px;
+
+    form {
+        display: flex;
+        flex-direction: column;
+
+        input {
+            margin-bottom: $gutter;
+        }
+    }
+}

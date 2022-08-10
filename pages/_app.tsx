@@ -6,7 +6,7 @@ import type { AppProps } from "next/app";
 //TODO: make router path a global property
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <MantineProvider theme={{colorScheme: "dark"}}>
+    <MantineProvider theme={{colorScheme: "dark"}}>xxx
       <MainLayout>
           <Component {...pageProps} />
       </MainLayout>
