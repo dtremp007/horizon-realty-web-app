@@ -16,11 +16,12 @@ type FormDataState = {
     title: string,
     listingType: string
     price: number,
-    priceUnits: string,
+    currency: string,
+    paymentType: string,
     landArea: number,
     landAreaUnits: string,
     address: string,
-    coordinates: string,
+    coordinates: string | string[],
     description: string,
     images: FileList | null
 }
@@ -33,7 +34,8 @@ const AddListing = () => {
     title: "",
     listingType: "",
     price: 0,
-    priceUnits: "USD",
+    currency: "USD",
+    paymentType: "",
     landArea: 0,
     landAreaUnits: "",
     address: "",
@@ -48,7 +50,8 @@ const AddListing = () => {
     title,
     listingType,
     price,
-    priceUnits,
+    currency,
+    paymentType,
     landArea,
     landAreaUnits,
     address,
@@ -138,7 +141,8 @@ const AddListing = () => {
 
       const formDataCopy: SubmitData = {
         ...formData,
-        imageUrls
+        imageUrls,
+        coordinates: (coordinates as string).split(",").map(e => e.trim())
       }
 
       delete formDataCopy.images;
@@ -156,7 +160,8 @@ const AddListing = () => {
         title: "",
         listingType: "",
         price: 0,
-        priceUnits: "USD",
+        currency: "USD",
+        paymentType,
         landArea: 0,
         landAreaUnits: "",
         address: "",
@@ -181,8 +186,11 @@ const AddListing = () => {
             <label htmlFor="price">Price</label>
             <input type="number" name="price" id="price" value={price} onChange={handleChange}/>
 
-            <label htmlFor="land-area">Currency</label>
-            <input type="text" name="land-area" id="area" value={priceUnits} onChange={handleChange} />
+            <label htmlFor="currency">Currency</label>
+            <input type="text" name="currency" id="currency" value={currency} onChange={handleChange} />
+
+            <label htmlFor="paymentType">Payment Type</label>
+            <input type="text" name="paymentType" id="paymentType" value={paymentType} onChange={handleChange} />
 
             <label htmlFor="landArea">Lot Size</label>
             <input type="number" name="landArea" id="landArea" value={landArea}  onChange={handleChange}/>

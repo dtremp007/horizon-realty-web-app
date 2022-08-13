@@ -7,22 +7,22 @@ import { useRef, useState } from "react";
 import useSupercluster from "use-supercluster";
 import type { BBox } from "geojson";
 
-const SingleMapView = () => {
-  const [viewState, setViewState] = useState({
-    latitude: 28.5,
-    longitude: -106.91,
-    zoom: 15,
-  });
+type Props = {
+    coordinates: [number, number];
+}
+
+const SingleMapView = ({coordinates}: Props) => {
+  const [latitude, longitude] = coordinates;
 
   return (
     <Map
-      initialViewState={{ latitude: 28.5, longitude: -106.91, zoom: 15 }}
+      initialViewState={{ latitude, longitude, zoom: 15 }}
       style={{ width: "100%", height: "30vh" }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
       interactive={false}
     >
-      <Marker latitude={28.5} longitude={-106.91}>
+      <Marker latitude={latitude} longitude={longitude}>
         <svg
           height={33}
           xmlns="http://www.w3.org/2000/svg"

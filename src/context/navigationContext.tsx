@@ -29,6 +29,8 @@ type NavigationAction = {
     | "UNMOUNT_MENU"
     | "TOGGLE_SEARCH_MODE"
     | "TOGGLE_BACK_BUTTON"
+    | "BACK_BTN_ON"
+    | "BACK_BTN_OFF"
 };
 
 export const NavigationProvider = ({ children }: Props) => {
@@ -86,6 +88,16 @@ const navigationReducer: Reducer<NavigationState, NavigationAction> = (
         return {
             ...state,
             youHaveToGoBack: !state.youHaveToGoBack
+        }
+    case "BACK_BTN_ON":
+        return {
+            ...state,
+            youHaveToGoBack: true
+        }
+    case "BACK_BTN_OFF":
+        return {
+            ...state,
+            youHaveToGoBack: false
         }
     default:
       return state;

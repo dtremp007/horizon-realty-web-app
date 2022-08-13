@@ -12,10 +12,10 @@ type Props = {
     }
 }
 
-const MapPage: NextPage<Props> = ({data}) => {
+const MapPage: NextPage<Props> = () => {
   return (
     <>
-    <MapView data={data.listings} />
+    <MapView />
     {/* <div className="map-page_overlay">
         <MapListingsOverlay />
     </div> */}
@@ -23,13 +23,3 @@ const MapPage: NextPage<Props> = ({data}) => {
   );
 };
 export default MapPage;
-
-export const getStaticProps = async () => {
-    const filePath = path.join(process.cwd(), "lib", "data.json");
-    const response = await readFile(filePath, "utf8");
-    return {
-        props: {
-            data: JSON.parse(response)
-        }
-    }
-}

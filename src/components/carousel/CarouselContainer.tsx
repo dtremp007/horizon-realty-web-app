@@ -5,7 +5,7 @@ import { StaticImageData } from "next/image";
 import Image from "next/image";
 
 type Props = {
-  images: StaticImageData[];
+  images: string[];
 };
 
 const CarouselContainer = ({ images }: Props) => {
@@ -19,9 +19,9 @@ const CarouselContainer = ({ images }: Props) => {
     //   style={{maxWidth:"500px", color: "#fff"}}
     >
       {images.map((image, index) => (
-        <SwiperSlide key={index} >
+          <SwiperSlide key={index} >
           <div className="carousel__image-container">
-            <Image src={image} />
+            <Image src={image} layout="fill" objectFit="contain" />
           </div>
         </SwiperSlide>
       ))}

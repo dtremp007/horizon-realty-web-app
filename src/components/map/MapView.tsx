@@ -3,9 +3,10 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { SampleListing } from "../../../lib/interfaces/Listings";
 import { Marker } from "react-map-gl";
 import { GrLocation } from "react-icons/gr";
-import { useRef, useState } from "react";
+import { useRef, useState, useContext, useEffect } from "react";
 import useSupercluster from "use-supercluster";
 import type { BBox } from "geojson";
+import ListingsContext from "../../context/listingsContext/listingsContext";
 
 type Props = {
   data: SampleListing[];
@@ -23,21 +24,27 @@ type Props = {
  *
  * @see https://morioh.com/p/4e3a9a52a0c8 for how I got most of this function.
  */
-const MapView = ({ data }: Props) => {
-  const [viewState, setViewState] = useState({
-    latitude: 28.499333743795656,
-    longitude: -106.91227327839648,
-    zoom: 14,
-  });
+const MapView = () => {
+  const { listingsState, dispatch } = useContext(ListingsContext);
+  const { firebaseDocs, mapViewState } = listingsState;
+
   const mapRef = useRef<MapRef>(null);
-  const points = data.map((listing) => ({
-    type: "Feature",
-    properties: { cluster: false, listingId: listing.id, category: "homes" },
-    geometry: {
-      type: "Point",
-      coordinates: [listing.geolocation[1], listing.geolocation[0]],
-    },
-  }));
+  const points = firebaseDocs.map((listing) => {
+    const {listingType, coordinates} = listing.data;
+
+    return {
+      type: "Feature",
+      properties: {
+        cluster: false,
+        listingId: listing.id,
+        category: listingType,
+      },
+      geometry: {
+        type: "Point",
+        coordinates: [coordinates[1], coordinates[0]],
+      },
+    };
+  });
 
   const bounds = mapRef.current
     ? (mapRef.current.getMap().getBounds().toArray().flat() as BBox)
@@ -46,17 +53,18 @@ const MapView = ({ data }: Props) => {
   const { clusters, supercluster } = useSupercluster({
     points,
     bounds,
-    zoom: viewState.zoom,
+    zoom: mapViewState.zoom,
     options: { radius: 75, maxZoom: 20 },
   });
 
   return (
     <Map
-      {...viewState}
+    {...mapViewState}
       style={{ width: "100vw", height: "calc(100vh - 60px)" }}
+      reuseMaps
+      onMove={evt => dispatch({type: "UPDATE_MAP", payload: evt.viewState})}
       mapStyle="mapbox://styles/mapbox/streets-v9"
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-      onMove={(evt) => setViewState(evt.viewState)}
       ref={mapRef}
       maxZoom={17}
       dragRotate={false}

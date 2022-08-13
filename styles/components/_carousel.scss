@@ -1,3 +1,5 @@
 .carousel__image-container {
-    // max-height: 38vh;
+    position: relative;
+    height: min(calc(100vw * .75), 600px);
+    overflow: hidden;
 }

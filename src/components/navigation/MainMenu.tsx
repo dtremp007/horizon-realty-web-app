@@ -42,12 +42,15 @@ export default function MainMenu() {
       </li>
       <li>
         <Link href="/listings">
-          <a className={`main-nav__item ${activeLink === "/listings" ? "active-link" : ""}`}>Listings</a>
+          <a className={`main-nav__item ${activeLink === "/listings" && !router.query.view ? "active-link" : ""}`}>Listings</a>
         </Link>
       </li>
       <li>
-        <Link href="/map">
-          <a className={`main-nav__item ${activeLink === "/map" ? "active-link" : ""}`}>Map</a>
+        <Link href={{
+            pathname: "/listings",
+            query: {view: "map"}
+        }}>
+          <a className={`main-nav__item ${activeLink === "/listings" && router.query.view ? "active-link" : ""}`}>Map</a>
         </Link>
       </li>
       <li>

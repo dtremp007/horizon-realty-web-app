@@ -9,12 +9,12 @@ type Props = {
 export default function MainLayout({ children }: Props) {
   return (
     <AuthUserProvider>
-        <NavigationProvider>
-            <>
-            <Navbar />
-            <main>{children}</main>
-            </>
-        </NavigationProvider>
+            <NavigationProvider>
+                <>
+                <Navbar />
+                <main>{children}</main>
+                </>
+            </NavigationProvider>
     </AuthUserProvider>
   );
 }

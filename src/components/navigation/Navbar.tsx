@@ -66,7 +66,7 @@ export default function Navbar() {
           <Show when={!state.menuOpen} blacklistRoutes={["/listings/[id]"]}>
             <SearchBar mobileBrowsingMode={mobileBrowsingMode} />
           </Show>
-          <Show when={!state.searchMode && !state.menuOpen} blacklistRoutes={["/", "/listings/[id]"]} breakpoint="(max-width: 694px)">
+          <Show when={!state.searchMode && !state.menuOpen} blacklistRoutes={["/", "/listings/[id]", "/admin", "/admin/add-listing"]} breakpoint="(max-width: 694px)" >
             <ActionIcon size="lg" onClick={() => router.push("/filter")}>
               <TbAdjustmentsHorizontal size={30} strokeWidth="1.5" />
             </ActionIcon>
@@ -75,7 +75,7 @@ export default function Navbar() {
         <Show when={state.mountMenu}>
           <MainMenu />
         </Show>
-        <DefaultButton className="btn-contact">
+        <DefaultButton className="btn-contact" onClick={() => window.open("https://wa.me/526251189323", "_blank")}>
           Contact Us
           <FaWhatsapp size={32} />
         </DefaultButton>

@@ -10,3 +10,8 @@ body {
     text-align: center;
     font-family: $font-family;
 }
+
+#__next {
+    height: 100vh;
+    width: 100vw;
+}

@@ -1,7 +1,7 @@
 @use "../abstracts" as *;
 
 /*
-
+    NAVIGATION
 */
 .top-nav__container {
   position: absolute;
@@ -99,6 +99,10 @@
 
 .btn.btn-contact {
     background-color: #25D366;
+
+    &:hover {
+        background-color: lighten($color: #25D366, $amount: 5);
+    }
 }
 
 /* The padding left and right is so the underline runs

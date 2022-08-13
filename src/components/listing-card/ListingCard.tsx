@@ -2,9 +2,10 @@ import { MouseEventHandler } from "react";
 import ListingThumbnail from "./ListingThumbnail";
 import ListingLocation from "./ListingLocation";
 import ListingInfotag from "./ListingInfotag";
+import {DocumentData} from "firebase/firestore"
 
 type Props = {
-  data?: string; //Obviously not. Please create a proper interface.
+  data: DocumentData
   variant: "full" | "map" | "minimal" | "custom";
   className?: string;
   onClick?: MouseEventHandler;
@@ -21,16 +22,16 @@ export default function ListingCard({
   className,
   onClick,
 }: Props) {
+    const {title, price, currency, imageUrls, landArea} = data;
+
   return (
     <div onClick={onClick} className={createClassList(variant, className)}>
-      <ListingThumbnail />
+      <ListingThumbnail price={price} currency={currency} imageUrl={imageUrls[0]}/>
       <div className="listing-card__info-wrapper">
-          <h3 className="listing-card__h3">#40 Campo 3B</h3>
+          <h3 className="listing-card__h3">{title}</h3>
           <ListingLocation />
           <div className="listing-card__info-tag-wrapper">
-              <ListingInfotag quantity={3} variant="bedroom" />
-              <ListingInfotag quantity={2} variant="bathroom" />
-              <ListingInfotag quantity={1234} variant="area" />
+              <ListingInfotag quantity={landArea} variant="land" />
           </div>
       </div>
     </div>
