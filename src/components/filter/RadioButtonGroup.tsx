@@ -3,29 +3,32 @@ import type { FilterParameter } from "../../../lib/interfaces/FilterTypes";
 import { randomId } from "../../../lib/random-id/random-id.js";
 import type { RadioButtonGroupProps } from "../../../lib/interfaces/FilterTypes";
 
+type Props = {
+    filterProps: FilterParameter["filterProps"],
+    filterName: FilterParameter["filterName"],
+    handleChange: Function,
+    selected: string
+}
 
-const RadioButtonGroup = (
-  filterParam: FilterParameter<RadioButtonGroupProps>
-) => {
-  const [selected, setSelected] = useState<string | null>("homes");
-
-  const handleChange = (e: any) => {
-    setSelected(e.target.value);
-  };
+const RadioButtonGroup = ({
+    filterProps,
+    filterName,
+    handleChange,
+    selected,
+}: Props) => {
 
   return (
-    <fieldset className="radio-button-group">
-      <legend>{filterParam.legendValue}</legend>
-      {filterParam.filterProps.data.map((props) => (
+    <>
+      {filterProps.data.map((props: any) => (
         <RadioButton
           key={props.id}
-          filterName={filterParam.filterName}
+          filterName={filterName}
           handleChange={handleChange}
           selected={selected}
           {...props}
         />
       ))}
-    </fieldset>
+    </>
   );
 };
 export default RadioButtonGroup;
@@ -50,7 +53,7 @@ const RadioButton = ({
     <div className="radio-button-container">
       <input
         type="radio"
-        name={getKebabCase(filterName)}
+        name={filterName}
         id={value}
         value={value}
         checked={selected === value}

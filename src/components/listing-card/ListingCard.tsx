@@ -3,6 +3,8 @@ import ListingThumbnail from "./ListingThumbnail";
 import ListingLocation from "./ListingLocation";
 import ListingInfotag from "./ListingInfotag";
 import {DocumentData} from "firebase/firestore"
+import {FaMapMarkedAlt} from "react-icons/fa"
+import {ActionIcon} from "@mantine/core"
 
 type Props = {
   data: DocumentData
@@ -28,8 +30,14 @@ export default function ListingCard({
     <div onClick={onClick} className={createClassList(variant, className)}>
       <ListingThumbnail price={price} currency={currency} imageUrl={imageUrls[0]}/>
       <div className="listing-card__info-wrapper">
+        <div className="listing-card--flex-between">
+          <h2 className="listing-card__pricev2">{`${currency} \$${price.toLocaleString("en")}`}</h2>
+            {/* <ActionIcon variant="filled" color="blue" size="xl">
+                <FaMapMarkedAlt size={25} />
+            </ActionIcon> */}
+        </div>
           <h3 className="listing-card__h3">{title}</h3>
-          <ListingLocation />
+          {/* <ListingLocation /> */}
           <div className="listing-card__info-tag-wrapper">
               <ListingInfotag quantity={landArea} variant="land" />
           </div>

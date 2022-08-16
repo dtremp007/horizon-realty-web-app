@@ -35,17 +35,17 @@ const ListingDetailLayout = ({data}: Props) => {
     return (
         <>
           <div>
-            <CarouselContainer images={imageUrls} />
+            <CarouselContainer images={imageUrls} title={title}/>
             <div className="detail-page__main-content flow-content">
               <h2 className="detail-page__price">{`${currency} \$${price}`}</h2>
-              <ListingLocation />
+              <ListingLocation address={address} />
               <div className="listing-card__info-tag-wrapper">
                 <ListingInfotag quantity={landArea} variant="land" />
               </div>
               <Divider />
               <h2 className="detail-page__title">{title}</h2>
               {description && <p>{description}</p>}
-              <Accordion iconPosition="right">
+              {/* <Accordion iconPosition="right">
                 <AccordionItem label={<h2>Payments Options</h2>}>
                   <p>1 Payment - $50,000</p>
                   <p>2 Payments - $60,000</p>
@@ -65,7 +65,7 @@ const ListingDetailLayout = ({data}: Props) => {
                     <li>Paved Street</li>
                   </ul>
                 </AccordionItem>
-              </Accordion>
+              </Accordion> */}
               <h2 style={{}}>Location</h2>
               <SingleMapView coordinates={coordinates} />
               <div className="detail-page__map-link">
@@ -99,7 +99,7 @@ const ListingDetailLayout = ({data}: Props) => {
                     d="M28.24,22c0.79-0.95,1.26-2.17,1.26-3.5c0-3.04-2.46-5.5-5.5-5.5c-1.71,0-3.24,0.78-4.24,2L28.4,4.74	c3.59,1.22,6.53,3.91,8.17,7.38L28.24,22z"
                   ></path>
                 </svg>
-                <a href="https://goo.gl/maps/beezSkBxrSUrTcWN9">Google Maps</a>
+                <a href={`http://www.google.com/maps/place/${coordinates[0]},${coordinates[1]}?zoom=14`}>Google Maps</a>
               </div>
               <Divider />
               <p style={{ textAlign: "center" }}>Visits: N/A</p>

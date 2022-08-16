@@ -6,9 +6,10 @@ import Image from "next/image";
 
 type Props = {
   images: string[];
+  title: string;
 };
 
-const CarouselContainer = ({ images }: Props) => {
+const CarouselContainer = ({ images, title }: Props) => {
 
   return (
     <Swiper
@@ -21,7 +22,7 @@ const CarouselContainer = ({ images }: Props) => {
       {images.map((image, index) => (
           <SwiperSlide key={index} >
           <div className="carousel__image-container">
-            <Image src={image} layout="fill" objectFit="contain" />
+            <Image src={image} layout="fill" objectFit="contain" alt={title} />
           </div>
         </SwiperSlide>
       ))}

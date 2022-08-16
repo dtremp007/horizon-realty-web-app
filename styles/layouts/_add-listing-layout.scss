@@ -1,17 +1,51 @@
+@use "../abstracts" as *;
+
 .add-listing__container {
-    form {
-        display: flex;
-        flex-direction: column;
-        margin:auto;
-        width: min(400px, 90vw);
-    }
+  margin: 1rem 0.75rem;
 
-    input {
-        margin-bottom: 1rem;
-    }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: $gutter;
+  }
 
-    textarea {
-        margin-bottom: 1rem;
-        height: 500px;
-    }
+  input {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+.add-listing__action-items {
+  display: flex;
+  justify-content: center;
+}
+
+.add-listing__form-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $gutter;
+}
+
+.add-listing__details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add-listing__rte {
+  display: flex;
+  flex-direction: column;
+
+  input {
+    align-self: center;
+  }
+}
+
+.ProseMirror {
+  background-color: #fff;
+  color: $text-inverted;
+  min-height: 300px;
+    text-align: left;
+    padding: .5rem;
 }

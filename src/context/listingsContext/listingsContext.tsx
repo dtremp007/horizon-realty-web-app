@@ -39,6 +39,7 @@ type ListingsState = {
     zoom: number;
   };
   activeListing: DocumentData;
+  filters: ComparisonFunctionItem[];
 };
 
 type ListingsActions = {
@@ -47,9 +48,17 @@ type ListingsActions = {
    *
    * GET_SINGLE_LISTING -> Assumes the payload contains an id. Sets active listing if it has changed.
    */
-  type: "UPDATE_MAP";
+  type: "UPDATE_MAP" | "UPDATE_FILTER" | "REMOVE_FILTER" | "CLEAR_FILTERS";
   payload: any;
 };
+
+type FilterType = "NativeSelect" | "RangleSlider" | "SegmentControl" | "CheckboxGroup" | "Checkbox" | "RadioButtonGroup";
+export type ComparisonOpType = "===" | "!==" | ">=" | "<=" | ">" | "<" | "includes" | "range";
+type ComparisonFunction = (e: any)=>boolean
+type ComparisonFunctionItem = {
+    name: string,
+    test: ComparisonFunction
+}
 
 /* =================
    UTILITY FUNCTIONS
@@ -81,6 +90,35 @@ const getAverageCoordinates = (
     );
 };
 
+/**
+ * Checks whether filter exists in the array. If not, the filter gets added. If so, the filter gets replaced. You can also tell the function to remove the filter via options.
+ * @param a - an array of FilterItems
+ * @param filter - the filter to update
+ * @param options - indicate if you want to remove the filter
+ * @returns a new array of FilterItems
+ */
+
+const update = (a: ComparisonFunctionItem[], filter: ComparisonFunctionItem, options?: {remove: boolean}) => {
+    a = [...a]
+    const filterIndex = a.findIndex(e => e.name === filter.name);
+
+    if (filterIndex === -1 && options?.remove === true) {
+        return a
+    }
+
+    if (filterIndex === -1) {
+        a.push(filter)
+        return a
+    }
+
+    if (options?.remove === true) {
+        a.splice(filterIndex, 1)
+    }
+
+    a[filterIndex] = filter;
+    return a
+}
+
 /* =======
    CONTEXT
    ======= */
@@ -101,6 +139,7 @@ export const ListingsProvider = ({ children, firebaseDocs }: Props) => {
       zoom: MAP_INITIAL_ZOOM,
     },
     activeListing: {} as QueryDocumentSnapshot<DocumentData>,
+    filters: [],
   };
 
   const [listingsState, dispatch] = useReducer(listingReducer, initialState);
@@ -126,9 +165,57 @@ const listingReducer: Reducer<ListingsState, ListingsActions> = (
             ...state,
             mapViewState: action.payload
         }
+    case "UPDATE_FILTER":
+        return {
+            ...state,
+            filters: update(state.filters, action.payload)
+        }
+    case "REMOVE_FILTER":
+        return {
+            ...state,
+            filters: update(state.filters, action.payload, {remove: true})
+        }
     default:
       return state;
   }
 };
 
 export default ListingsContext;
+
+
+
+/**
+ * This function takes a key, comparison operator, and a value to compare against.
+ * Is is very easy to extend this to include many more operators. Think about adding
+ * Regex in the future.
+ * @param t - the key of the field to compare against
+ * @param o - basic Javascript operators
+ * @param v - value that is being compared against
+ * @returns a function that takes an object and compares one of it's fields.
+ */
+export function createComparisonFunction (t: string, o: ComparisonOpType, v: string | number | number[]): ComparisonFunction {
+    switch(o) {
+        case "===":
+            return (e: any) => e[t] === v;
+        case "!==":
+            return (e: any) => e[t] !== v;
+        case ">=":
+            return (e: any) => e[t] >= v;
+        case "<=":
+            return (e: any) => e[t] <= v;
+        case ">":
+            return (e: any) => e[t] > v;
+        case "<":
+            return (e: any) => e[t] < v;
+        case "includes":
+            return (e: any) => e[t].includes;
+        case "range":
+            if (Array.isArray(v)) {
+                const [lo, hi] = v
+                return (e: any) => e[t] >= lo && e[t] <= hi
+            }
+            console.log("The range filter needs to pass an array. You passed in: " + v)
+        default:
+            return (e: any) => true
+    }
+}

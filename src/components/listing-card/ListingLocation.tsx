@@ -1,4 +1,8 @@
-export default function ListingLocation() {
+type Props = {
+    address: string;
+}
+
+export default function ListingLocation({address}: Props) {
   return (
     <div className="listing-card__location">
       <svg height={20} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.89 23">
@@ -10,7 +14,7 @@ export default function ListingLocation() {
         </g>
       </svg>
 
-      <p>Cuauhtemoc CHIH 36705</p>
+      <p>{address}</p>
     </div>
   );
 }

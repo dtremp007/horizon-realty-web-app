@@ -2,7 +2,7 @@ import { GetServerSideProps, NextPage } from "next";
 import FilterMenu from "../../src/components/filter/FilterMenu";
 import ListingsLayout from "../../src/layouts/ListingsLayout";
 import { useMediaQuery } from "@mantine/hooks";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, where } from "firebase/firestore";
 import { db } from "../../lib/firebase.config";
 import { QuerySnapshot, DocumentData } from "firebase/firestore";
 import { ListingsProvider } from "../../src/context/listingsContext/listingsContext";
@@ -16,6 +16,11 @@ type Props = {
     data: DocumentData;
   }[];
 };
+
+/*
+    TODO:
+    - Renable filter
+*/
 
 const Listings: NextPage<Props> = ({ firebaseDocs }) => {
   const isDesktop = useMediaQuery("(min-width: 695px)", true);
@@ -32,7 +37,7 @@ const Listings: NextPage<Props> = ({ firebaseDocs }) => {
         <MapView />
       ) : (
         <div className="listing-page__layout">
-          {isDesktop && <FilterMenu />}
+          {/*isDesktop && <FilterMenu />*/}
           <ListingsLayout />
         </div>
       )}

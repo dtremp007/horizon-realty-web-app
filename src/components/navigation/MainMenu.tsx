@@ -2,6 +2,9 @@ import Link from "next/link";
 import { useContext, useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import NavigationContext from "../../context/navigationContext";
+import { Button } from "@mantine/core";
+import Show from "../HOC/Show";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function MainMenu() {
     const {state, dispatch} = useContext(NavigationContext);
@@ -42,7 +45,7 @@ export default function MainMenu() {
       </li>
       <li>
         <Link href="/listings">
-          <a className={`main-nav__item ${activeLink === "/listings" && !router.query.view ? "active-link" : ""}`}>Listings</a>
+          <a className={`main-nav__item ${activeLink === "/listings" && !router.query.view ? "active-link" : ""}`}>Propiedades</a>
         </Link>
       </li>
       <li>
@@ -50,7 +53,7 @@ export default function MainMenu() {
             pathname: "/listings",
             query: {view: "map"}
         }}>
-          <a className={`main-nav__item ${activeLink === "/listings" && router.query.view ? "active-link" : ""}`}>Map</a>
+          <a className={`main-nav__item ${activeLink === "/listings" && router.query.view ? "active-link" : ""}`}>Mapa</a>
         </Link>
       </li>
       <li>
@@ -58,6 +61,13 @@ export default function MainMenu() {
           <a className={`main-nav__item ${activeLink === "/admin" ? "active-link" : ""}`}>Admin</a>
         </Link>
       </li>
+      {/* <li>
+      <Show breakpoint="(max-width: 694px)" initialValue={false}>
+        <Button rightIcon={<FaWhatsapp size={30} />} onClick={() => window.open("https://wa.me/526251189323", "_blank")} uppercase >
+        Contáctanos
+        </Button>
+        </Show>
+      </li> */}
     </ul>
   );
 }

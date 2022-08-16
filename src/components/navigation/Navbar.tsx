@@ -3,7 +3,6 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { Burger, Button, ActionIcon } from "@mantine/core";
 import DefaultButton from "../buttons/DefaultButton";
 import SearchBar from "./SearchBar";
-import { atom, useAtom } from "jotai";
 import MainMenu from "./MainMenu";
 import { useMediaQuery } from "@mantine/hooks";
 import NavigationContext from "../../context/navigationContext";
@@ -11,6 +10,11 @@ import { TbAdjustmentsHorizontal } from "react-icons/tb";
 import { useRouter } from "next/router";
 import Show from "../HOC/Show";
 import BackButton from "./BackButton";
+
+/*
+    TODO:
+    - I completely disabled search button.
+*/
 
 export default function Navbar() {
   const { state, dispatch } = useContext(NavigationContext);
@@ -63,10 +67,10 @@ export default function Navbar() {
               onClick={handleDropdown}
             />
           </Show>
-          <Show when={!state.menuOpen} blacklistRoutes={["/listings/[id]"]}>
+          <Show when={/*!state.menuOpen*/false} blacklistRoutes={["/listings/[id]"]}>
             <SearchBar mobileBrowsingMode={mobileBrowsingMode} />
           </Show>
-          <Show when={!state.searchMode && !state.menuOpen} blacklistRoutes={["/", "/listings/[id]", "/admin", "/admin/add-listing"]} breakpoint="(max-width: 694px)" >
+          <Show when={/*!state.searchMode && !state.menuOpen*/false} blacklistRoutes={["/", "/listings/[id]", "/admin", "/admin/add-listing"]} breakpoint="(max-width: 694px)" >
             <ActionIcon size="lg" onClick={() => router.push("/filter")}>
               <TbAdjustmentsHorizontal size={30} strokeWidth="1.5" />
             </ActionIcon>
@@ -75,10 +79,11 @@ export default function Navbar() {
         <Show when={state.mountMenu}>
           <MainMenu />
         </Show>
-        <DefaultButton className="btn-contact" onClick={() => window.open("https://wa.me/526251189323", "_blank")}>
-          Contact Us
-          <FaWhatsapp size={32} />
-        </DefaultButton>
+        <Show breakpoint="(min-width: 695px)" initialValue={false}>
+        <Button rightIcon={<FaWhatsapp size={30} />} onClick={() => window.open("https://wa.me/526251189323", "_blank")} uppercase >
+        Contáctanos
+        </Button>
+        </Show>
       </div>
     </>
   );
