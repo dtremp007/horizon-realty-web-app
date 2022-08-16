@@ -1,6 +1,4 @@
 import { useState, useContext } from "react";
-import { useRouter } from "next/router";
-import { useAtom } from "jotai";
 import NavigationContext from "../../context/navigationContext";
 
 type Props = {
