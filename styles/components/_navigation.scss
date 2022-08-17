@@ -157,11 +157,31 @@
 
   .top-nav__container {
     flex-direction: row;
+    justify-content: space-between;
   }
 
-  .top-nav__icon-container {
-    flex-grow: 1;
+  .top-nav__logo-wrapper {
+    display: flex;
+    gap: .7rem;
+
+    div {
+        align-self: center;
+    }
   }
+
+  .top-nav__horizon {
+    font-weight: 600;
+  }
+
+  .top-nav__rlst {
+    font-size: .7rem;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: uppercase;
+  }
+
+//   .top-nav__icon-container {
+//     flex-grow: 1;
+//   }
 
   .mantine-Burger-root {
     display: none;

@@ -5,12 +5,16 @@ import ListingInfotag from "./ListingInfotag";
 import {DocumentData} from "firebase/firestore"
 import {FaMapMarkedAlt} from "react-icons/fa"
 import {ActionIcon} from "@mantine/core"
+import Link from "next/link";
+import {useEffect, useState} from "react"
+import {useRouter} from "next/router"
+import Spinner from "../../shared/Spinner";
 
 type Props = {
-  data: DocumentData
+    id: string;
+  data: DocumentData;
   variant: "full" | "map" | "minimal" | "custom";
   className?: string;
-  onClick?: MouseEventHandler;
 };
 
 /**
@@ -19,44 +23,39 @@ type Props = {
  */
 
 export default function ListingCard({
+    id,
   data,
   variant = "full",
   className,
-  onClick,
 }: Props) {
-    const {title, price, currency, imageUrls, landArea} = data;
+    const {title, price, currency, imageUrls, landArea, status} = data;
+    const router = useRouter();
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        router.prefetch(`/listings/${id}`)
+    },[])
+
+    const handleClick = () => {
+        router.push(`/listings/${id}`)
+        setLoading(true);
+  }
 
   return (
-    <div onClick={onClick} className={createClassList(variant, className)}>
-      <ListingThumbnail price={price} currency={currency} imageUrl={imageUrls[0]}/>
+    <div onClick={handleClick} className="listing-card listing-card--full">
+      <ListingThumbnail price={price} currency={currency} imageUrl={imageUrls[0]} status={status}/>
       <div className="listing-card__info-wrapper">
-        <div className="">
-          <div style={{display: "flex", alignItems: "flex-end", gap: ".75rem"}}>
-            <p>{currency}</p>
-          <h2 style={{lineHeight: "1.9rem"}}>{`\$${price.toLocaleString("en")}`}</h2>
-          </div>
-            {/* <ActionIcon variant="filled" color="blue" size="xl">
-                <FaMapMarkedAlt size={25} />
-            </ActionIcon> */}
-        </div>
-          <h3 className="listing-card__h3">{title}</h3>
+          <h3 className="listing-card__h3">{addNBSP(title)}</h3>
           {/* <ListingLocation /> */}
           <div className="listing-card__info-tag-wrapper">
               <ListingInfotag quantity={landArea} variant="land" />
           </div>
       </div>
+      {loading && <Spinner style={{position: "absolute", left: "50%", top: "25%", transform: "translate(-50%)"}}/>}
     </div>
   );
 }
 
-const createClassList = (variant: string, className?: string) => {
-  if (variant === "custom") {
-    return className;
-  } else if (variant === "full") {
-    return `listing-card listing-card--full ${className || ""}`;
-  } else if (variant === "map") {
-    return `listing-card listing-card--map ${className || ""}`;
-  } else if (variant === "minimal") {
-    return `listing-card listing-card--minimal ${className || ""}`;
-  }
-};
+function addNBSP(sentence:string) {
+    return sentence.replace(/(?<=campo)\s/i, "\u00A0")
+}

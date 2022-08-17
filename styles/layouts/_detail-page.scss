@@ -11,12 +11,6 @@
     font-weight: 600;
 }
 
-.detail-page__price {
-    text-align: left;
-    font-size: 1.5rem;
-    font-weight: 500;
-}
-
 .detail-page__accordion-label {
     font-size: 2rem;
 }
@@ -54,5 +48,21 @@
         color: $text-primary;
         font-size: 1.2rem;
         font-weight: 600;
+    }
+}
+
+.detail-page__price-wrapper {
+    display: flex;
+    width: fit-content;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: .5rem;
+    width: min(420px, 100%);
+
+    p {
+        background-color: $listing-card-infotag-bg;
+        color: $text-inverted;
+        border-radius: 1rem;
+        padding: 0 0.5rem;
     }
 }

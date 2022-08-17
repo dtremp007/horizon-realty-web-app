@@ -16,7 +16,7 @@ const SingleMapView = ({coordinates}: Props) => {
 
   return (
     <Map
-      initialViewState={{ latitude, longitude, zoom: 15 }}
+      initialViewState={{ latitude, longitude, zoom: 12 }}
       style={{ width: "100%", height: "30vh" }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}

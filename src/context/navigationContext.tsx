@@ -19,9 +19,11 @@ type NavigationState = {
   searchMode: boolean;
   navbarClass: "top-nav__container" | "top-nav__container open";
   youHaveToGoBack: boolean;
+  listingPageScrollY: number;
 };
 
 type NavigationAction = {
+    payload?: any;
   type:
     | "OPEN_MENU"
     | "CLOSE_MENU"
@@ -31,6 +33,7 @@ type NavigationAction = {
     | "TOGGLE_BACK_BUTTON"
     | "BACK_BTN_ON"
     | "BACK_BTN_OFF"
+    | "UPDATE_SCROLL_POSITION";
 };
 
 export const NavigationProvider = ({ children }: Props) => {
@@ -40,6 +43,7 @@ export const NavigationProvider = ({ children }: Props) => {
     searchMode: false,
     navbarClass: "top-nav__container",
     youHaveToGoBack: false,
+    listingPageScrollY: 0,
   };
 
   const [state, dispatch] = useReducer(navigationReducer, initialState);
@@ -98,6 +102,11 @@ const navigationReducer: Reducer<NavigationState, NavigationAction> = (
         return {
             ...state,
             youHaveToGoBack: false
+        }
+    case "UPDATE_SCROLL_POSITION":
+        return {
+            ...state,
+            listingPageScrollY: action.payload
         }
     default:
       return state;

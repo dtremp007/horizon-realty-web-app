@@ -9,11 +9,29 @@
   background-color: $listing-card-background;
   color: $text-primary;
   border-radius: $listing-card-radius;
-  height: fit-content;
+  height: 100%;
 }
 
 .listing-card--full {
   flex-direction: column;
+  position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:hover::after {
+    content: "";
+    position: absolute;
+    width: 100%; height: 100%;
+    background-color: #000;
+    opacity: .2;
+    z-index: 10;
+  }
+
+  &:active {
+    transform: scale(.99);
+  }
 }
 
 .listing-card--map {
@@ -70,10 +88,15 @@
   border-radius: 1rem;
   width: fit-content;
   padding: 0.1rem 0.5rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+  span {
+    font-size: .9rem;
+  }
 }
 
 .listing-card__pricev2 {
-    align-self: flex-start;
+  align-self: flex-start;
 }
 
 /* =========================
@@ -123,10 +146,11 @@
    ================== */
 
 .listing-card__info-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: .8rem;
+  display: grid;
+  padding: 0.8rem;
+  grid-auto-flow: row;
+  flex-grow: 1;
+  row-gap: 1rem;
 }
 
 .listing-card__h3 {
@@ -138,6 +162,7 @@
 .listing-card__info-tag-wrapper {
   display: flex;
   flex-direction: row;
+  align-self: end;
   justify-content: space-evenly;
   overflow: hidden;
   column-gap: 0.5rem;
@@ -157,9 +182,9 @@
 }
 
 .listing-card__divider {
-    border-top: 1px solid $text-primary;
-    border-radius: 3px;
-    width: 100%;
+  border-top: 1px solid $text-primary;
+  border-radius: 3px;
+  width: 100%;
 }
 
 .bed-icon {
@@ -220,39 +245,39 @@
    =============== */
 
 .listing-cardv2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    background-color: $listing-card-background;
-    border-radius: $listing-card-radius;
-    overflow: hidden;
-    max-width: 350px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: $listing-card-background;
+  border-radius: $listing-card-radius;
+  overflow: hidden;
+  max-width: 350px;
 }
 
 .listing-card__thumbnailv2 {
-    height: 150px;
-    // width: 200px;
-    overflow: hidden;
-    position: relative;
+  height: 150px;
+  // width: 200px;
+  overflow: hidden;
+  position: relative;
 }
 
 .listing-card__info-displayv2 {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    padding: 0 .75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0 0.75rem;
 
-    h1 {
-        font-size: 1rem;
-        font-weight: 400;
-        max-width: 225px;
-        text-align: left;
-    }
+  h1 {
+    font-size: 1rem;
+    font-weight: 400;
+    max-width: 225px;
+    text-align: left;
+  }
 }
 
 .listing-card__pricev2 {
-    position: absolute;
-    margin: .5rem;
+  position: absolute;
+  margin: 0.5rem;
   background-color: $listing-card-price-bg;
   color: $text-inverted;
   border-radius: 1rem;

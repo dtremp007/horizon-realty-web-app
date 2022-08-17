@@ -21,11 +21,6 @@ export default function ListingsLayout() {
 
     const {firebaseDocs, loading} = listingsState;
 
-    const handleClick = (id: string) => {
-        router.push(`/listings/${id}`)
-        dispatch({type: "BACK_BTN_ON"})
-  }
-
     if (!firebaseDocs) {
         return <h3>No listings to display.</h3>
     }
@@ -33,7 +28,7 @@ export default function ListingsLayout() {
   return (
     <div className="listings__container">
         {!loading ? firebaseDocs.map(listing => (
-            <ListingCard key={listing.id} data={listing.data} variant="full" onClick={() => handleClick(listing.id)}/>
+            <ListingCard key={listing.id} id={listing.id} data={listing.data} variant="full"/>
         )) : <Spinner/>}
     </div>
   )

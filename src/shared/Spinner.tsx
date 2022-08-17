@@ -1,9 +1,14 @@
 import spinner from "../assets/spinner.gif"
 import Image from "next/image"
+import { CSSProperties } from "react"
 
-function Spinner() {
+type Props = {
+    style?: CSSProperties
+}
+
+function Spinner({style}: Props) {
   return (
-    <div className="spinner__container">
+    <div style={style} className="spinner__container">
         <Image src={spinner}/>
     </div>
   )
