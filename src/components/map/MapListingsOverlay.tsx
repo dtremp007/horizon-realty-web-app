@@ -21,8 +21,8 @@ const MapListingsOverlay = () => {
     <div className="embla" ref={emblaRef}>
       <div className="embla__container">
         {firebaseDocs.map(listing => (
-            <div className="embla__slide">
-            <ListingCardAlt key={listing.id} data={listing.data} id={listing.id}/>
+            <div className="embla__slide" key={listing.id}>
+            <ListingCardAlt data={listing.data} id={listing.id}/>
             </div>
             ))}
       </div>
