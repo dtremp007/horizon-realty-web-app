@@ -44,7 +44,7 @@ const ListingDetailLayout = ({data}: Props) => {
               </div>
               <Divider />
               <h2 className="detail-page__title">{title}</h2>
-              {description && <p>{description}</p>}
+              <div dangerouslySetInnerHTML={{__html: description}}/>
               {/* <Accordion iconPosition="right">
                 <AccordionItem label={<h2>Payments Options</h2>}>
                   <p>1 Payment - $50,000</p>

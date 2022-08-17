@@ -40,10 +40,11 @@ const Listings: NextPage<Props> = ({ firebaseDocs }) => {
           <MapView />
         </>
       ) : (
-        <div className="listing-page__layout">
-          {/*isDesktop && <FilterMenu />*/}
           <ListingsLayout />
-        </div>
+        // <div className="listing-page__layout">
+        //   isDesktop && <FilterMenu />
+        //   <ListingsLayout />
+        // </div>
       )}
     </ListingsProvider>
   );

@@ -23,7 +23,7 @@ type FormDataState = {
   landArea: number;
   landAreaUnits: string;
   address: string;
-  coordinates: string | string[];
+  coordinates: string | number[];
   description: string;
   images: FileList | null;
 };
@@ -152,7 +152,7 @@ const AddListing = () => {
     const formDataCopy: SubmitData = {
       ...formData,
       imageUrls,
-      coordinates: (coordinates as string).split(",").map((e) => e.trim()),
+      coordinates: (coordinates as string).split(",").map((e) => parseFloat(e.trim())),
     };
 
     delete formDataCopy.images;
@@ -276,7 +276,7 @@ const AddListing = () => {
                 type="text"
                 name="coordinates"
                 id="coordinates"
-                value={coordinates}
+                value={coordinates as string}
                 onChange={handleChange}
               />
               <label>Images</label>

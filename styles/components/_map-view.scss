@@ -28,7 +28,9 @@
     overflow: hidden;
     position: absolute;
     bottom: $gutter;
-    z-index: 100;
+    z-index: 50;
+    left: 0;
+    right: 0;
 }
 
 .embla__container {
