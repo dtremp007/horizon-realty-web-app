@@ -9,6 +9,7 @@ import { ListingsProvider } from "../../src/context/listingsContext/listingsCont
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import MapView from "../../src/components/map/MapView";
+import MapListingsOverlay from "../../src/components/map/MapListingsOverlay";
 
 type Props = {
   firebaseDocs: {
@@ -34,7 +35,10 @@ const Listings: NextPage<Props> = ({ firebaseDocs }) => {
   return (
     <ListingsProvider firebaseDocs={firebaseDocs}>
       {view === "map" ? (
-        <MapView />
+        <>
+          <MapListingsOverlay />
+          <MapView />
+        </>
       ) : (
         <div className="listing-page__layout">
           {/*isDesktop && <FilterMenu />*/}

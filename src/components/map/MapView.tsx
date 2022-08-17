@@ -26,7 +26,7 @@ type Props = {
  */
 const MapView = () => {
   const { listingsState, dispatch } = useContext(ListingsContext);
-  const { firebaseDocs, mapViewState } = listingsState;
+  const { firebaseDocs, mapViewState, scrollToID } = listingsState;
 
   const mapRef = useRef<MapRef>(null);
   const points = firebaseDocs.map((listing) => {
@@ -73,6 +73,7 @@ const MapView = () => {
         const [longitude, latitude] = cluster.geometry.coordinates;
         const { cluster: isCluster, point_count: pointCount } =
           cluster.properties;
+        const listingId = cluster.properties.listingId;
 
         if (isCluster) {
           return (
@@ -107,18 +108,20 @@ const MapView = () => {
 
         return (
           <Marker
-            key={`listing-${cluster.properties.listingId}`}
+            key={`listing-${listingId}`}
             latitude={latitude}
             longitude={longitude}
+            onClick={() => dispatch({type: "UPDATE_SCROLL_POSITION", payload: listingId})}
           >
             <svg
               height={33}
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 17.89 23"
+              className={`${scrollToID === listingId ? "map__location-icon--selected" : ""}`}
             >
               <g>
                 <path
-                  className="map__location-icon"
+                  className={`map__location-icon`}
                   d="M8.94,23a38.85,38.85,0,0,1-4.47-4.51C2.43,16.05,0,12.41,0,9A8.95,8.95,0,0,1,10.69.17,8.94,8.94,0,0,1,17.89,9c0,3.46-2.43,7.1-4.48,9.54A38.07,38.07,0,0,1,8.94,23Zm0-17.89a3.86,3.86,0,1,0,2.71,1.13A3.85,3.85,0,0,0,8.94,5.11Z"
                 />
               </g>

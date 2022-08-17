@@ -214,3 +214,48 @@
 .land-area-5 {
   stroke-dasharray: 3.12 3.12;
 }
+
+/* ===============
+   LISTING-CARD V2
+   =============== */
+
+.listing-cardv2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: $listing-card-background;
+    border-radius: $listing-card-radius;
+    overflow: hidden;
+    max-width: 350px;
+}
+
+.listing-card__thumbnailv2 {
+    height: 150px;
+    // width: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.listing-card__info-displayv2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0 .75rem;
+
+    h1 {
+        font-size: 1rem;
+        font-weight: 400;
+        max-width: 225px;
+        text-align: left;
+    }
+}
+
+.listing-card__pricev2 {
+    position: absolute;
+    margin: .5rem;
+  background-color: $listing-card-price-bg;
+  color: $text-inverted;
+  border-radius: 1rem;
+  width: fit-content;
+  padding: 0.1rem 0.5rem;
+}

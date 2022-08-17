@@ -37,7 +37,7 @@ const DetailedPage: NextPage<Props> = ({ data }) => {
 
   return (
     <>
-      <ListingDetailLayout data={data} />;
+      <ListingDetailLayout data={data} />
       <div className="detail-page__cta">
         <ActionIcon size="lg" onClick={() => console.log("Send email")}>
           <AiOutlineMail size={35} />
@@ -46,8 +46,8 @@ const DetailedPage: NextPage<Props> = ({ data }) => {
           size="lg"
           onClick={() =>
             window.open(
-              `https://wa.me/526251189323?text=${encodeURIComponent(
-                "Hola, estoy escribiendo sobre k" + data.title
+              `https://wa.me/526251459646?text=${encodeURIComponent(
+                "Hola, estoy escribiendo sobre " + data.title
               )}`,
               "_blank"
             )

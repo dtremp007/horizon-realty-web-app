@@ -66,7 +66,7 @@ const ListingDetailLayout = ({data}: Props) => {
                   </ul>
                 </AccordionItem>
               </Accordion> */}
-              <h2 style={{}}>Location</h2>
+              <h2 style={{}}>Ubicación</h2>
               <SingleMapView coordinates={coordinates} />
               <div className="detail-page__map-link">
                 <svg

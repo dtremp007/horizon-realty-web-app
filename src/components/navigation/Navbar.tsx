@@ -80,7 +80,7 @@ export default function Navbar() {
           <MainMenu />
         </Show>
         <Show breakpoint="(min-width: 695px)" initialValue={false}>
-        <Button rightIcon={<FaWhatsapp size={30} />} onClick={() => window.open("https://wa.me/526251189323", "_blank")} uppercase >
+        <Button rightIcon={<FaWhatsapp size={30} />} onClick={() => window.open("https://wa.me/526251459646", "_blank")} uppercase >
         Contáctanos
         </Button>
         </Show>

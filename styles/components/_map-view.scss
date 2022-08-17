@@ -11,6 +11,32 @@
     align-items: center;
 }
 
+.map__location-icon--selected {
+    transform: scale(1.25);
+    --location-icon-color: #D10005;
+}
+
 .map__location-icon {
-    fill: $background-secondary;
+    fill: var(--location-icon-color, #141517);
+}
+
+/* ================
+   EMBLA
+   ================ */
+
+.embla {
+    overflow: hidden;
+    position: absolute;
+    bottom: $gutter;
+    z-index: 100;
+}
+
+.embla__container {
+    display: flex;
+    margin-left: .25rem;
+    gap: 1rem;
+}
+
+.embla__slide {
+    flex: 0 0 320px;
 }

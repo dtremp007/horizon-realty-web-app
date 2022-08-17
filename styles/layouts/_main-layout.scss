@@ -1,6 +1,48 @@
+
+
+.nav-offset {
+    height: 60px;
+}
+
 main {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 60px;
+    // position: absolute;
+    min-height: calc(100vh - 60px);
+}
+
+footer {
+    background-color: black;
+    padding: 1rem;
+
+    div {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    a {
+        text-decoration: none;
+        color: #AA9053;
+    }
+
+    a:hover {
+        color: lighten($color: #AA9053, $amount: 10);
+    }
+}
+
+.footer__header {
+    gap: 0;
+    flex-direction: column;
+    align-items: center;
+
+    a {
+        color: inherit;
+    }
+}
+
+@media screen and (min-width: 695px) {
+    .footer__header {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 0;
+    }
 }

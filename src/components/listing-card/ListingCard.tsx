@@ -30,8 +30,11 @@ export default function ListingCard({
     <div onClick={onClick} className={createClassList(variant, className)}>
       <ListingThumbnail price={price} currency={currency} imageUrl={imageUrls[0]}/>
       <div className="listing-card__info-wrapper">
-        <div className="listing-card--flex-between">
-          <h2 className="listing-card__pricev2">{`${currency} \$${price.toLocaleString("en")}`}</h2>
+        <div className="">
+          <div style={{display: "flex", alignItems: "flex-end", gap: ".75rem"}}>
+            <p>{currency}</p>
+          <h2 style={{lineHeight: "1.9rem"}}>{`\$${price.toLocaleString("en")}`}</h2>
+          </div>
             {/* <ActionIcon variant="filled" color="blue" size="xl">
                 <FaMapMarkedAlt size={25} />
             </ActionIcon> */}

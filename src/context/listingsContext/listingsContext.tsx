@@ -40,6 +40,8 @@ type ListingsState = {
   };
   activeListing: DocumentData;
   filters: ComparisonFunctionItem[];
+  /**ID of the listing */
+  scrollToID: string;
 };
 
 type ListingsActions = {
@@ -48,7 +50,7 @@ type ListingsActions = {
    *
    * GET_SINGLE_LISTING -> Assumes the payload contains an id. Sets active listing if it has changed.
    */
-  type: "UPDATE_MAP" | "UPDATE_FILTER" | "REMOVE_FILTER" | "CLEAR_FILTERS";
+  type: "UPDATE_MAP" | "UPDATE_FILTER" | "REMOVE_FILTER" | "CLEAR_FILTERS" | "UPDATE_SCROLL_POSITION";
   payload: any;
 };
 
@@ -140,6 +142,7 @@ export const ListingsProvider = ({ children, firebaseDocs }: Props) => {
     },
     activeListing: {} as QueryDocumentSnapshot<DocumentData>,
     filters: [],
+    scrollToID: ""
   };
 
   const [listingsState, dispatch] = useReducer(listingReducer, initialState);
@@ -174,6 +177,11 @@ const listingReducer: Reducer<ListingsState, ListingsActions> = (
         return {
             ...state,
             filters: update(state.filters, action.payload, {remove: true})
+        }
+    case "UPDATE_SCROLL_POSITION":
+        return {
+            ...state,
+            scrollToID: action.payload
         }
     default:
       return state;
