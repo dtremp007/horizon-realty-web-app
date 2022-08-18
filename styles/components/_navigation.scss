@@ -145,13 +145,28 @@
   }
 }
 
+@media screen and (max-width: 825px) and (min-width: 695px) {
+    .main-nav__list {
+        gap: .9rem;
+    }
+
+    .top-nav__logo-container {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 826px) {
+    .main-nav__list {
+        gap: 2rem;
+    }
+}
+
 @media screen and (min-width: 695px) {
   .main-nav__list {
     opacity: 100%;
 
     flex-direction: row;
     align-self: center;
-    gap: 2rem;
     line-height: inherit;
   }
 

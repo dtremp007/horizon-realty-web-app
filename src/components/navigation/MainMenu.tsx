@@ -5,9 +5,11 @@ import NavigationContext from "../../context/navigationContext";
 import { Button } from "@mantine/core";
 import Show from "../HOC/Show";
 import { FaWhatsapp } from "react-icons/fa";
+import AuthUserContext from "../../context/authUserContext";
 
 export default function MainMenu() {
     const {state, dispatch} = useContext(NavigationContext);
+    const {user} = useContext(AuthUserContext);
 
   const [ulClass, setUlClass] = useState("main-nav__list");
   const router = useRouter();
@@ -56,11 +58,11 @@ export default function MainMenu() {
           <a className={`main-nav__item ${activeLink === "/listings" && router.query.view ? "active-link" : ""}`}>Mapa</a>
         </Link>
       </li>
-      <li>
+      {user && <li>
         <Link href="/admin">
           <a className={`main-nav__item ${activeLink === "/admin" ? "active-link" : ""}`}>Admin</a>
         </Link>
-      </li>
+      </li>}
       {/* <li>
       <Show breakpoint="(max-width: 694px)" initialValue={false}>
         <Button rightIcon={<FaWhatsapp size={30} />} onClick={() => window.open("https://wa.me/526251189323", "_blank")} uppercase >
