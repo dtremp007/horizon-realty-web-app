@@ -49,7 +49,7 @@ export default function Navbar() {
             {logoSvg}
             <div className="top-nav__logo-container">
             <p className="top-nav__horizon">HORIZON</p>
-            <p className="top-nav__rlst">Real Estate</p>
+            <p className="top-nav__rlst">Real&nbsp;Estate</p>
             </div>
           </div>
           <MainMenu />

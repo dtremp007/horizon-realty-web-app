@@ -45,7 +45,7 @@ export default function ListingCard({
     <div onClick={handleClick} className="listing-card listing-card--full">
       <ListingThumbnail price={price} currency={currency} imageUrl={imageUrls[0]} status={status}/>
       <div className="listing-card__info-wrapper">
-          <h3 className="listing-card__h3">{addNBSP(title)}</h3>
+          <h3 className="listing-card__h3">{title}</h3>
           {/* <ListingLocation /> */}
           <div className="listing-card__info-tag-wrapper">
               <ListingInfotag quantity={landArea} variant="land" />
@@ -56,6 +56,7 @@ export default function ListingCard({
   );
 }
 
+//Positive lookahead not supported on Safari.
 function addNBSP(sentence:string) {
     return sentence.replace(/(?<=campo)\s/i, "\u00A0")
 }

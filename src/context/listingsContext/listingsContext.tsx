@@ -8,7 +8,7 @@ import { doc, getDoc, getDocs, collection, query } from "firebase/firestore";
 import { db } from "../../../lib/firebase.config";
 import { GetServerSideProps } from "next";
 
-const MAP_INITIAL_ZOOM = 12;
+const MAP_INITIAL_ZOOM = 10;
 
 /* =================
    TYPE DECLARATIONS
