@@ -27,10 +27,16 @@
     background-color: #000;
     opacity: .2;
     z-index: 10;
+    border-radius: $listing-card-radius;
   }
 
   &:active {
     transform: scale(.99);
+  }
+
+  &.visited {
+    background-color: $listing-card-background-visited;
+    color: #ccc;
   }
 }
 

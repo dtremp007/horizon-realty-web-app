@@ -3,19 +3,39 @@ import { useEffect, useContext, useCallback } from "react";
 import ListingsContext from "../../context/listingsContext/listingsContext";
 import ListingCard from "../listing-card/ListingCard";
 import ListingCardAlt from "../listingCardAlt/ListingCardAlt";
+import { ListingsState } from "../../context/listingsContext/listingsContext";
 
 const MapListingsOverlay = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start" });
   const { listingsState, dispatch } = useContext(ListingsContext);
-  const { firebaseDocs, scrollToID } = listingsState;
+  const { firebaseDocs, mapFocusPoint } = listingsState;
 
   useEffect(() => {
-    let i;
-    if (emblaApi) {
-    const index = firebaseDocs.findIndex(e => e.id === scrollToID)
-      emblaApi.scrollTo(index);
+    if (emblaApi && mapFocusPoint.sender === "map") {
+      emblaApi.scrollTo(mapFocusPoint.index);
     }
-  }, [emblaApi, scrollToID]);
+  }, [emblaApi, mapFocusPoint]);
+
+  useEffect(() => {
+    function handleScroll() {
+        const payload = {
+            sender: "carousel",
+            index: emblaApi?.selectedScrollSnap(),
+        }
+
+       dispatch({type: "UPDATE_MAP_FOCUS_POINT", payload})
+    }
+
+    if (emblaApi) {
+        emblaApi.on("select", handleScroll)
+    }
+
+    return () => {
+        if (emblaApi) {
+            emblaApi.off("select", handleScroll)
+        }
+    }
+  }, [])
 
   return (
     <div className="embla" ref={emblaRef}>

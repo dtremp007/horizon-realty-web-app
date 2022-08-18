@@ -19,7 +19,7 @@ type NavigationState = {
   searchMode: boolean;
   navbarClass: "top-nav__container" | "top-nav__container open";
   youHaveToGoBack: boolean;
-  listingPageScrollY: number;
+  pagesVisited: string[];
 };
 
 type NavigationAction = {
@@ -33,7 +33,7 @@ type NavigationAction = {
     | "TOGGLE_BACK_BUTTON"
     | "BACK_BTN_ON"
     | "BACK_BTN_OFF"
-    | "UPDATE_SCROLL_POSITION";
+    | "PAGE_WAS_VISITED";
 };
 
 export const NavigationProvider = ({ children }: Props) => {
@@ -43,7 +43,7 @@ export const NavigationProvider = ({ children }: Props) => {
     searchMode: false,
     navbarClass: "top-nav__container",
     youHaveToGoBack: false,
-    listingPageScrollY: 0,
+    pagesVisited: [],
   };
 
   const [state, dispatch] = useReducer(navigationReducer, initialState);
@@ -94,19 +94,21 @@ const navigationReducer: Reducer<NavigationState, NavigationAction> = (
             youHaveToGoBack: !state.youHaveToGoBack
         }
     case "BACK_BTN_ON":
+        let updatedArray = [...state.pagesVisited];
+
+        if(!updatedArray.includes(action.payload)) {
+            updatedArray.push(action.payload)
+        }
+
         return {
             ...state,
-            youHaveToGoBack: true
+            youHaveToGoBack: true,
+            pagesVisited: updatedArray,
         }
     case "BACK_BTN_OFF":
         return {
             ...state,
             youHaveToGoBack: false
-        }
-    case "UPDATE_SCROLL_POSITION":
-        return {
-            ...state,
-            listingPageScrollY: action.payload
         }
     default:
       return state;

@@ -27,7 +27,7 @@ type Props = {
   }[];
 };
 
-type ListingsState = {
+export type ListingsState = {
   loading: boolean;
   firebaseDocs: {
     id: string,
@@ -42,6 +42,11 @@ type ListingsState = {
   filters: ComparisonFunctionItem[];
   /**ID of the listing */
   scrollToID: string;
+  mapFocusPoint: {
+    sender: "carousel" | "map" | "";
+    id: string;
+    index: number;
+  }
 };
 
 type ListingsActions = {
@@ -50,7 +55,7 @@ type ListingsActions = {
    *
    * GET_SINGLE_LISTING -> Assumes the payload contains an id. Sets active listing if it has changed.
    */
-  type: "UPDATE_MAP" | "UPDATE_FILTER" | "REMOVE_FILTER" | "CLEAR_FILTERS" | "UPDATE_SCROLL_POSITION";
+  type: "UPDATE_MAP" | "UPDATE_FILTER" | "REMOVE_FILTER" | "CLEAR_FILTERS" | "UPDATE_SCROLL_POSITION" | "UPDATE_MAP_FOCUS_POINT";
   payload: any;
 };
 
@@ -130,7 +135,7 @@ const ListingsContext = createContext<ListingsContextType>(
 );
 
 export const ListingsProvider = ({ children, firebaseDocs }: Props) => {
-    const [latitude, longitude] = getAverageCoordinates(firebaseDocs)
+    const [latitude, longitude] = firebaseDocs[0].data.coordinates
 
   const initialState: ListingsState = {
     loading: false,
@@ -142,7 +147,12 @@ export const ListingsProvider = ({ children, firebaseDocs }: Props) => {
     },
     activeListing: {} as QueryDocumentSnapshot<DocumentData>,
     filters: [],
-    scrollToID: ""
+    scrollToID: "",
+    mapFocusPoint: {
+        sender: "",
+        id: firebaseDocs[0].id,
+        index: 0,
+    }
   };
 
   const [listingsState, dispatch] = useReducer(listingReducer, initialState);
@@ -182,6 +192,30 @@ const listingReducer: Reducer<ListingsState, ListingsActions> = (
         return {
             ...state,
             scrollToID: action.payload
+        }
+    case "UPDATE_MAP_FOCUS_POINT":
+        let id;
+        let index;
+
+        console.log(action.payload)
+
+        if (action.payload.sender === "map" && action.payload.id) {
+            id = action.payload.id;
+            index = state.firebaseDocs.findIndex(e => e.id === action.payload.id)
+        }
+
+        if (action.payload.sender === "carousel" && typeof action.payload.index !== "undefined") {
+            id = state.firebaseDocs[action.payload.index].id;
+            index = action.payload.index
+        }
+
+        return {
+            ...state,
+            mapFocusPoint: {
+                sender: action.payload.sender,
+                id: id || "",
+                index: index || 0
+            }
         }
     default:
       return state;

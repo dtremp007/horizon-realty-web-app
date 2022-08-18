@@ -6,9 +6,10 @@ import {DocumentData} from "firebase/firestore"
 import {FaMapMarkedAlt} from "react-icons/fa"
 import {ActionIcon} from "@mantine/core"
 import Link from "next/link";
-import {useEffect, useState} from "react"
+import {useEffect, useState, useContext} from "react"
 import {useRouter} from "next/router"
 import Spinner from "../../shared/Spinner";
+import NavigationContext from "../../context/navigationContext"
 
 type Props = {
     id: string;
@@ -31,6 +32,8 @@ export default function ListingCard({
     const {title, price, currency, imageUrls, landArea, status} = data;
     const router = useRouter();
     const [loading, setLoading] = useState(false)
+    const {state} = useContext(NavigationContext)
+    const {pagesVisited} = state;
 
     useEffect(() => {
         router.prefetch(`/listings/${id}`)
@@ -42,8 +45,8 @@ export default function ListingCard({
   }
 
   return (
-    <div onClick={handleClick} className="listing-card listing-card--full">
-      <ListingThumbnail price={price} currency={currency} imageUrl={imageUrls[0]} status={status}/>
+    <div onClick={handleClick} className={`listing-card listing-card--full ${pagesVisited.includes(id) ? "visited" : ""}`}>
+       <ListingThumbnail price={price} currency={currency} imageUrl={imageUrls[0]} status={status}/>
       <div className="listing-card__info-wrapper">
           <h3 className="listing-card__h3">{title}</h3>
           {/* <ListingLocation /> */}

@@ -25,10 +25,11 @@ type Props = {
 
 const DetailedPage: NextPage<Props> = ({ data }) => {
   const { state, dispatch } = useContext(NavigationContext);
+  const {dispatch: listingsDispatch} = useContext(ListingsContext)
   const router = useRouter();
 
   useEffect(() => {
-    dispatch({type: "BACK_BTN_ON"})
+    dispatch({type: "BACK_BTN_ON", payload: router.query.id})
 
     return () => {
       dispatch({ type: "BACK_BTN_OFF" });

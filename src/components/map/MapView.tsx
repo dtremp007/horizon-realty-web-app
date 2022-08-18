@@ -26,9 +26,20 @@ type Props = {
  */
 const MapView = () => {
   const { listingsState, dispatch } = useContext(ListingsContext);
-  const { firebaseDocs, mapViewState, scrollToID } = listingsState;
+  const { firebaseDocs, mapViewState, mapFocusPoint } = listingsState;
 
   const mapRef = useRef<MapRef>(null);
+
+  useEffect(() => {
+    if(mapRef && mapFocusPoint.sender === "carousel") {
+        const [lat, long] = firebaseDocs[mapFocusPoint.index].data.coordinates;
+
+        mapRef.current?.easeTo({
+            center: [long, lat]
+        })
+    }
+  }, [mapFocusPoint])
+
   const points = firebaseDocs.map((listing) => {
     const {listingType, coordinates} = listing.data;
 
@@ -111,13 +122,13 @@ const MapView = () => {
             key={`listing-${listingId}`}
             latitude={latitude}
             longitude={longitude}
-            onClick={() => dispatch({type: "UPDATE_SCROLL_POSITION", payload: listingId})}
+            onClick={() => dispatch({type: "UPDATE_MAP_FOCUS_POINT", payload: {sender: "map", id: listingId}})}
           >
             <svg
               height={33}
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 17.89 23"
-              className={`${scrollToID === listingId ? "map__location-icon--selected" : ""}`}
+              className={`${mapFocusPoint.id === listingId ? "map__location-icon--selected" : ""}`}
             >
               <g>
                 <path

@@ -28,7 +28,7 @@ const ListingDetailLayout = ({ data }: Props) => {
   return (
     <>
       <div>
-        <CarouselContainer images={imageUrls} title={title} />
+      {process.env.NODE_ENV !== "development" && <CarouselContainer images={imageUrls} title={title} />}
         <div className="detail-page__main-content flow-content">
           <div className="detail-page__price-wrapper">
             <PriceDisplay price={price} currency={currency} />

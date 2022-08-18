@@ -31,17 +31,6 @@ const Listings: NextPage<Props> = ({ firebaseDocs }) => {
   const [view, setView] = useState(router.query.view);
 
   useEffect(() => {
-    function updateScrollY () {
-        dispatch({type: "UPDATE_SCROLL_POSITION", payload: window.scrollY})
-    }
-
-    window.addEventListener("scroll", updateScrollY)
-    // window.scrollTo({top: state.listingPageScrollY, left: 0, behavior: "smooth"})
-
-    return () => window.removeEventListener("scroll", updateScrollY)
-  })
-
-  useEffect(() => {
     setView(router.query.view)
   }, [router.query.view])
 

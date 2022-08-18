@@ -20,6 +20,7 @@
   --gutter: 1rem;
 
   --listing-card-background: #141517;
+  --listing-card-background-visited: #222;
   --listing-card-radius: 1rem;
   --listing-card-infotag-bg: rgba(255, 255, 255, 0.5);
   --listing-card-status-bg: #ab9152;
@@ -50,6 +51,7 @@ $font-family: var(--font-family);
 $gutter: var(--gutter);
 
 $listing-card-background: var(--listing-card-background);
+$listing-card-background-visited: var(--listing-card-background-visited);
 $listing-card-radius: var(--listing-card-radius);
 $listing-card-infotag-bg: var(--listing-card-infotag-bg);
 $listing-card-status-bg: var(--listing-card-status-bg);

@@ -1,5 +1,7 @@
 import { ActionIcon } from "@mantine/core";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
+import Link from "next/link";
 
 const BackButton = () => {
     const router = useRouter()
