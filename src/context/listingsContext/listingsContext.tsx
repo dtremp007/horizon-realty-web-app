@@ -197,8 +197,6 @@ const listingReducer: Reducer<ListingsState, ListingsActions> = (
         let id;
         let index;
 
-        console.log(action.payload)
-
         if (action.payload.sender === "map" && action.payload.id) {
             id = action.payload.id;
             index = state.firebaseDocs.findIndex(e => e.id === action.payload.id)

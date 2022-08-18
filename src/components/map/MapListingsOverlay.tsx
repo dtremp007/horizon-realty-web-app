@@ -35,7 +35,7 @@ const MapListingsOverlay = () => {
             emblaApi.off("select", handleScroll)
         }
     }
-  }, [])
+  })
 
   return (
     <div className="embla" ref={emblaRef}>
