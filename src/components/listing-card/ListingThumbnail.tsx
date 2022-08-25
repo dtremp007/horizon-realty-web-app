@@ -13,7 +13,7 @@ type Props = {
 export default function ListingThumbnail({imageUrl, price, currency, status}: Props) {
   return (
     <div className="listing-card__thumbnail">
-       {process.env.NODE_ENV !== "development" && <Image src={imageUrl} layout="fill" objectFit="cover" alt="thumbnail"/>}
+        <Image src={imageUrl} layout="fill" objectFit="cover" alt="thumbnail"/>
         <div className="listing-card__thumbnail-overlay">
             <div className="listing-card--flex-between">
                 {status && <p className="listing-card__status">{status}</p>}

@@ -89,8 +89,8 @@
 
 .listing-card__price {
   align-self: flex-end;
-  background-color: $listing-card-price-bg;
-  color: $text-inverted;
+  background-color: $background-secondary;
+  color: $text-primary;
   border-radius: 1rem;
   width: fit-content;
   padding: 0.1rem 0.5rem;
@@ -181,8 +181,9 @@
   align-items: center;
   flex-grow: 1;
   gap: 0.5rem;
-  background-color: $listing-card-infotag-bg;
-  color: $text-inverted;
+//   background-color: #AA9053;
+//   color: $text-inverted;
+  color:  #AA9053;
   border-radius: 10px;
   padding: 0 0.5rem;
 }
@@ -224,7 +225,8 @@
 .land-area-4,
 .land-area-5 {
   fill: none;
-  stroke: $text-inverted;
+//   stroke: $text-inverted;
+  stroke:  #AA9053;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -232,7 +234,8 @@
   stroke-width: 2px;
 }
 .land-area-2 {
-  fill: $text-inverted;
+//   fill: $text-inverted;
+  fill:  #AA9053;
 }
 .land-area-3,
 .land-area-4,

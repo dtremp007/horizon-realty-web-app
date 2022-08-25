@@ -12,10 +12,6 @@ const Admin: NextPage = () => {
 
   return (
     <div className="admin__container">
-      <Show when={user !== null} alt={<SignIn />}>
-        <Button onClick={() => signOutUser()}>Sign Out</Button>
-        <Button onClick={() => router.push("/admin/add-listing")}>Add Listing</Button>
-      </Show>
     </div>
   );
 };

@@ -13,6 +13,8 @@
 
   --text-primary: #eeeeee;
   --logo-red: #D10005;
+  --logo-yellow: #AA9053;
+  --logo-orange: #A34704;
 
   --text-inverted: #222831;
   --font-family: Arial, Helvetica, sans-serif;
@@ -20,16 +22,17 @@
   --gutter: 1rem;
 
   --listing-card-background: #141517;
+//   --listing-card-background: #eee;
   --listing-card-background-visited: #222;
   --listing-card-radius: 1rem;
   --listing-card-infotag-bg: rgba(255, 255, 255, 0.5);
+//   --listing-card-infotag-bg: #A34704
   --listing-card-status-bg: #ab9152;
-  --listing-card-price-bg: rgba(255, 255, 255, 0.9);
+//   --listing-card-price-bg: rgba(255, 255, 255, 0.9);
+  --listing-card-price-bg: #AA9053;
   --listing-card-icon-color: #222831;
 
   --swiper-navigation-color: #fff
-
-
 }
 
 $button-primary-hover: var(--button-primary-hover);

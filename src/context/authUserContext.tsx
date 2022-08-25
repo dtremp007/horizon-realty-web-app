@@ -45,7 +45,7 @@ export const AuthUserProvider = ({ children }: Props) => {
   }, []);
 
   const signIn = (email: string, password: string) => {
-      return signInWithEmailAndPassword(auth, email, password);
+    return signInWithEmailAndPassword(auth, email, password);
   };
 
   const signOutUser = () => {

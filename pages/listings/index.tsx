@@ -10,7 +10,9 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
 import MapView from "../../src/components/map/MapView";
 import MapListingsOverlay from "../../src/components/map/MapListingsOverlay";
-import NavigationContext from "../../src/context/navigationContext"
+import NavigationContext from "../../src/context/navigationContext";
+import path from "path";
+import { readFileSync } from "fs";
 
 type Props = {
   firebaseDocs: {
@@ -25,14 +27,15 @@ type Props = {
 */
 
 const Listings: NextPage<Props> = ({ firebaseDocs }) => {
-    const {state, dispatch} = useContext(NavigationContext)
+  const { state, dispatch } = useContext(NavigationContext);
   const isDesktop = useMediaQuery("(min-width: 695px)", true);
   const router = useRouter();
+  console.log(firebaseDocs)
   const [view, setView] = useState(router.query.view);
 
   useEffect(() => {
-    setView(router.query.view)
-  }, [router.query.view])
+    setView(router.query.view);
+  }, [router.query.view]);
 
   return (
     <ListingsProvider firebaseDocs={firebaseDocs}>
@@ -42,9 +45,9 @@ const Listings: NextPage<Props> = ({ firebaseDocs }) => {
           <MapView />
         </>
       ) : (
-          <ListingsLayout />
-        // <div className="listing-page__layout">
+        <ListingsLayout />
         //   isDesktop && <FilterMenu />
+        // <div className="listing-page__layout">
         //   <ListingsLayout />
         // </div>
       )}
@@ -53,15 +56,20 @@ const Listings: NextPage<Props> = ({ firebaseDocs }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const querySnapshot = await getDocs(collection(db, "listings"));
-  const firebaseDocs = querySnapshot.docs.map((listing) => ({
-    id: listing.id,
-    data: listing.data(),
-  }));
+    const querySnapshot = await getDocs(collection(db, "listings"));
+    const firebaseDocs = querySnapshot.docs.map((listing) => ({
+      id: listing.id,
+      data: listing.data(),
+    }));
+//   const fileName = path.join(__dirname, "..","..","..","lib", "data.json");
+//   console.log(fileName)
+//   const data = readFileSync(fileName, { encoding: "utf8" });
+//   const docs = JSON.parse(data).docs;
 
   return {
     props: {
       firebaseDocs,
+    // firebaseDocs: docs
     },
   };
 };

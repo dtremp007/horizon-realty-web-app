@@ -13,7 +13,6 @@ type Props = {
 
 export default function MainLayout({ children }: Props) {
   return (
-    <AuthUserProvider>
       <NavigationProvider>
         <>
           <Head>
@@ -23,7 +22,7 @@ export default function MainLayout({ children }: Props) {
           </Head>
           <div className="nav-offset"></div>
           <Navbar />
-          <main>{children}</main>
+          <main className="main-layout__main">{children}</main>
           <Show blacklistRoutes={["/listings/[id]"]}>
             <footer className="flow-content">
               <div className="footer__header">
@@ -51,6 +50,5 @@ export default function MainLayout({ children }: Props) {
           </Show>
         </>
       </NavigationProvider>
-    </AuthUserProvider>
   );
 }

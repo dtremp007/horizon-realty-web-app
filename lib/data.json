@@ -1,22 +1,60 @@
 {
-    "listings": [
-        {
-            "id": 1,
-            "name": "Two story home",
-            "price": 350000,
-            "geolocation": [28.51331722301662, -106.93857281396777]
-        },
-        {
-            "id": 2,
-            "name": "Two story home",
-            "price": 350000,
-            "geolocation": [28.50884347072923, -106.9318986255884]
-        },
-        {
-            "id": 3,
-            "name": "Two story home",
-            "price": 350000,
-            "geolocation": [28.509861741028956, -106.91313112824646]
-        }
-    ]
+  "docs": [
+    {
+      "data": {
+        "title": "LOTE CALLE ALTENHEIM CAMPO 2B",
+        "imageUrls": [
+          "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2FCampo%202-B.JPG?alt=media\u0026token=6ee66549-8bf6-48cd-8a72-32fdf8818b8b",
+          "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2FIMG_1358.JPG?alt=media\u0026token=bdd25cf1-f9f3-4e27-a45d-7e0299a8d1d3",
+          "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2FIMG_1357.JPG?alt=media\u0026token=e346ea15-9951-4816-865f-5825cb761526",
+          "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2FIMG_1356.JPG?alt=media\u0026token=ee2ddc20-7837-4b7b-ac04-12fd8ca0fa26"
+        ],
+        "price": 12000,
+        "coordinates": [28.4739395, -106.926715],
+        "landAreaUnits": "ACRES",
+        "currency": "USD",
+        "address": "CALLE ALTENHEIM CAMPO 2B",
+        "listingType": "LOTE",
+        "description": "\u003cp\u003eCuenta con electricidad y agua\u003c/p\u003e",
+        "landArea": 0.24
+      },
+      "id": "7DqAwKuUCT7TCa92kHP4"
+    },
+    {
+      "data": {
+        "landAreaUnits": "ACRES",
+        "paymentType": "4 PAGOS",
+        "description": "\u003cp\u003eUn lote precioso al pie del monte mirador\u003c/p\u003e",
+        "landArea": 0.861,
+        "coordinates": [28.72667, -106.923057],
+        "address": "CALLE PIEDRAS CAMPO 10",
+        "listingType": "LOTE",
+        "title": "LOTE CALLE PIEDRAS CAMPO 10",
+        "price": 28000,
+        "imageUrls": [
+          "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2FCAMPO10ABEMARTENS.png?alt=media\u0026token=f93eb628-0e73-43d0-bfa4-8f7f06bad9c8"
+        ],
+        "currency": "USD"
+      },
+      "id": "D1AR3HjPXWT0dTrXqFIi"
+    },
+    {
+      "data": {
+        "address": "CALLE 13 CAMPO 6.5",
+        "listingType": "LOTE",
+        "landAreaUnits": "ACRES",
+        "paymentType": "10 PAGOS",
+        "landArea": 0.45,
+        "price": 40000,
+        "description": "\u003cp\u003eLOTE DE 0.45 ACRES EN LA CALLE 13 CERCAS DE LA GASOLINERA CAMPO 6-1/2\u003c/p\u003e",
+        "title": "LOTE CALLE 13 CAMPO 6.5",
+        "coordinates": [28.5946, -106.899],
+        "currency": "USD",
+        "imageUrls": [
+          "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2FCampo%206.5%20calle%2013.JPG?alt=media\u0026token=bcad5648-c8b8-4baa-ad68-e3132fdf9bbf"
+        ]
+      },
+      "id": "ErA5uGTMRvm8IBqU9zwg"
+    }
+  ]
 }
