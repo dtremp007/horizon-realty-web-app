@@ -1,11 +1,9 @@
 import { GetStaticProps, GetStaticPropsContext, NextPage } from "next";
 import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
-import Show from "../../src/components/HOC/Show";
 import { useContext, useEffect } from "react";
 import NavigationContext from "../../src/context/navigationContext";
 import ListingsContext from "../../src/context/listingsContext/listingsContext";
-import Spinner from "../../src/shared/Spinner";
 import { useRouter } from "next/router";
 import {
   doc,
@@ -73,6 +71,7 @@ export async function getStaticProps<GetStaticProps>(
     props: {
       data,
     },
+    revalidate: 60*60,
   };
 }
 
