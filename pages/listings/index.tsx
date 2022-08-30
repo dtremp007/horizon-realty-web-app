@@ -26,7 +26,6 @@ type Props = {
 const Listings: NextPage<Props> = ({ firebaseDocs }) => {
   const isDesktop = useMediaQuery("(min-width: 695px)", true);
   const router = useRouter();
-  console.log(firebaseDocs)
   const [view, setView] = useState(router.query.view);
 
   useEffect(() => {

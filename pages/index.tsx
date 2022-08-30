@@ -38,18 +38,12 @@ const Home: NextPage<HomeProps> = ({ videoSrc }) => {
         play();
       });
     }
-
-    videoRef.current?.addEventListener("ended", play);
-
-    return () => {
-      videoRef.current?.removeEventListener("ended", play);
-    };
   }, []);
 
   return (
     <>
       <div className="landing-page__video-container">
-        <video ref={videoRef} muted autoPlay>
+        <video ref={videoRef} muted autoPlay loop playsInline>
           <source src={videoSrc} />
         </video>
         <Link href="/listings">
