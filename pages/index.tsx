@@ -1,6 +1,5 @@
 import type { GetStaticProps, NextPage } from "next";
 import Image from "next/image";
-import { Button } from "@mantine/core";
 import imgSrc from "../public/golden-horizon-logo-3d.png";
 import { ref, getDownloadURL } from "firebase/storage";
 import Link from "next/link";
