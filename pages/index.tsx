@@ -22,33 +22,21 @@ const Home: NextPage<HomeProps> = ({ videoSrc }) => {
     const countdown = new Promise((resolve) => {
       setTimeout(() => {
         resolve(1);
-      }, 2200);
+      }, 1500);
     });
 
     function play() {
       videoRef.current?.play();
     }
 
-    function awaitVideo() {
-
-        return new Promise(resolve => {
-            function resolver() {
-                resolve(1);
-            }
-            videoRef.current?.addEventListener("loadeddata", resolver)
-        })
-    }
-
     if (!initialLoad) {
-      Promise.all([awaitVideo, countdown]).then(() => {
+      countdown.then(() => {
         setTimeout(() => {
           initialLoad = true;
         }, 500);
         setStyle({ transform: "translateY(-100vh)" });
         play();
       });
-    } else {
-      play();
     }
 
     videoRef.current?.addEventListener("ended", play);
@@ -61,7 +49,7 @@ const Home: NextPage<HomeProps> = ({ videoSrc }) => {
   return (
     <>
       <div className="landing-page__video-container">
-        <video ref={videoRef} muted>
+        <video ref={videoRef} muted autoPlay>
           <source src={videoSrc} />
         </video>
         <Link href="/listings">
@@ -78,20 +66,13 @@ const Home: NextPage<HomeProps> = ({ videoSrc }) => {
             <Image
               priority={true}
               src={imgSrc}
-              layout="fill"
-              objectFit="contain"
+              layout="responsive"
               alt="golden-horizon-logo"
             />
           </div>
         </div>
       )}
     </>
-    // <div className="landing-page__container">
-    //   <div className="landing-page__logo-container">
-    //     <Image priority={true} src={imgSrc} layout="responsive" alt="golden-horizon-logo"/>
-    //   </div>
-    //     <a href="https://www.pond5.com/stock-footage/item/102337201-exterior-large-modern-white-home-tropical-hillside">Exterior Of A Large Modern White Home On A Tropical Hillside.</a> Footage by <a href="https://www.pond5.com/">Pond5</a>
-    // </div>
   );
 };
 
