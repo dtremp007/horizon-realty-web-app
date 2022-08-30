@@ -12,6 +12,7 @@ import {
 } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import {storage} from "../../../../lib/firebase.config"
+import process from "process";
 
 type ImageUploaderProps = {
   value: string[];
@@ -54,8 +55,9 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
   ) {
     return new Promise<string>((resolve, reject) => {
       const fileName = image.name;
+      const bucketPath = process.env.NODE_ENV === "development" ? "test/" : "images/"
 
-      const storageRef = ref(storage, "test/" + fileName);
+      const storageRef = ref(storage, bucketPath + fileName);
 
       const uploadTask = uploadBytesResumable(storageRef, image);
 
@@ -93,7 +95,6 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log(downloadURL)
             resolve(downloadURL);
           });
         }

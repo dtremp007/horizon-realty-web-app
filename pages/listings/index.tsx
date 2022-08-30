@@ -10,9 +10,6 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
 import MapView from "../../src/components/map/MapView";
 import MapListingsOverlay from "../../src/components/map/MapListingsOverlay";
-import NavigationContext from "../../src/context/navigationContext";
-import path from "path";
-import { readFileSync } from "fs";
 
 type Props = {
   firebaseDocs: {
@@ -27,7 +24,6 @@ type Props = {
 */
 
 const Listings: NextPage<Props> = ({ firebaseDocs }) => {
-  const { state, dispatch } = useContext(NavigationContext);
   const isDesktop = useMediaQuery("(min-width: 695px)", true);
   const router = useRouter();
   console.log(firebaseDocs)

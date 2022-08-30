@@ -3,8 +3,6 @@ import ListingInfotag from "../../src/components/listing-card/ListingInfotag";
 import { Divider, Space, Accordion, AccordionItem } from "@mantine/core";
 import ListingLocation from "../../src/components/listing-card/ListingLocation";
 import SingleMapView from "../../src/components/map/SingleMapView";
-import Show from "../../src/components/HOC/Show";
-import { useContext, useEffect } from "react";
 import PriceDisplay from "../shared/PriceDisplay"
 
 type Props = {
@@ -27,8 +25,8 @@ const ListingDetailLayout = ({ data }: Props) => {
 
   return (
     <>
-      <div>
-      {process.env.NODE_ENV !== "development" && <CarouselContainer images={imageUrls} title={title} />}
+      <div className="detail-page__container">
+      <CarouselContainer images={imageUrls} title={title} />
         <div className="detail-page__main-content flow-content">
           <div className="detail-page__price-wrapper">
             <PriceDisplay price={price} currency={currency} />

@@ -1,5 +1,9 @@
 @use "../abstracts" as *;
 
+.detail-page__container {
+    margin-top: calc(60px + 1rem);
+}
+
 .detail-page__main-content {
     margin: .5rem $gutter;
     text-align: left;

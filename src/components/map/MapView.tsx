@@ -71,7 +71,7 @@ const MapView = () => {
   return (
     <Map
     {...mapViewState}
-      style={{ width: "100vw", height: "calc(100vh - 60px)" }}
+      style={{ width: "100vw", height: "100vh" }}
       reuseMaps
       onMove={evt => dispatch({type: "UPDATE_MAP", payload: evt.viewState})}
       mapStyle="mapbox://styles/mapbox/streets-v9"

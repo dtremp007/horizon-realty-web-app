@@ -1,6 +1,5 @@
 import ListingCard from "../components/listing-card/ListingCard";
 import { useRouter } from "next/router";
-import NavigationContext from "../context/navigationContext";
 import { useContext, useEffect, useState } from "react";
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../../lib/firebase.config";
@@ -14,7 +13,6 @@ import Spinner from "../shared/Spinner";
  * I will try anyway.
  */
 export default function ListingsLayout() {
-    const {state, dispatch} = useContext(NavigationContext)
     const {listingsState} = useContext(ListingsContext)
     const [listings, setListings] = useState<QueryDocumentSnapshot<DocumentData>[]>([])
     const router = useRouter();

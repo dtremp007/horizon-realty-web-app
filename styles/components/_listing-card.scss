@@ -255,11 +255,11 @@
 
 .listing-cardv2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 150px 1fr;
   background-color: $listing-card-background;
   border-radius: $listing-card-radius;
   overflow: hidden;
-  max-width: 350px;
+//   max-width: 350px;
 }
 
 .listing-card__thumbnailv2 {
@@ -287,8 +287,8 @@
 .listing-card__pricev2 {
   position: absolute;
   margin: 0.5rem;
-  background-color: $listing-card-price-bg;
-  color: $text-inverted;
+  background-color: $background-secondary;
+  color: $text-primary;
   border-radius: 1rem;
   width: fit-content;
   padding: 0.1rem 0.5rem;

@@ -1,11 +1,107 @@
+@use "../abstracts" as *;
+
 .landing-page__container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 80vh;
+}
+
+.landing-page__video-container {
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
+
+  top: 0;
+
+  video {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 177.77777778vh; /* 100 * 16 / 9 */
+    min-width: 100%;
+    min-height: 56.25vw; /* 100 * 9 / 16 */
+  }
+}
+
+.landing-page__logo-overlay {
+  --outer-gradient: darken($background-primary, 10);
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: rgb(81, 81, 89);
+  background: radial-gradient(
+    circle,
+    rgba(81, 81, 89, 1) 0%,
+    rgba(49, 49, 52, 1) 81%,
+    rgba(30, 30, 31, 1) 100%
+  );
+  display: grid;
+  place-items: center;
+  transition: all 500ms ease-in-out;
+
+  .slide-out {
+    transform: translateY(-100vh);
+  }
+
+
+  div {
+      position: relative;
+      height: 75vh;
+      width: 100vw;
+    }
+}
+
+.landing-page__link {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 75%;
+  text-decoration: none;
+  font-size: 1rem;
+  color: $text-primary;
+  border: 2px solid $text-primary;
+  padding: .125rem .5rem;
+  border-radius: .25rem;
+    text-transform: uppercase;
+
+  &:hover {
+    background-color: $background-secondary;
+    border-color: $background-secondary;
+    color: $text-primary;
+  }
+
+  &:active {
+    background-color: lighten($color: #141517, $amount: 10);
+    border-color: lighten($color: #141517, $amount: 10);
+  }
+}
+
+.landing-page__button {
+  position: fixed;
+  left: calc(50% - 60.75px);
+  top: 75%;
 }
 
 .landing-page__logo-container {
-    width: clamp(300px, 100vw, 700px);
+  width: clamp(300px, 100vw, 700px);
+}
+
+.home-page__embla {
+  overflow: hidden;
+}
+
+.home-page__embla-container {
+  display: flex;
+  height: 100vh;
+}
+
+.home-page__embla-slide {
+  flex: 0 0 100%;
 }

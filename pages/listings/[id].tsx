@@ -2,7 +2,6 @@ import { GetStaticProps, GetStaticPropsContext, NextPage } from "next";
 import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
 import { useContext, useEffect } from "react";
-import NavigationContext from "../../src/context/navigationContext";
 import ListingsContext from "../../src/context/listingsContext/listingsContext";
 import { useRouter } from "next/router";
 import {
@@ -22,23 +21,11 @@ type Props = {
 };
 
 const DetailedPage: NextPage<Props> = ({ data }) => {
-  const { state, dispatch } = useContext(NavigationContext);
-  const {dispatch: listingsDispatch} = useContext(ListingsContext)
-  const router = useRouter();
-
-  useEffect(() => {
-    dispatch({type: "BACK_BTN_ON", payload: router.query.id})
-
-    return () => {
-      dispatch({ type: "BACK_BTN_OFF" });
-    };
-  }, []);
-
   return (
     <>
       <ListingDetailLayout data={data} />
       <div className="detail-page__cta">
-        <ActionIcon size="lg" onClick={() => console.log("Send email")}>
+        <ActionIcon size="lg" onClick={() => window.open(`mailto:info@horizonrealty.com.mx?subject=${encodeURIComponent(data.title)}&body=${encodeURIComponent("Hola, estoy escribiendo sobre " + data.title)}`)}>
           <AiOutlineMail size={35} />
         </ActionIcon>
         <ActionIcon
