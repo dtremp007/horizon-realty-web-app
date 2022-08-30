@@ -22,7 +22,7 @@ const Home: NextPage<HomeProps> = ({ videoSrc }) => {
     const countdown = new Promise((resolve) => {
       setTimeout(() => {
         resolve(1);
-      }, 1500);
+      }, 2200);
     });
 
     function play() {

@@ -65,7 +65,7 @@ const AltNavbar = () => {
       setIsBlack(false);
     }
 
-    if (router.pathname === "/listings" && router.query.view === "map") {
+    if (router.pathname !== "/") {
       navRef.current?.style.setProperty(
         "background",
         "var(--background-secondary)"
