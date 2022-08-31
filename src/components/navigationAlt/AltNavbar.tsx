@@ -5,14 +5,11 @@ import { FaWhatsapp } from "react-icons/fa";
 import { useState, useRef, useEffect } from "react";
 import { NextRouter, useRouter } from "next/router";
 import BackButton from "../navigation/BackButton";
+import { IconChevronDown } from "@tabler/icons";
+import React from "react";
 
 const links: Links[] = [
   { href: "/", label: "Home", isActive: (router) => router.pathname === "/" },
-  {
-    href: "/listings",
-    label: "Propiedades",
-    isActive: (router) => router.pathname === "/listings" && !router.query.view,
-  },
   {
     href: {
       pathname: "/listings",
@@ -21,6 +18,29 @@ const links: Links[] = [
     label: "Mapa",
     isActive: (router) =>
       router.pathname === "/listings" && router.query.view === "map",
+  },
+  {
+    label: "Propiedades",
+    containsChildren: true,
+    childLinks: [
+      {
+        href: {
+          pathname: "/listings",
+          query: { filter: "CASA" },
+        },
+        label: "Casas",
+        isActive: (router) => "/listings" && router.query.filter === "CASA",
+      },
+      {
+        href: {
+          pathname: "/listings",
+          query: { filter: "LOTE" },
+        },
+        label: "Lotes",
+        isActive: (router) => "/listings" && router.query.filter === "LOTE",
+      },
+    ],
+    isActive: (router) => false,
   },
 ];
 
@@ -89,7 +109,7 @@ const AltNavbar = () => {
             size="md"
             onClick={() => {
               setOpen((prev) => !prev);
-              if (router.pathname === "/") setIsBlack(prev => !prev)
+              if (router.pathname === "/") setIsBlack((prev) => !prev);
             }}
             color={isBlack ? "black" : "white"}
           />
@@ -144,7 +164,7 @@ const AltNavMenu = ({ toggle, open }: AltNavMenuProps) => {
 
 type AltNavMenuItem = {
   index: number;
-  href:
+  href?:
     | string
     | {
         pathname: string;
@@ -154,6 +174,8 @@ type AltNavMenuItem = {
   open: boolean;
   toggle: Function;
   isActive: (router: NextRouter) => boolean;
+  containsChildren?: boolean;
+  childLinks?: Links[];
 };
 
 const AltNavMenuItem = ({
@@ -163,6 +185,8 @@ const AltNavMenuItem = ({
   open,
   toggle,
   isActive,
+  containsChildren,
+  childLinks,
 }: AltNavMenuItem) => {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -171,10 +195,75 @@ const AltNavMenuItem = ({
     ref.current?.style?.setProperty("--offset", `-${(index + 1) * 54}px`);
   }, []);
 
+  if (containsChildren) {
+    return (
+      <AltNavSubMenu
+        ref={ref}
+        childLinks={childLinks as Links[]}
+        label={label}
+        toggle={toggle}
+      />
+    );
+  }
+
   return (
     <div className={toggle("alt-navbar__menu-item")} ref={ref}>
-      <Link href={href}>
-        <a className={isActive(router) ? "active-link" : ""}>{label}</a>
+      <Link href={href as string}>
+        <a className={isActive(router) ? "nav-link active-link" : "nav-link"}>
+          {label}
+        </a>
+      </Link>
+    </div>
+  );
+};
+
+type AltNavSubMenuProps = {
+  childLinks: Links[];
+  toggle: Function;
+  label: string;
+};
+
+const AltNavSubMenu = React.forwardRef<HTMLDivElement, AltNavSubMenuProps>(
+  ({ childLinks, toggle, label }, ref) => {
+    const [subOpen, setSubOpen] = useState(false)
+    const toggleSub = getToggleFunction("open", subOpen);
+    const subRef = useRef<HTMLDivElement>(null);
+
+
+
+    return (
+      <div className={toggle("alt-navbar__menu-parent")} ref={ref}>
+        <span onClick={() => setSubOpen(prev => !prev)}>
+          {label}
+          <IconChevronDown style={{transform: subOpen ? "rotate(180deg)" : "", transition: "all 200ms ease-in-out"}} size={20} />
+        </span>
+        <div className={toggleSub("alt-navbar__child-menu")} ref={subRef}>
+          {childLinks.map((link, index) => (
+            <AltNavSubMenuItem key={index} index={index} toggleSub={toggleSub} {...link}/>
+          ))}
+        </div>
+      </div>
+    );
+  }
+);
+
+AltNavSubMenu.displayName = "AltNavSubMenu"
+
+const AltNavSubMenuItem = ({href, label, index, toggleSub, isActive}: Links & {index: number, toggleSub: Function}) => {
+    const childRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
+
+    useEffect(() => {
+      childRef.current?.style?.setProperty(
+        "--child-offset",
+        `-${(index + 1) * 40}px`
+      );
+    }, []);
+
+  return (
+    <div className={toggleSub("alt-navbar__child-item")} ref={childRef}>
+      <Link href={href as string}>
+        <a className={isActive(router) ? "nav-link active-link" : "nav-link"}>{label}</a>
       </Link>
     </div>
   );

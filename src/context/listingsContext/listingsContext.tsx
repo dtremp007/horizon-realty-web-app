@@ -29,6 +29,10 @@ type Props = {
 
 export type ListingsState = {
   loading: boolean;
+  snapshot: {
+    id: string,
+    data: DocumentData
+  }[];
   firebaseDocs: {
     id: string,
     data: DocumentData
@@ -55,8 +59,8 @@ type ListingsActions = {
    *
    * GET_SINGLE_LISTING -> Assumes the payload contains an id. Sets active listing if it has changed.
    */
-  type: "UPDATE_MAP" | "UPDATE_FILTER" | "REMOVE_FILTER" | "CLEAR_FILTERS" | "UPDATE_SCROLL_POSITION" | "UPDATE_MAP_FOCUS_POINT";
-  payload: any;
+  type: "UPDATE_MAP" | "UPDATE_FILTER" | "REMOVE_FILTER" | "CLEAR_FILTERS" | "UPDATE_SCROLL_POSITION" | "UPDATE_MAP_FOCUS_POINT" | "FILTER" | "GET_ALL";
+  payload?: any;
 };
 
 type FilterType = "NativeSelect" | "RangleSlider" | "SegmentControl" | "CheckboxGroup" | "Checkbox" | "RadioButtonGroup";
@@ -139,6 +143,7 @@ export const ListingsProvider = ({ children, firebaseDocs }: Props) => {
 
   const initialState: ListingsState = {
     loading: false,
+    snapshot: [...firebaseDocs],
     firebaseDocs,
     mapViewState: {
       latitude,
@@ -214,6 +219,16 @@ const listingReducer: Reducer<ListingsState, ListingsActions> = (
                 id: id || "",
                 index: index || 0
             }
+        }
+    case "FILTER":
+        return {
+            ...state,
+            firebaseDocs: state.snapshot.filter(e => e.data.listingType === action.payload)
+        }
+    case "GET_ALL":
+        return {
+            ...state,
+            firebaseDocs: [...state.snapshot]
         }
     default:
       return state;

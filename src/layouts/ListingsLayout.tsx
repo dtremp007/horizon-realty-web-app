@@ -13,11 +13,20 @@ import Spinner from "../shared/Spinner";
  * I will try anyway.
  */
 export default function ListingsLayout() {
-    const {listingsState} = useContext(ListingsContext)
+    const {listingsState, dispatch} = useContext(ListingsContext)
     const [listings, setListings] = useState<QueryDocumentSnapshot<DocumentData>[]>([])
     const router = useRouter();
 
     const {firebaseDocs, loading} = listingsState;
+
+    useEffect(() => {
+      if (router.query.filter) {
+        dispatch({type: "FILTER", payload: router.query.filter})
+        return
+      }
+      dispatch({type: "GET_ALL"})
+    }, [router.query])
+
 
     if (!firebaseDocs) {
         return <h3>No listings to display.</h3>

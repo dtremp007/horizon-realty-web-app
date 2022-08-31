@@ -5,7 +5,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { getDocs, collection, where } from "firebase/firestore";
 import { db } from "../../lib/firebase.config";
 import { QuerySnapshot, DocumentData } from "firebase/firestore";
-import { ListingsProvider } from "../../src/context/listingsContext/listingsContext";
+import ListingsContext, { ListingsProvider } from "../../src/context/listingsContext/listingsContext";
 import { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
 import MapView from "../../src/components/map/MapView";
@@ -27,6 +27,7 @@ const Listings: NextPage<Props> = ({ firebaseDocs }) => {
   const isDesktop = useMediaQuery("(min-width: 695px)", true);
   const router = useRouter();
   const [view, setView] = useState(router.query.view);
+  const {dispatch} = useContext(ListingsContext);
 
   useEffect(() => {
     setView(router.query.view);

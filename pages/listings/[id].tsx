@@ -1,4 +1,4 @@
-import { GetStaticProps, GetStaticPropsContext, NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, GetStaticPropsContext, NextPage } from "next";
 import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
 import { useContext, useEffect } from "react";
@@ -46,9 +46,9 @@ const DetailedPage: NextPage<Props> = ({ data }) => {
   );
 };
 
-export async function getStaticProps<GetStaticProps>(
-  context: GetStaticPropsContext
-) {
+export const getServerSideProps: GetServerSideProps = async(
+  context: GetServerSidePropsContext
+) => {
   const id = (context.params as ParsedUrlQuery).id as string;
   const docRef = doc(db, "listings", id);
   const docSnap = await getDoc(docRef);
@@ -58,21 +58,7 @@ export async function getStaticProps<GetStaticProps>(
     props: {
       data,
     },
-    revalidate: 60*60,
   };
-}
-
-export async function getStaticPaths() {
-  const querySnapshot = await getDocs(collection(db, "listings"));
-  // Get the paths we want to pre-render based on posts
-  const paths = querySnapshot.docs.map((listing) => ({
-    params: { id: listing.id },
-  }));
-
-  // We'll pre-render only these paths at build time.
-  // { fallback: blocking } will server-render pages
-  // on-demand if the path doesn't exist.
-  return { paths, fallback: "blocking" };
 }
 
 export default DetailedPage;
