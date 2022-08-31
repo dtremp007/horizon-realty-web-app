@@ -1,9 +1,14 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { DropzoneOptions } from "react-dropzone";
-import { Grid, RingProgress } from "@mantine/core";
-import { IconUpload, IconPhoto, IconX } from "@tabler/icons";
-import Image from "next/image";
+import { Grid, RingProgress, Image, ActionIcon, NativeSelect, Select } from "@mantine/core";
+import {
+  IconUpload,
+  IconPhoto,
+  IconX,
+  IconArrowLeft,
+  IconArrowRight,
+} from "@tabler/icons";
 import {
   getStorage,
   ref,
@@ -11,7 +16,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
-import {storage} from "../../../../lib/firebase.config"
+import { storage } from "../../../../lib/firebase.config";
 import process from "process";
 
 type ImageUploaderProps = {
@@ -39,6 +44,11 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
       error: false,
     }))
   );
+  const [select, setSelect] = useState<string>();
+
+  useEffect(() => {
+    onChange(images.map(e => e.url))
+  }, [images])
 
   /**
    * This function takes an image and uploads it to Firebase Storage. It returns a promise, when resolved,
@@ -55,7 +65,8 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
   ) {
     return new Promise<string>((resolve, reject) => {
       const fileName = image.name;
-      const bucketPath = process.env.NODE_ENV === "development" ? "test/" : "images/"
+      const bucketPath =
+        process.env.NODE_ENV === "development" ? "test/" : "images/";
 
       const storageRef = ref(storage, bucketPath + fileName);
 
@@ -136,7 +147,11 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
                 error: false,
               });
 
-              onChange(updatedArray.filter(e => e.uploaded === true).map(e => e.url))
+              onChange(
+                updatedArray
+                  .filter((e) => e.uploaded === true)
+                  .map((e) => e.url)
+              );
 
               return updatedArray;
             });
@@ -164,37 +179,81 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
     },
     []
   );
+
+
+
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
-    <div className="image-uploader__container" {...getRootProps()}>
-      <input {...getInputProps()} />
-
-      <div className="image-uploader__grid">
-        {images.map((image) => (
-          <div className="image-uploader__preview" key={image.id}>
-            <Image src={image.url} layout="fill" objectFit="cover" />
-
-            {image.uploading && (
-              <div className="image-uploader__preview-overlay">
-                <RingProgress
-                  sections={[{ value: image.uploadProgress, color: "blue" }]}
-                  className="image-uploader__ring-progress"
-                  size={50}
-                  thickness={5}
-                />
-              </div>
-            )}
-          </div>
-        ))}
-
-        <div className="image-uploader__add-image-box">
-          <IconPhoto />
-          Add Photo
+    <>
+      <div className="image-uploader__arrows">
+        <div>
+          <ActionIcon onClick={() => arrowClickHandler([...images], "left", (a:any) => setImages(a), select)}>
+            <IconArrowLeft size={30} />
+          </ActionIcon>
+          <Select
+            data={images.map((img, index) => img.id)}
+            value={select}
+            onChange={(e) => setSelect(e as string)}
+          />
+          <ActionIcon onClick={() => arrowClickHandler([...images], "right", (a:any) => setImages(a), select)}>
+            <IconArrowRight size={30} />
+          </ActionIcon>
         </div>
       </div>
-    </div>
+      <div className="image-uploader__container" {...getRootProps()}>
+        <input {...getInputProps()} />
+
+        <div className="image-uploader__grid">
+          {images.map((image, index) => (
+            <div className="image-uploader__preview" key={image.id}>
+              <Image src={image.url} height={144} />
+              {image.uploading && (
+                <div className="image-uploader__preview-overlay">
+                  <RingProgress
+                    sections={[{ value: image.uploadProgress, color: "blue" }]}
+                    className="image-uploader__ring-progress"
+                    size={50}
+                    thickness={5}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+
+          <div className="image-uploader__add-image-box">
+            <IconPhoto />
+            Add Photo
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
 export default ImageUploader;
+
+function arrowClickHandler(images: Array<any>, d: string, setImages: Function, select: string|undefined) {
+    let len = images.length
+    let i = images.findIndex(e => e.id === select)
+    const [l] = images.splice(i, 1)
+
+    if (d === "left") {
+        i -= 1;
+    } else {
+        i += 1;
+    }
+    if (i < 0) {
+        images.push(l)
+        setImages(images)
+        return
+    }
+    if (i === images.length) {
+        images.unshift(l)
+        setImages(images)
+        return
+    }
+    images.splice(i,0,l)
+    setImages(images)
+  }
