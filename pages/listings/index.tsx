@@ -8,7 +8,7 @@ import { QuerySnapshot, DocumentData } from "firebase/firestore";
 import ListingsContext, {
   ListingsProvider,
 } from "../../src/context/listingsContext/listingsContext";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
 import MapView from "../../src/components/map/MapView";
 import MapListingsOverlay from "../../src/components/map/MapListingsOverlay";
@@ -34,10 +34,16 @@ const Listings: NextPage<Props> = ({ firebaseDocs }) => {
   const { dispatch } = useContext(ListingsContext);
 
   useEffect(() => {
+    if (router.query.foo) {
+        /* some code */
+    }
+  }, [router.query.foo])
+
+  useEffect(() => {
     setView(router.query.view);
   }, [router.query.view]);
 
-  if (!router.query.filter) {
+  if (!router.query.filter && !router.query.view) {
     return (
       <div
         style={{
