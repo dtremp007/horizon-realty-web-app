@@ -11,6 +11,7 @@ import {
   Paper,
   Space,
   ActionIcon,
+  CheckboxGroup,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DocumentData, setDoc } from "firebase/firestore";
@@ -40,6 +41,8 @@ type ListingData = {
   paymentType: string;
   price: number;
   title: string;
+  bathrooms: number;
+  bedrooms: number;
 };
 
 type EditListingProps = {
@@ -65,6 +68,8 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
           paymentType: "",
           price: 1000,
           title: "",
+          bathrooms: 0,
+          bedrooms: 0,
         };
   const form = useForm({
     initialValues,
@@ -87,7 +92,7 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
           </ActionIcon>
         </Link>
         <Group>
-            {uploaded && <IconCheck/>}
+          {uploaded && <IconCheck />}
           <Button disabled={!form.isDirty()} type="submit">
             Save
           </Button>
@@ -151,6 +156,23 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
             {...form.getInputProps("address")}
           />
           <CoordinatesInput {...form.getInputProps("coordinates")} />
+          <Group>
+            <NumberInput
+              label="Bathrooms"
+              step={1}
+              {...form.getInputProps("bathrooms")}
+            />
+            <NumberInput
+              label="Bedrooms"
+              step={1}
+              {...form.getInputProps("bedrooms")}
+            />
+          </Group>
+          <Space h="lg" />
+          <CheckboxGroup label="Utilities">
+            <Checkbox label="Water"/>
+            <Checkbox label="Electricity"/>
+          </CheckboxGroup>
         </AccordionItem>
       </Accordion>
       <Space h="md" />
@@ -165,6 +187,7 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
 export default EditListing;
 
 type CoordinatesInputProps = {
+  // value: [number, number];
   onChange: (e: any) => void;
 };
 

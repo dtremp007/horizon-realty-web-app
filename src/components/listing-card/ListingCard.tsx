@@ -31,12 +31,12 @@ export default function ListingCard({
     const {title, price, currency, imageUrls, landArea, status} = data;
     const router = useRouter();
     const [loading, setLoading] = useState(false)
-    // const {state} = useContext(NavigationContext)
-    // const {pagesVisited} = state;
 
-    useEffect(() => {
-        router.prefetch(`/listings/${id}`)
-    },[])
+    //I disabled prefetching to save some bandwidth.
+
+    // useEffect(() => {
+    //     router.prefetch(`/listings/${id}`)
+    // },[])
 
     const handleClick = () => {
         router.push(`/listings/${id}`)

@@ -20,3 +20,24 @@
     margin: 1rem;
     margin-top: calc(60px + 1rem);
 }
+
+.listings-page__link {
+    text-decoration: none;
+    font-size: 1rem;
+    color: $text-primary;
+    border: 2px solid $text-primary;
+    padding: .125rem .5rem;
+    border-radius: .25rem;
+      text-transform: uppercase;
+
+    &:hover {
+      background-color: $background-secondary;
+      border-color: $background-secondary;
+      color: $text-primary;
+    }
+
+    &:active {
+      background-color: lighten($color: #141517, $amount: 10);
+      border-color: lighten($color: #141517, $amount: 10);
+    }
+  }
