@@ -18,18 +18,18 @@ type ImageSelectorModalProps = {
   opened: boolean;
   onClose: () => void;
   selectedUrls: string[];
-  addUrl: (id: string, url: string) => void
+  updateUrl: (id: string, url: string, action: "add" | "remove") => void
 };
 
 type ImageRef = {
   id: string;
   url: string;
-  ref: StorageReference;
+  storageRef: StorageReference;
   metadata: FullMetadata;
   selected: boolean;
 };
 
-const ImageSelectorModal = ({ opened, onClose, selectedUrls, addUrl }: ImageSelectorModalProps) => {
+const ImageSelectorModal = ({ opened, onClose, selectedUrls, updateUrl }: ImageSelectorModalProps) => {
   const [images, setImages] = useState<ImageRef[]>([]);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const ImageSelectorModal = ({ opened, onClose, selectedUrls, addUrl }: ImageSele
 
             return {
                 id: uuidv4(),
-                ref,
+                storageRef: ref,
                 url,
                 metadata: await getMetadata(ref),
                 selected: selectedUrls.includes(url)
@@ -58,7 +58,7 @@ const ImageSelectorModal = ({ opened, onClose, selectedUrls, addUrl }: ImageSele
     <Modal opened={opened} onClose={onClose} title="Pictures">
       <div className="image-selector__container">
         {images.length > 0 ? (
-          images.map((ref, index) => <ImageItem key={ref.id} {...ref} addUrl={addUrl}/>)
+          images.map((ref, index) => <ImageItem key={ref.id} {...ref} updateUrl={updateUrl}/>)
         ) : (
           <Spinner />
         )}
@@ -67,13 +67,24 @@ const ImageSelectorModal = ({ opened, onClose, selectedUrls, addUrl }: ImageSele
   );
 };
 
-type ImageItemProps = ImageRef & {addUrl: (id: string, url: string) => void}
+type ImageItemProps = ImageRef & {updateUrl: (id: string, url: string, action: "add" | "remove") => void}
 
-const ImageItem = ({ id, url, ref, metadata, selected, addUrl }: ImageItemProps) => {
+const ImageItem = ({ id, url, storageRef, metadata, selected, updateUrl }: ImageItemProps) => {
+    const [checked, setChecked] = useState(selected)
+
+    function handleChange (e:any) {
+        if (e.target.checked) {
+            updateUrl(id, url, "add")
+        } else {
+            updateUrl(id, url, "remove")
+        }
+        setChecked(e.target.checked)
+    }
+
   return (
     <div className="image-selector__item">
-      <Checkbox checked={selected} onChange={(e: any) => addUrl(id, url)}/>
-      <Image src={url} height={100} width={100} />
+      <Checkbox checked={checked} onChange={handleChange}/>
+      <Image src={url} height={100} width={200} />
       <p>{metadata.name}</p>
       <ActionIcon>
         <IconTrash/>

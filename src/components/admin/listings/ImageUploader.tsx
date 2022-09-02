@@ -31,7 +31,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { storage } from "../../../../lib/firebase.config";
 import process from "process";
-import ImageSelectorModal from "./ImageSelectorModal"
+import ImageSelectorModal from "./ImageSelectorModal";
 
 type ImageUploaderProps = {
   value: string[];
@@ -63,7 +63,7 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
       error: false,
     }))
   );
-  const [modalOpen, setModalOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false);
   const unsuccessfullFiles = useRef<UnsuccessulFile[]>([]);
 
   useEffect(() => {
@@ -209,7 +209,7 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
     async (id: string) => {
       const image = images.find((e) => e.id === id);
       if (image?.uploaded) {
-        const imageRef = ref(storage, deduceFilePath(image.url));
+        const imageRef = ref(storage, image.url);
         try {
           await deleteObject(imageRef);
         } catch (error) {
@@ -221,6 +221,25 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
     },
     [images]
   );
+
+  const updateUrl = (id: string, url: string, action: "add" | "remove") => {
+    if (action === "add") {
+      setImages((prev) => [
+        ...prev,
+        {
+          id,
+          url,
+          uploaded: true,
+          uploading: false,
+          uploadProgress: 100,
+          error: false,
+        },
+      ]);
+    } else {
+        const id = images.find(e => e.url === url)?.id as string
+        setImages(prev => replaceById(prev, id))
+    }
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -245,9 +264,14 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
         </div>
       </div>
       <div className="image-uploader__button-container">
-      <Button onClick={() => setModalOpen(true)}>Add From Database</Button>
+        <Button onClick={() => setModalOpen(true)}>Add From Database</Button>
       </div>
-      <ImageSelectorModal opened={modalOpen} onClose={() => setModalOpen(false)} selectedUrls={value} addUrl={(id, url) => setImages(prev => [...prev, {id, url, uploaded: true, uploading: false, uploadProgress: 100, error: false}])}/>
+      <ImageSelectorModal
+        opened={modalOpen}
+        onClose={() => setModalOpen(false)}
+        selectedUrls={value}
+        updateUrl={updateUrl}
+      />
     </>
   );
 };
@@ -263,8 +287,6 @@ const ImagePreview = ({
   handleRetry,
   handleDelete,
 }: ImagePreviewProps) => {
-
-
   return (
     <div className="image-uploader__preview" key={image.id}>
       <Image src={image.url} height={144} />
@@ -314,8 +336,6 @@ const ImageOverlay = ({ image, handleRetry }: ImageOverlayProps) => {
 
   return <div className="image-uploader__preview-overlay"></div>;
 };
-
-
 
 export default ImageUploader;
 

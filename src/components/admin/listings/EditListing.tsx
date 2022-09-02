@@ -160,6 +160,7 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
             <NumberInput
               label="Bathrooms"
               step={1}
+
               {...form.getInputProps("bathrooms")}
             />
             <NumberInput
