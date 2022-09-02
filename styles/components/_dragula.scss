@@ -1,0 +1,30 @@
+.draggableContainer {
+    margin: 70px auto;
+    display: flex;
+    gap: 1rem;
+
+}
+.content {
+    height: 100px;
+    width: 100px;
+    color: var(--text-primary);
+    background-color: var(--background-secondary);
+    position: relative;
+
+    &.drag {
+        position: absolute;
+        // transform: scale(1.1);
+        background-color: #1A1B1C;
+        z-index: 200;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;;
+    }
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    z-index: 10;
+}
