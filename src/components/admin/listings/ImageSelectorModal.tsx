@@ -34,7 +34,7 @@ const ImageSelectorModal = ({ opened, onClose, selectedUrls, updateUrl }: ImageS
 
   useEffect(() => {
     async function fetchAll() {
-      const listRef = ref(storage, "test");
+      const listRef = ref(storage, "images");
       const response = await listAll(listRef);
       return Promise.all(
         response.items.map(async (ref) => {
