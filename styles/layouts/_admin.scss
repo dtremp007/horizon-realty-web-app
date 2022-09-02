@@ -36,7 +36,7 @@
 .mantine-AppShell-main {
     position: absolute;
     width: calc(100vw - 300px);
-    height: 100%;
+    min-height: 100%;
     left: 300px;
     right: 0;
     top: 60px;

@@ -156,7 +156,7 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
             {...form.getInputProps("address")}
           />
           <CoordinatesInput {...form.getInputProps("coordinates")} />
-          <Group>
+          {/* <Group>
             <NumberInput
               label="Bathrooms"
               step={1}
@@ -172,7 +172,7 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
           <CheckboxGroup label="Utilities">
             <Checkbox label="Water"/>
             <Checkbox label="Electricity"/>
-          </CheckboxGroup>
+          </CheckboxGroup> */}
         </AccordionItem>
       </Accordion>
       <Space h="md" />

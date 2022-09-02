@@ -1,40 +1,59 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { DropzoneOptions } from "react-dropzone";
-import { Grid, RingProgress, Image, ActionIcon, NativeSelect, Select } from "@mantine/core";
+import {
+  Grid,
+  RingProgress,
+  Image,
+  ActionIcon,
+  NativeSelect,
+  Select,
+  Modal,
+  Button,
+} from "@mantine/core";
 import {
   IconUpload,
   IconPhoto,
   IconX,
   IconArrowLeft,
   IconArrowRight,
+  IconRotateClockwise,
 } from "@tabler/icons";
 import {
   getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
+  UploadMetadata,
+  deleteObject,
+  listAll,
 } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { storage } from "../../../../lib/firebase.config";
 import process from "process";
+import ImageSelectorModal from "./ImageSelectorModal"
 
 type ImageUploaderProps = {
   value: string[];
   onChange: (value: string[]) => void;
 };
 
-type UploaderImages = {
+type UploaderImage = {
   id: string;
   url: string;
   uploaded: boolean;
   uploading: boolean;
   uploadProgress: number;
   error: boolean;
-}[];
+};
+
+type UnsuccessulFile = {
+  id: string;
+  file: File;
+};
 
 const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
-  const [images, setImages] = useState<UploaderImages>(
+  const [images, setImages] = useState<UploaderImage[]>(
     value.map((url) => ({
       id: uuidv4(),
       url,
@@ -44,11 +63,12 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
       error: false,
     }))
   );
-  const [select, setSelect] = useState<string>();
+  const [modalOpen, setModalOpen] = useState(false)
+  const unsuccessfullFiles = useRef<UnsuccessulFile[]>([]);
 
   useEffect(() => {
-    onChange(images.map(e => e.url))
-  }, [images])
+    onChange(images.filter((e) => e.uploaded === true).map((e) => e.url));
+  }, [images]);
 
   /**
    * This function takes an image and uploads it to Firebase Storage. It returns a promise, when resolved,
@@ -69,8 +89,9 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
         process.env.NODE_ENV === "development" ? "test/" : "images/";
 
       const storageRef = ref(storage, bucketPath + fileName);
+      const metadata: UploadMetadata = { contentType: image.type };
 
-      const uploadTask = uploadBytesResumable(storageRef, image);
+      const uploadTask = uploadBytesResumable(storageRef, image, metadata);
 
       uploadTask.on(
         "state_changed",
@@ -114,11 +135,46 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
   },
   []);
 
+  /**
+   * An intermediary function that calls `storeImage` and handles errors.
+   */
+  const handleStoreImage = useCallback(
+    async (image: File, id: string, localUrl: string) => {
+      try {
+        const url = await storeImage(image, id);
+        setImages((prev) => {
+          return replaceById(prev, id, {
+            id,
+            url,
+            uploaded: true,
+            uploading: false,
+            uploadProgress: 100,
+            error: false,
+          });
+        });
+      } catch (error) {
+        setImages((prev) => {
+          console.log(error);
+          return replaceById(prev, id, {
+            id,
+            url: localUrl,
+            uploaded: false,
+            uploading: false,
+            uploadProgress: 0,
+            error: true,
+          });
+        });
+      }
+    },
+    []
+  );
+
   const onDrop: DropzoneOptions["onDrop"] = useCallback(
     (acceptedFiles: File[]) => {
-      const localUrls: UploaderImages = [];
+      const localUrls: UploaderImage[] = [];
       for (const file of acceptedFiles) {
         const id = uuidv4();
+        unsuccessfullFiles.current.push({ id, file });
         const localUrl = URL.createObjectURL(file);
 
         localUrls.push({
@@ -130,49 +186,7 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
           error: false,
         });
 
-        storeImage(file, id)
-          .then((imageUrl) => {
-            setImages((prev) => {
-              const updatedArray = [...prev];
-
-              //TODO: I'm sure you could make the following a little more readable with some abstraction
-
-              const index = updatedArray.findIndex((e) => e.id === id);
-              updatedArray.splice(index, 1, {
-                id,
-                url: imageUrl,
-                uploaded: true,
-                uploading: false,
-                uploadProgress: 100,
-                error: false,
-              });
-
-              onChange(
-                updatedArray
-                  .filter((e) => e.uploaded === true)
-                  .map((e) => e.url)
-              );
-
-              return updatedArray;
-            });
-          })
-          .catch((error) => {
-            setImages((prev) => {
-              console.log(error);
-
-              const updatedArray = [...prev];
-              const index = updatedArray.findIndex((e) => e.id === id);
-              updatedArray.splice(index, 1, {
-                id,
-                url: localUrl,
-                uploaded: false,
-                uploading: false,
-                uploadProgress: 0,
-                error: true,
-              });
-              return updatedArray;
-            });
-          });
+        handleStoreImage(file, id, localUrl);
       }
 
       setImages((prev) => prev.concat(localUrls));
@@ -180,80 +194,168 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
     []
   );
 
+  const handleRetry = useCallback(
+    (id: string) => {
+      const file = unsuccessfullFiles.current.find((e) => e.id === id)
+        ?.file as File;
+      const localUrl = images.find((e) => e.id === id)?.url;
+      console.log(localUrl);
+      handleStoreImage(file, id, localUrl as string);
+    },
+    [images]
+  );
 
-
+  const handleDelete = useCallback(
+    async (id: string) => {
+      const image = images.find((e) => e.id === id);
+      if (image?.uploaded) {
+        const imageRef = ref(storage, deduceFilePath(image.url));
+        try {
+          await deleteObject(imageRef);
+        } catch (error) {
+          console.log(error);
+          //TODO: handle this error
+        }
+      }
+      setImages((prev) => replaceById(prev, id));
+    },
+    [images]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
     <>
-      <div className="image-uploader__arrows">
-        <div>
-          <ActionIcon onClick={() => arrowClickHandler([...images], "left", (a:any) => setImages(a), select)}>
-            <IconArrowLeft size={30} />
-          </ActionIcon>
-          <Select
-            data={images.map((img, index) => img.id)}
-            value={select}
-            onChange={(e) => setSelect(e as string)}
-          />
-          <ActionIcon onClick={() => arrowClickHandler([...images], "right", (a:any) => setImages(a), select)}>
-            <IconArrowRight size={30} />
-          </ActionIcon>
-        </div>
-      </div>
-      <div className="image-uploader__container" {...getRootProps()}>
-        <input {...getInputProps()} />
-
+      <div className="image-uploader__container">
         <div className="image-uploader__grid">
           {images.map((image, index) => (
-            <div className="image-uploader__preview" key={image.id}>
-              <Image src={image.url} height={144} />
-              {image.uploading && (
-                <div className="image-uploader__preview-overlay">
-                  <RingProgress
-                    sections={[{ value: image.uploadProgress, color: "blue" }]}
-                    className="image-uploader__ring-progress"
-                    size={50}
-                    thickness={5}
-                  />
-                </div>
-              )}
-            </div>
+            <ImagePreview
+              key={image.id}
+              image={image}
+              handleRetry={handleRetry}
+              handleDelete={handleDelete}
+            />
           ))}
 
-          <div className="image-uploader__add-image-box">
+          <div className="image-uploader__add-image-box" {...getRootProps()}>
+            <input {...getInputProps()} />
             <IconPhoto />
             Add Photo
           </div>
         </div>
       </div>
+      <div className="image-uploader__button-container">
+      <Button onClick={() => setModalOpen(true)}>Add From Database</Button>
+      </div>
+      <ImageSelectorModal opened={modalOpen} onClose={() => setModalOpen(false)} selectedUrls={value} addUrl={(id, url) => setImages(prev => [...prev, {id, url, uploaded: true, uploading: false, uploadProgress: 100, error: false}])}/>
     </>
   );
 };
 
+type ImagePreviewProps = {
+  image: UploaderImage;
+  handleRetry: (id: string) => void;
+  handleDelete: (id: string) => void;
+};
+
+const ImagePreview = ({
+  image,
+  handleRetry,
+  handleDelete,
+}: ImagePreviewProps) => {
+
+
+  return (
+    <div className="image-uploader__preview" key={image.id}>
+      <Image src={image.url} height={144} />
+      <div
+        className="image-uploader__preview-overlay"
+        style={{ backgroundColor: image.error ? "rgba(0,0,0,.4)" : "" }}
+      >
+        <ActionIcon
+          style={{ alignSelf: "flex-end", zIndex: "100" }}
+          onClick={() => handleDelete(image.id)}
+        >
+          <IconX />
+        </ActionIcon>
+        <ImageOverlay image={image} handleRetry={handleRetry} />
+      </div>
+    </div>
+  );
+};
+
+type ImageOverlayProps = {
+  image: UploaderImage;
+  handleRetry: (id: string) => void;
+};
+
+const ImageOverlay = ({ image, handleRetry }: ImageOverlayProps) => {
+  if (image.error) {
+    return (
+      <div>
+        <span>Retry</span>
+        <ActionIcon onClick={() => handleRetry(image.id)}>
+          <IconRotateClockwise size={30} />
+        </ActionIcon>
+      </div>
+    );
+  }
+
+  if (image.uploading) {
+    return (
+      <RingProgress
+        sections={[{ value: image.uploadProgress, color: "blue" }]}
+        className="image-uploader__ring-progress"
+        size={50}
+        thickness={5}
+      />
+    );
+  }
+
+  return <div className="image-uploader__preview-overlay"></div>;
+};
+
+
+
 export default ImageUploader;
 
-function arrowClickHandler(images: Array<any>, d: string, setImages: Function, select: string|undefined) {
-    let len = images.length
-    let i = images.findIndex(e => e.id === select)
-    const [l] = images.splice(i, 1)
-
-    if (d === "left") {
-        i -= 1;
-    } else {
-        i += 1;
-    }
-    if (i < 0) {
-        images.push(l)
-        setImages(images)
-        return
-    }
-    if (i === images.length) {
-        images.unshift(l)
-        setImages(images)
-        return
-    }
-    images.splice(i,0,l)
-    setImages(images)
+/**
+ * If you leave obj property undefined, the object will be removed.
+ * @param arr - an array that has an id property
+ * @param id - id of the arry
+ * @param obj - (optional) object to replace old object
+ * @returns - updated array
+ */
+export function replaceById<T extends { id: string }>(
+  arr: Array<T>,
+  id: string,
+  obj?: T
+) {
+  arr = [...arr];
+  const index = arr.findIndex((e) => e.id === id);
+  if (index === -1) {
+    console.log(
+      "replaceById could not find the specied id. No changes were made to passed in function."
+    );
+    return arr;
   }
+
+  if (typeof obj !== "undefined") {
+    arr.splice(index, 1, obj);
+    return arr;
+  }
+
+  if (arr.length === 1) {
+    return [];
+  }
+
+  arr.splice(index, 1);
+  return arr;
+}
+
+function deduceFilePath(url: string) {
+  const result = RegExp(/(test|images)(?:%2F)([^?]*)/).exec(
+    url
+  ) as RegExpExecArray;
+  return decodeURIComponent(result[0]);
+}

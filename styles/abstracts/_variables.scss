@@ -33,6 +33,7 @@
   --listing-card-icon-color: #222831;
 
   --swiper-navigation-color: #fff
+  --default-boxshadow: -3px 3px 32px -10px rgba(0, 0, 0, 0.25);
 }
 
 $button-primary-hover: var(--button-primary-hover);
@@ -63,3 +64,4 @@ $listing-card-icon-color: var(--listing-card-icon-color);
 $logo-red: var(--logo-red);
 $logo-yellow: var(--logo-yellow);
 $logo-orange: var(--logo-orange);
+$default-boxshadow: var(--default-boxshadow);
