@@ -1,18 +1,21 @@
-import { useState, useEffect } from "react";
-import { Modal, Image, Checkbox, ActionIcon } from "@mantine/core";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Modal, Image, Checkbox, ActionIcon, Group } from "@mantine/core";
 import {
   getDownloadURL,
   listAll,
   ref,
   StorageReference,
   getMetadata,
-  FullMetadata
+  FullMetadata,
+  list,
+  ListResult
 } from "firebase/storage";
 import { storage } from "../../../../lib/firebase.config";
 import Spinner from "../../../shared/Spinner";
 import { v4 as uuidv4 } from "uuid";
 import { replaceById } from "./ImageUploader";
 import {IconTrash} from "@tabler/icons"
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
 
 type ImageSelectorModalProps = {
   opened: boolean;
@@ -31,11 +34,14 @@ type ImageRef = {
 
 const ImageSelectorModal = ({ opened, onClose, selectedUrls, updateUrl }: ImageSelectorModalProps) => {
   const [images, setImages] = useState<ImageRef[]>([]);
+  const pageRef = useRef<ListResult>();
 
   useEffect(() => {
     async function fetchAll() {
-      const listRef = ref(storage, "images");
-      const response = await listAll(listRef);
+      const listRef = ref(storage, process.env.NODE_ENV === "development" ? "test" : "images");
+      const response = await list(listRef, {maxResults: 6});
+      console.log(response)
+      pageRef.current = response
       return Promise.all(
         response.items.map(async (ref) => {
             const url = await getDownloadURL(ref)
@@ -52,7 +58,26 @@ const ImageSelectorModal = ({ opened, onClose, selectedUrls, updateUrl }: ImageS
     }
 
     fetchAll().then((data) => setImages(data));
-  }, []);
+  }, [opened]);
+
+  const fetchNext = useCallback(async () => {
+    const listRef = ref(storage, process.env.NODE_ENV === "development" ? "test" : "images");
+    const response = await list(listRef, {maxResults: 6, pageToken: pageRef.current?.nextPageToken});
+    pageRef.current = response
+    return Promise.all(
+      response.items.map(async (ref) => {
+          const url = await getDownloadURL(ref)
+
+          return {
+              id: uuidv4(),
+              storageRef: ref,
+              url,
+              metadata: await getMetadata(ref),
+              selected: selectedUrls.includes(url)
+          }
+      })
+    );
+  }, [selectedUrls])
 
   return (
     <Modal opened={opened} onClose={onClose} title="Pictures">
@@ -62,6 +87,14 @@ const ImageSelectorModal = ({ opened, onClose, selectedUrls, updateUrl }: ImageS
         ) : (
           <Spinner />
         )}
+        <Group position="apart">
+            <ActionIcon disabled>
+                <IconArrowLeft/>
+            </ActionIcon>
+            <ActionIcon onClick={() => fetchNext().then((data) => setImages(data))}>
+                <IconArrowRight/>
+            </ActionIcon>
+        </Group>
       </div>
     </Modal>
   );
