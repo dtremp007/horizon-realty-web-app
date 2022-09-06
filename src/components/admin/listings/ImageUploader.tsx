@@ -32,6 +32,7 @@ import { v4 as uuidv4 } from "uuid";
 import { storage } from "../../../../lib/firebase.config";
 import process from "process";
 import ImageSelectorModal from "./ImageSelectorModal";
+import useDragAndDrop from "../../../hooks/useDragAndDrop";
 
 type ImageUploaderProps = {
   value: string[];
@@ -66,8 +67,30 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const unsuccessfullFiles = useRef<UnsuccessulFile[]>([]);
 
+  const parent = useDragAndDrop((elements) => {
+    const urlList = elements
+      .map((element) => {
+        const id = element.id;
+        if (!id) {
+          return null;
+        }
+        const image = images.find((image) => image.id === id);
+        return image?.url;
+      })
+      .filter((url) => url !== null) as string[];
+
+    onChange(urlList);
+  }, value);
+
   useEffect(() => {
-    onChange(images.filter((e) => e.uploaded === true).map((e) => e.url));
+    onChange(
+      images
+        .filter((e) => e.uploaded === true && e.url !== null)
+        .map((e) => {
+          console.log(e);
+          return e.url;
+        })
+    );
   }, [images]);
 
   /**
@@ -236,8 +259,8 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
         },
       ]);
     } else {
-        const id = images.find(e => e.url === url)?.id as string
-        setImages(prev => replaceById(prev, id))
+      const id = images.find((e) => e.url === url)?.id as string;
+      setImages((prev) => replaceById(prev, id));
     }
   };
 
@@ -246,11 +269,12 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
   return (
     <>
       <div className="image-uploader__container">
-        <div className="image-uploader__grid">
+        <div className="image-uploader__grid" ref={parent}>
           {images.map((image, index) => (
             <ImagePreview
               key={image.id}
               image={image}
+              id={image.id}
               handleRetry={handleRetry}
               handleDelete={handleDelete}
             />
@@ -278,17 +302,19 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
 
 type ImagePreviewProps = {
   image: UploaderImage;
+  id: string;
   handleRetry: (id: string) => void;
   handleDelete: (id: string) => void;
 };
 
 const ImagePreview = ({
   image,
+  id,
   handleRetry,
   handleDelete,
 }: ImagePreviewProps) => {
   return (
-    <div className="image-uploader__preview" key={image.id}>
+    <div className="image-uploader__preview" id={id}>
       <Image src={image.url} height={144} />
       <div
         className="image-uploader__preview-overlay"

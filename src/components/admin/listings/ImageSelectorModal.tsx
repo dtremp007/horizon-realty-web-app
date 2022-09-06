@@ -40,7 +40,6 @@ const ImageSelectorModal = ({ opened, onClose, selectedUrls, updateUrl }: ImageS
     async function fetchAll() {
       const listRef = ref(storage, process.env.NODE_ENV === "development" ? "test" : "images");
       const response = await list(listRef, {maxResults: 6});
-      console.log(response)
       pageRef.current = response
       return Promise.all(
         response.items.map(async (ref) => {
