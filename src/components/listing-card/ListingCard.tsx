@@ -34,9 +34,9 @@ export default function ListingCard({
 
     //I disabled prefetching to save some bandwidth.
 
-    // useEffect(() => {
-    //     router.prefetch(`/listings/${id}`)
-    // },[])
+    useEffect(() => {
+        router.prefetch(`/listings/${id}`)
+    },[])
 
     const handleClick = () => {
         router.push(`/listings/${id}`)

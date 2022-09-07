@@ -12,6 +12,7 @@ import {
   Space,
   ActionIcon,
   CheckboxGroup,
+  Text,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DocumentData, setDoc } from "firebase/firestore";
@@ -27,7 +28,7 @@ import {
 import { db } from "../../../../lib/firebase.config";
 import { IconArrowLeft, IconCheck } from "@tabler/icons";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ListingData = {
   address: string;
@@ -43,6 +44,8 @@ type ListingData = {
   title: string;
   bathrooms: number;
   bedrooms: number;
+  water: boolean;
+  electricity: boolean;
 };
 
 type EditListingProps = {
@@ -53,30 +56,37 @@ type EditListingProps = {
 
 const EditListing = ({ id, data, mode }: EditListingProps) => {
   const [uploaded, setUploaded] = useState(false);
-  const initialValues: ListingData =
-    data !== null
-      ? (data as ListingData)
-      : {
-          address: "",
-          coordinates: [],
-          currency: "USD",
-          description: "Description",
-          imageUrls: [],
-          landArea: 0,
-          landAreaUnits: "",
-          listingType: "",
-          paymentType: "",
-          price: 1000,
-          title: "",
-          bathrooms: 0,
-          bedrooms: 0,
-        };
-  const form = useForm({
-    initialValues,
-  });
 
-  async function handleSubmit(values: ListingData) {
-    await setDoc(doc(db, "listings", id as string), form.values);
+
+  const initialValues: ListingData =
+  data !== null
+  ? (data as ListingData)
+  : {
+      address: "",
+      coordinates: [],
+      currency: "USD",
+      description: "Description",
+      imageUrls: [],
+      landArea: 0,
+      landAreaUnits: "",
+      listingType: "",
+      paymentType: "",
+      price: 1000,
+      title: "",
+      bathrooms: 0,
+      bedrooms: 0,
+      water: false,
+      electricity: false,
+    };
+    const form = useForm({
+        initialValues,
+    });
+
+    useEffect(() => {
+       console.log(form.getInputProps("water", {type: "checkbox"}))
+    }, [])
+    async function handleSubmit(values: ListingData) {
+        await setDoc(doc(db, "listings", id as string), form.values);
     setUploaded(true);
   }
 
@@ -136,6 +146,11 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
               ]}
               {...form.getInputProps("currency")}
             />
+            <TextInput
+              type="text"
+              label="Payment Type"
+              {...form.getInputProps("paymentType")}
+            />
           </Group>
           <Group>
             <TextInput
@@ -156,11 +171,10 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
             {...form.getInputProps("address")}
           />
           <CoordinatesInput {...form.getInputProps("coordinates")} />
-          {/* <Group>
+          <Group>
             <NumberInput
               label="Bathrooms"
               step={1}
-
               {...form.getInputProps("bathrooms")}
             />
             <NumberInput
@@ -171,9 +185,9 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
           </Group>
           <Space h="lg" />
           <CheckboxGroup label="Utilities">
-            <Checkbox label="Water"/>
-            <Checkbox label="Electricity"/>
-          </CheckboxGroup> */}
+            <Checkbox label="Water" {...form.getInputProps("water", {type: "checkbox"})}/>
+            <Checkbox label="Electricity" {...form.getInputProps("electricity", {type: "checkbox"})}/>
+          </CheckboxGroup>
         </AccordionItem>
       </Accordion>
       <Space h="md" />
@@ -188,11 +202,11 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
 export default EditListing;
 
 type CoordinatesInputProps = {
-  // value: [number, number];
+  value: any;
   onChange: (e: any) => void;
 };
 
-const CoordinatesInput = ({ onChange }: CoordinatesInputProps) => {
+const CoordinatesInput = ({ value, onChange }: CoordinatesInputProps) => {
   function handleChange(e: any) {
     const parsedCoordinates = e.target.value
       .split(",")
@@ -200,5 +214,10 @@ const CoordinatesInput = ({ onChange }: CoordinatesInputProps) => {
     onChange(parsedCoordinates);
   }
 
-  return <TextInput type="text" label="Coordinates" onChange={handleChange} />;
+  return (
+    <Group align="flex-end">
+      <TextInput type="text" label="Coordinates" onChange={handleChange} />
+      <div style={{border: "1px solid gray", borderRadius: "3px", padding: "7px 10px", textTransform: "uppercase", fontSize: ".75rem"}}>{`Latitude: ${value[0]}, Longitude: ${value[1]}`}</div>
+    </Group>
+      )
 };
