@@ -32,6 +32,7 @@ const useDragAndDrop = (synchronizeState: SynchronizeStateFunction, state?: any)
   useEffect(() => {
     if (parentRef.current) {
         dragElementState.current.domRectList = captureStaticState(parentRef.current);
+        dragElementState.current.synchronizeState = synchronizeState;
     }
   }, [state])
 
@@ -201,7 +202,6 @@ function setupDragElement(dragElementState: DragElementState) {
 
   function mouseDown(event: globalThis.MouseEvent) {
     const target = event.target as HTMLElement;
-    console.dir(target);
     if (
       target.classList.contains("image-uploader__add-image-box") ||
       target.classList.contains("image-uploader__grid") ||

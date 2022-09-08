@@ -68,18 +68,21 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
   const unsuccessfullFiles = useRef<UnsuccessulFile[]>([]);
 
   const parent = useDragAndDrop((elements) => {
-    const urlList = elements
+    console.log(images)
+    const updatedImageList = elements
       .map((element) => {
+        console.log(element)
         const id = element.id;
         if (!id) {
           return null;
         }
         const image = images.find((image) => image.id === id);
-        return image?.url;
+        return image;
       })
-      .filter((url) => url !== null) as string[];
+      .filter((image) => image !== null);
 
-    onChange(urlList);
+
+    setImages(updatedImageList as UploaderImage[]);
   }, value);
 
   useEffect(() => {
@@ -87,7 +90,6 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
       images
         .filter((e) => e.uploaded === true && e.url !== null)
         .map((e) => {
-          console.log(e);
           return e.url;
         })
     );
@@ -222,7 +224,6 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
       const file = unsuccessfullFiles.current.find((e) => e.id === id)
         ?.file as File;
       const localUrl = images.find((e) => e.id === id)?.url;
-      console.log(localUrl);
       handleStoreImage(file, id, localUrl as string);
     },
     [images]
@@ -381,7 +382,7 @@ export function replaceById<T extends { id: string }>(
   const index = arr.findIndex((e) => e.id === id);
   if (index === -1) {
     console.log(
-      "replaceById could not find the specied id. No changes were made to passed in function."
+      "replaceById could not find the specified id. No changes were made to passed in function."
     );
     return arr;
   }

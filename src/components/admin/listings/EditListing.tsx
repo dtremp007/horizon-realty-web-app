@@ -29,6 +29,7 @@ import { db } from "../../../../lib/firebase.config";
 import { IconArrowLeft, IconCheck } from "@tabler/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import * as R from "rambda";
 
 type ListingData = {
   address: string;
@@ -56,38 +57,38 @@ type EditListingProps = {
 
 const EditListing = ({ id, data, mode }: EditListingProps) => {
   const [uploaded, setUploaded] = useState(false);
+  const defaultPropertyValues = {
+    address: "",
+    coordinates: [],
+    currency: "USD",
+    description: "Description",
+    imageUrls: [],
+    landArea: 0,
+    landAreaUnits: "",
+    listingType: "",
+    paymentType: "",
+    price: 1000,
+    title: "",
+    bathrooms: 0,
+    bedrooms: 0,
+    water: false,
+    electricity: false,
+  };
 
+  const form = useForm({
+    initialValues: R.mergeAll([defaultPropertyValues, data as ListingData]),
+  });
 
-  const initialValues: ListingData =
-  data !== null
-  ? (data as ListingData)
-  : {
-      address: "",
-      coordinates: [],
-      currency: "USD",
-      description: "Description",
-      imageUrls: [],
-      landArea: 0,
-      landAreaUnits: "",
-      listingType: "",
-      paymentType: "",
-      price: 1000,
-      title: "",
-      bathrooms: 0,
-      bedrooms: 0,
-      water: false,
-      electricity: false,
-    };
-    const form = useForm({
-        initialValues,
-    });
+  useEffect(() => {
+    if (form.isDirty()) {
+        setUploaded(false)
+    }
+  }, [form.isDirty()])
 
-    useEffect(() => {
-       console.log(form.getInputProps("water", {type: "checkbox"}))
-    }, [])
-    async function handleSubmit(values: ListingData) {
-        await setDoc(doc(db, "listings", id as string), form.values);
+  async function handleSubmit(values: undefined) {
+    await setDoc(doc(db, "listings", id as string), values);
     setUploaded(true);
+    form.resetDirty();
   }
 
   return (
@@ -184,10 +185,20 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
             />
           </Group>
           <Space h="lg" />
-          <CheckboxGroup label="Utilities">
-            <Checkbox label="Water" {...form.getInputProps("water", {type: "checkbox"})}/>
-            <Checkbox label="Electricity" {...form.getInputProps("electricity", {type: "checkbox"})}/>
-          </CheckboxGroup>
+          {/* I tried using CheckboxGroup, but it made form.getInputProps not work right, but thinking abount it, I probably should have used the function inside the Group tag. */}
+          <Group direction="column">
+            <Text>Ulitities</Text>
+            <Checkbox
+              label="Water"
+              value="water"
+              {...form.getInputProps("water", { type: "checkbox" })}
+            />
+            <Checkbox
+              label="Electricity"
+              value="electricity"
+              {...form.getInputProps("electricity", { type: "checkbox" })}
+            />
+          </Group>
         </AccordionItem>
       </Accordion>
       <Space h="md" />
@@ -217,7 +228,15 @@ const CoordinatesInput = ({ value, onChange }: CoordinatesInputProps) => {
   return (
     <Group align="flex-end">
       <TextInput type="text" label="Coordinates" onChange={handleChange} />
-      <div style={{border: "1px solid gray", borderRadius: "3px", padding: "7px 10px", textTransform: "uppercase", fontSize: ".75rem"}}>{`Latitude: ${value[0]}, Longitude: ${value[1]}`}</div>
+      <div
+        style={{
+          border: "1px solid gray",
+          borderRadius: "3px",
+          padding: "7px 10px",
+          textTransform: "uppercase",
+          fontSize: ".75rem",
+        }}
+      >{`Latitude: ${value[0]}, Longitude: ${value[1]}`}</div>
     </Group>
-      )
+  );
 };
