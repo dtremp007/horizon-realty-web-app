@@ -181,10 +181,20 @@
   gap: 0.7rem;
   align-items: center;
   transform: translateY(-4rem);
+  border-radius: .25rem;
   transition: all 250ms ease-in-out;
 
   &.open {
     transform: translateY(-2.75rem);
+  }
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba($color: #fff, $alpha: .1);
+  }
+
+  &:active {
+    background-color: rgba($color: #fff, $alpha: .3);
   }
 }
 

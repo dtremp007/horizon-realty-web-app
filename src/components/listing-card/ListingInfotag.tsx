@@ -1,13 +1,16 @@
 type Props = {
   variant: "bedroom" | "bathroom" | "area" | "land";
   quantity: number;
+  units?: string;
 };
 
-export default function ListingInfotag({ variant, quantity }: Props) {
+export default function ListingInfotag({ variant, quantity, units }: Props) {
+  const icon = getIcon(variant);
+
   return (
     <div className="listing-card__info-tag">
-      {getIcon(variant)}
-      {variant === "area" ? `${quantity} sq.ft.` : variant === "land" ? `${quantity} acres` : quantity}
+      {icon}
+      {`${quantity}${units ? ` ${units.toLowerCase()}` : ""}`}
     </div>
   );
 }
@@ -38,21 +41,88 @@ function getIcon(variant: string) {
     );
   } else if (variant === "land") {
     return (
-        <svg height={20} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.55 24.49">
+      <svg
+        height={20}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24.55 24.49"
+      >
         <g id="icons">
-            <polyline className="land-area-1" points="19.67 21.5 2.99 21.5 2.99 5.06"/>
-            <polygon className="land-area-2" points="18.79 18.5 23.97 21.5 18.79 24.49 18.79 18.5"/>
-            <polygon className="land-area-2" points="5.98 5.93 2.99 0.75 0 5.93 5.98 5.93"/>
-            <line className="land-area-3" x1="5.23" y1="0.75" x2="6.73" y2="0.75"/>
-            <line className="land-area-4" x1="9.85" y1="0.75" x2="20.74" y2="0.75"/>
-            <polyline className="land-area-3" points="22.3 0.75 23.8 0.75 23.8 2.25"/>
-            <line className="land-area-5" x1="23.8" y1="5.37" x2="23.8" y2="16.28"/>
-            <line className="land-area-3" x1="23.8" y1="17.84" x2="23.8" y2="19.34"/>
-            <line className="land-area-1" x1="19.99" y1="4.25" x2="6.99" y2="17.71"/>
-            <line className="land-area-1" x1="12.99" y1="4.25" x2="7.49" y2="9.75"/>
-            <line className="land-area-1" x1="19.99" y1="12.25" x2="14.49" y2="17.75"/>
+          <polyline
+            className="land-area-1"
+            points="19.67 21.5 2.99 21.5 2.99 5.06"
+          />
+          <polygon
+            className="land-area-2"
+            points="18.79 18.5 23.97 21.5 18.79 24.49 18.79 18.5"
+          />
+          <polygon
+            className="land-area-2"
+            points="5.98 5.93 2.99 0.75 0 5.93 5.98 5.93"
+          />
+          <line
+            className="land-area-3"
+            x1="5.23"
+            y1="0.75"
+            x2="6.73"
+            y2="0.75"
+          />
+          <line
+            className="land-area-4"
+            x1="9.85"
+            y1="0.75"
+            x2="20.74"
+            y2="0.75"
+          />
+          <polyline
+            className="land-area-3"
+            points="22.3 0.75 23.8 0.75 23.8 2.25"
+          />
+          <line
+            className="land-area-5"
+            x1="23.8"
+            y1="5.37"
+            x2="23.8"
+            y2="16.28"
+          />
+          <line
+            className="land-area-3"
+            x1="23.8"
+            y1="17.84"
+            x2="23.8"
+            y2="19.34"
+          />
+          <line
+            className="land-area-1"
+            x1="19.99"
+            y1="4.25"
+            x2="6.99"
+            y2="17.71"
+          />
+          <line
+            className="land-area-1"
+            x1="12.99"
+            y1="4.25"
+            x2="7.49"
+            y2="9.75"
+          />
+          <line
+            className="land-area-1"
+            x1="19.99"
+            y1="12.25"
+            x2="14.49"
+            y2="17.75"
+          />
         </g>
-</svg>
+      </svg>
+    );
+  } else if (variant === "area") {
+    return (
+      <svg height={20} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97.65 97.65">
+        <path
+          className="square-icon"
+          d="M80,80,74.6,85.38a1.39,1.39,0,0,1-2,0,1.41,1.41,0,0,1,0-2L78,78,68,68,62.62,73.4a1.39,1.39,0,0,1-2,0,1.41,1.41,0,0,1,0-2L66,66,56,56l-5.39,5.39a1.39,1.39,0,0,1-2,0,1.41,1.41,0,0,1,0-2l5.39-5.39-10-10-5.39,5.39a1.4,1.4,0,0,1-2-2l5.39-5.39-10-10-5.39,5.39a1.4,1.4,0,1,1-2-2l5.39-5.39-9-9-5.39,5.39a1.39,1.39,0,0,1-2,0,1.41,1.41,0,0,1,0-2L19.1,19.1,0,0V97.65H97.65ZM16,83V39.77L59.17,83Z"
+        />
+      </svg>
     );
   }
 }

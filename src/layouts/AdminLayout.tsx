@@ -1,10 +1,21 @@
 import { NextPage } from "next";
 import React, { useContext, useEffect } from "react";
 import EditListing from "../components/admin/listings/EditListing";
-import { AppShell, Navbar, Header, Aside, Footer, Button } from "@mantine/core";
+import {
+  AppShell,
+  Navbar,
+  Header,
+  Aside,
+  Footer,
+  Button,
+  Group,
+  Tooltip,
+} from "@mantine/core";
 import AdminMenu from "../components/admin/AdminMenu";
 import AuthUserContext from "../context/authUserContext";
 import { useRouter } from "next/router";
+import { logoSvg } from "../components/navigationAlt/AltNavbar";
+import Link from "next/link";
 
 type Props = {
   children: React.ReactNode;
@@ -16,13 +27,13 @@ const AdminLayout = ({ children }: Props) => {
 
   useEffect(() => {
     if (!user) {
-        router.push("/signin")
+      router.push("/signin");
     }
-  }, [])
+  }, []);
 
   function handleSignOut() {
     signOutUser();
-    router.push("/")
+    router.push("/");
   }
 
   if (!user) {
@@ -34,7 +45,20 @@ const AdminLayout = ({ children }: Props) => {
       padding="md"
       header={
         <Header height={60} className="admin-layout__top-nav">
-          <Button style={{}} onClick={handleSignOut}>Sign Out</Button>
+          <Link href="/">
+            <Tooltip label="Go to website">
+              <div className="alt-navbar__logo-wrapper">
+                {logoSvg}
+                <div className="alt-navbar__logo-text">
+                  <p className="horizon">HORIZON</p>
+                  <p className="rlst">Real&nbsp;Estate</p>
+                </div>
+              </div>
+            </Tooltip>
+          </Link>
+          <Button style={{}} onClick={handleSignOut}>
+            Sign Out
+          </Button>
         </Header>
       }
       navbar={

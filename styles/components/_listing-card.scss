@@ -181,11 +181,12 @@
   align-items: center;
   flex-grow: 1;
   gap: 0.5rem;
-//   background-color: #AA9053;
-//   color: $text-inverted;
-  color:  #AA9053;
-  border-radius: 10px;
+  color:  $logo-yellow;
   padding: 0 0.5rem;
+}
+
+.listing-card__info-tag + * {
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .listing-card__divider {
@@ -195,22 +196,22 @@
 }
 
 .bed-icon {
-  fill: $background-primary;
+  fill: currentColor;
 }
 .shower-icon {
-  fill: $background-primary;
+  fill: currentColor;
 }
 
 .cls-1,
 .cls-3 {
-  fill: #fff;
+  fill: currentColor;
 }
 .cls-1 {
   fill-opacity: 0.5;
 }
 .cls-2 {
   fill: none;
-  stroke: #fff;
+  stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2px;
@@ -225,8 +226,7 @@
 .land-area-4,
 .land-area-5 {
   fill: none;
-//   stroke: $text-inverted;
-  stroke:  #AA9053;
+  stroke:  currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -235,7 +235,7 @@
 }
 .land-area-2 {
 //   fill: $text-inverted;
-  fill:  #AA9053;
+  fill:  currentColor;
 }
 .land-area-3,
 .land-area-4,
@@ -247,6 +247,10 @@
 }
 .land-area-5 {
   stroke-dasharray: 3.12 3.12;
+}
+
+.square-icon {
+    fill: currentColor;
 }
 
 /* ===============

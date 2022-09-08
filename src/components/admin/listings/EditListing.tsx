@@ -39,6 +39,8 @@ type ListingData = {
   imageUrls: string[];
   landArea: number;
   landAreaUnits: string;
+  houseSize: number;
+  houseSizeUnits: string;
   listingType: string;
   paymentType: string;
   price: number;
@@ -57,14 +59,16 @@ type EditListingProps = {
 
 const EditListing = ({ id, data, mode }: EditListingProps) => {
   const [uploaded, setUploaded] = useState(false);
-  const defaultPropertyValues = {
+  const defaultPropertyValues: ListingData = {
     address: "",
     coordinates: [],
     currency: "USD",
     description: "Description",
     imageUrls: [],
     landArea: 0,
-    landAreaUnits: "",
+    landAreaUnits: "ACRES",
+    houseSize: 0,
+    houseSizeUnits: "SQ.FT.",
     listingType: "",
     paymentType: "",
     price: 1000,
@@ -164,6 +168,19 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
               placeholder="Pick one"
               data={["ACRES"]}
               {...form.getInputProps("landAreaUnits")}
+            />
+          </Group>
+          <Group>
+            <TextInput
+              type="number"
+              label="House Size"
+              {...form.getInputProps("houseSize")}
+            />
+            <Select
+              label="Units"
+              placeholder="Pick one"
+              data={["SQ.FT."]}
+              {...form.getInputProps("houseSizeUnits")}
             />
           </Group>
           <TextInput

@@ -269,7 +269,7 @@ const AltNavSubMenuItem = ({href, label, index, toggleSub, isActive}: Links & {i
   );
 };
 
-const logoSvg = (
+export const logoSvg = (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 181.8 100.7" height={34}>
     <g style={{ fill: "currentColor" }}>
       <path
