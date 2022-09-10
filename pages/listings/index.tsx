@@ -70,6 +70,14 @@ const Listings: NextPage<Props> = ({ firebaseDocs }) => {
         >
           <a className="listings-page__link">Lotes</a>
         </Link>
+        <Link
+          href={{
+            pathname: "/listings",
+            query: { filter: "BODEGA" },
+          }}
+        >
+          <a className="listings-page__link">Bodegas</a>
+        </Link>
       </div>
     );
   }

@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { Burger, Button } from "@mantine/core";
+import { Burger, Button, Tooltip } from "@mantine/core";
 import Show from "../HOC/Show";
 import { FaWhatsapp } from "react-icons/fa";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { NextRouter, useRouter } from "next/router";
 import BackButton from "../navigation/BackButton";
 import { IconChevronDown } from "@tabler/icons";
 import React from "react";
+import AuthUserContext from "../../context/authUserContext";
 
 const links: Links[] = [
   { href: "/", label: "Home", isActive: (router) => router.pathname === "/" },
@@ -39,6 +40,14 @@ const links: Links[] = [
         label: "Lotes",
         isActive: (router) => "/listings" && router.query.filter === "LOTE",
       },
+      {
+        href: {
+          pathname: "/listings",
+          query: { filter: "BODEGA" },
+        },
+        label: "Bodegas",
+        isActive: (router) => "/listings" && router.query.filter === "BODEGA",
+      },
     ],
     isActive: (router) => false,
   },
@@ -51,6 +60,7 @@ const AltNavbar = () => {
   const toggle = getToggleFunction("open", open);
   const router = useRouter();
   const navRef = useRef<HTMLDivElement>(null);
+  const { user } = useContext(AuthUserContext);
 
   //   const navbarStyle = {
   //     background: "var(--background-secondary)",
@@ -116,13 +126,17 @@ const AltNavbar = () => {
         </Show>
       </div>
       <div className={toggle("alt-navbar__content")}>
-        <div className={toggle("alt-navbar__logo-wrapper")}>
-          {logoSvg}
-          <div className="alt-navbar__logo-text">
-            <p className="horizon">HORIZON</p>
-            <p className="rlst">Real&nbsp;Estate</p>
-          </div>
-        </div>
+        <Link href={user ? "/admin/listings" : "/"}>
+          <Tooltip label={user ? "Go to admin site" : "Home"}>
+            <div className={toggle("alt-navbar__logo-wrapper")}>
+              {logoSvg}
+              <div className="alt-navbar__logo-text">
+                <p className="horizon">HORIZON</p>
+                <p className="rlst">Real&nbsp;Estate</p>
+              </div>
+            </div>
+          </Tooltip>
+        </Link>
         <AltNavMenu open={open} toggle={toggle} />
         <Button
           className={toggle("alt-navbar__contact-btn")}
@@ -225,21 +239,43 @@ type AltNavSubMenuProps = {
 
 const AltNavSubMenu = React.forwardRef<HTMLDivElement, AltNavSubMenuProps>(
   ({ childLinks, toggle, label }, ref) => {
-    const [subOpen, setSubOpen] = useState(false)
+    const [subOpen, setSubOpen] = useState(false);
     const toggleSub = getToggleFunction("open", subOpen);
     const subRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
 
+    useEffect(() => {
+      const closeSubMenu = () => {
+        setSubOpen(false);
+      };
 
+      router.events.on("routeChangeComplete", closeSubMenu);
+
+      return () => {
+        router.events.off("routeChangeComplete", closeSubMenu);
+      };
+    }, []);
 
     return (
       <div className={toggle("alt-navbar__menu-parent")} ref={ref}>
-        <span onClick={() => setSubOpen(prev => !prev)}>
+        <span onClick={() => setSubOpen((prev) => !prev)}>
           {label}
-          <IconChevronDown style={{transform: subOpen ? "rotate(180deg)" : "", transition: "all 200ms ease-in-out"}} size={20} />
+          <IconChevronDown
+            style={{
+              transform: subOpen ? "rotate(180deg)" : "",
+              transition: "all 200ms ease-in-out",
+            }}
+            size={20}
+          />
         </span>
         <div className={toggleSub("alt-navbar__child-menu")} ref={subRef}>
           {childLinks.map((link, index) => (
-            <AltNavSubMenuItem key={index} index={index} toggleSub={toggleSub} {...link}/>
+            <AltNavSubMenuItem
+              key={index}
+              index={index}
+              toggleSub={toggleSub}
+              {...link}
+            />
           ))}
         </div>
       </div>
@@ -247,23 +283,31 @@ const AltNavSubMenu = React.forwardRef<HTMLDivElement, AltNavSubMenuProps>(
   }
 );
 
-AltNavSubMenu.displayName = "AltNavSubMenu"
+AltNavSubMenu.displayName = "AltNavSubMenu";
 
-const AltNavSubMenuItem = ({href, label, index, toggleSub, isActive}: Links & {index: number, toggleSub: Function}) => {
-    const childRef = useRef<HTMLDivElement>(null);
-    const router = useRouter();
+const AltNavSubMenuItem = ({
+  href,
+  label,
+  index,
+  toggleSub,
+  isActive,
+}: Links & { index: number; toggleSub: Function }) => {
+  const childRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
-    useEffect(() => {
-      childRef.current?.style?.setProperty(
-        "--child-offset",
-        `-${(index + 1) * 40}px`
-      );
-    }, []);
+  useEffect(() => {
+    childRef.current?.style?.setProperty(
+      "--child-offset",
+      `-${(index + 1) * 40}px`
+    );
+  }, []);
 
   return (
     <div className={toggleSub("alt-navbar__child-item")} ref={childRef}>
       <Link href={href as string}>
-        <a className={isActive(router) ? "nav-link active-link" : "nav-link"}>{label}</a>
+        <a className={isActive(router) ? "nav-link active-link" : "nav-link"}>
+          {label}
+        </a>
       </Link>
     </div>
   );

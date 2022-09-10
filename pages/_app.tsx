@@ -9,7 +9,6 @@ import Head from "next/head";
 
 //TODO: make router path a global property
 function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter();
 
   return (
     <MantineProvider theme={{ colorScheme: "dark" }}>

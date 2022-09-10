@@ -124,7 +124,7 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
         <AccordionItem label={<p>Details</p>}>
           <Select
             label="Type"
-            data={["LOTE", "CASA"]}
+            data={["LOTE", "CASA", "BODEGA"]}
             searchable
             placeholder="Listing type"
             {...form.getInputProps("listingType")}

@@ -304,15 +304,17 @@
     margin-top: 0;
     top: 100%;
   }
+}
 
-  .alt-navbar__menu-parent:hover > .alt-navbar__child-menu {
-    height: fit-content;
-    background-color: $background-secondary;
-  }
+@media (hover: hover) {
+    .alt-navbar__menu-parent:hover > .alt-navbar__child-menu {
+        height: fit-content;
+        background-color: $background-secondary;
+      }
 
-  .alt-navbar__menu-parent:hover > * > .alt-navbar__child-item {
-    transform: translateY(0px);
-    opacity: 100%;
-    visibility: visible;
-  }
+      .alt-navbar__menu-parent:hover > * > .alt-navbar__child-item {
+        transform: translateY(0px);
+        opacity: 100%;
+        visibility: visible;
+      }
 }
