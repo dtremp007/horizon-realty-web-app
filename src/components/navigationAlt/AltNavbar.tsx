@@ -262,7 +262,7 @@ const AltNavSubMenu = React.forwardRef<HTMLDivElement, AltNavSubMenuProps>(
           {label}
           <IconChevronDown
             style={{
-              transform: subOpen ? "rotate(180deg)" : "",
+              transform: subOpen ? "rotate(180deg)" : "rotate(0deg)",
               transition: "all 200ms ease-in-out",
             }}
             size={20}

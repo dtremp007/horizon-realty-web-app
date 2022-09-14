@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useMemo } from "react";
 import ListingThumbnail from "./ListingThumbnail";
 import ListingLocation from "./ListingLocation";
 import ListingInfotag from "./ListingInfotag";
@@ -48,6 +48,11 @@ export default function ListingCard({
     router.prefetch(`/listings/${id}`);
   }, []);
 
+  const thumbnail = useMemo(() => {
+    const regexp = /(\.[^.]*?\?)/
+    return imageUrls[0].replace(regexp, "_1280x720.jpeg?")
+  }, [imageUrls]);
+
   const handleClick = () => {
     router.push(`/listings/${id}`);
     setLoading(true);
@@ -63,7 +68,7 @@ export default function ListingCard({
       <ListingThumbnail
         price={price}
         currency={currency}
-        imageUrl={imageUrls[0]}
+        imageUrl={thumbnail}
         status={status}
       />
       <div className="listing-card__info-wrapper">

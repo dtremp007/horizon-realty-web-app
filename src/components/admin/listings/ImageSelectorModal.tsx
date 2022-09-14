@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Modal, Image, Checkbox, ActionIcon, Group } from "@mantine/core";
 import {
   getDownloadURL,
@@ -113,10 +113,15 @@ const ImageItem = ({ id, url, storageRef, metadata, selected, updateUrl }: Image
         setChecked(e.target.checked)
     }
 
+    const thumbnail = useMemo(() => {
+        const regexp = /(\.[^.]*?\?)/
+        return url.replace(regexp, "_1280x720.jpeg?")
+      }, [url]);
+
   return (
     <div className="image-selector__item">
       <Checkbox checked={checked} onChange={handleChange}/>
-      <Image src={url} height={100} width={200} />
+      <Image src={thumbnail} height={100} width={200} />
       <p>{metadata.name}</p>
       <ActionIcon>
         <IconTrash/>

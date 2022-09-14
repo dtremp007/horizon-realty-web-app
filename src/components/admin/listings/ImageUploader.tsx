@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDropzone } from "react-dropzone";
 import { DropzoneOptions } from "react-dropzone";
 import {
@@ -68,10 +74,9 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
   const unsuccessfullFiles = useRef<UnsuccessulFile[]>([]);
 
   const parent = useDragAndDrop((elements) => {
-    console.log(images)
+    console.log(images);
     const updatedImageList = elements
       .map((element) => {
-        console.log(element)
         const id = element.id;
         if (!id) {
           return null;
@@ -80,7 +85,6 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
         return image;
       })
       .filter((image) => image !== null);
-
 
     setImages(updatedImageList as UploaderImage[]);
   }, value);
@@ -314,9 +318,17 @@ const ImagePreview = ({
   handleRetry,
   handleDelete,
 }: ImagePreviewProps) => {
+  const thumbnail = useMemo(() => {
+    if (image.uploaded) {
+      const regexp = /(\.[^.]*?\?)/;
+      return image.url.replace(regexp, "_1280x720.jpeg?");
+    }
+    return image.url
+  }, []);
+
   return (
     <div className="image-uploader__preview" id={id}>
-      <Image src={image.url} height={144} />
+      <Image src={thumbnail} height={144} />
       <div
         className="image-uploader__preview-overlay"
         style={{ backgroundColor: image.error ? "rgba(0,0,0,.4)" : "" }}

@@ -3,6 +3,7 @@ import { Navigation } from "swiper";
 import "swiper/css/bundle";
 import { StaticImageData } from "next/image";
 import Image from "next/image";
+import { useMemo } from "react";
 
 type Props = {
   images: string[];
@@ -10,6 +11,12 @@ type Props = {
 };
 
 const CarouselContainer = ({ images, title }: Props) => {
+  const thumbnails = useMemo(() => {
+    return images.map((url) => {
+      const regexp = /(\.[^.]*?\?)/;
+      return url.replace(regexp, "_1280x720.jpeg?");
+    });
+  }, [images]);
 
   return (
     <Swiper
@@ -17,10 +24,10 @@ const CarouselContainer = ({ images, title }: Props) => {
       modules={[Navigation]}
       spaceBetween={0}
       slidesPerView={1}
-    //   style={{maxWidth:"500px", color: "#fff"}}
+      //   style={{maxWidth:"500px", color: "#fff"}}
     >
-      {images.map((image, index) => (
-          <SwiperSlide key={index} >
+      {thumbnails.map((image, index) => (
+        <SwiperSlide key={index}>
           <div className="carousel__image-container">
             <Image src={image} layout="fill" objectFit="contain" alt={title} />
           </div>

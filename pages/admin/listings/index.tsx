@@ -1,10 +1,9 @@
 import { GetServerSideProps, NextPage } from "next";
 import { Card, Image, Text, Badge, Button, Group } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getDocs, collection, DocumentData, doc } from "firebase/firestore";
 import { db } from "../../../lib/firebase.config";
-import Spinner from "../../../src/shared/Spinner";
-import Link from "next/link"
+import Link from "next/link";
 import { useRouter } from "next/router";
 type Props = {
   firebaseDocs: {
@@ -14,11 +13,23 @@ type Props = {
 };
 
 const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
-  const [listings, setListings] = useState(firebaseDocs);
-  const router = useRouter()
+  const [listings, setListings] = useState<Props["firebaseDocs"]>(
+    firebaseDocs.map((listing) => {
+      const regexp = /(\.[^.]*?\?)/;
+      const thumbnail: string = listing.data.imageUrls[0].replace(regexp, "_1280x720.jpeg?");
+      return {
+        id: listing.id,
+        data: {
+            ...listing.data,
+            thumbnail
+        }
+      }
+    })
+  );
+  const router = useRouter();
 
   function handleAddBtn() {
-    const newDoc = doc(collection(db, "listings"))
+    const newDoc = doc(collection(db, "listings"));
     router.push(`/admin/listings/${newDoc.id}`);
   }
 
@@ -32,27 +43,37 @@ const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
         <Card key={listing.id} shadow="sm" p="lg" radius="md" withBorder>
           <Card.Section>
             <Image
-              src={listing.data.imageUrls[0]}
+              src={listing.data.thumbnail}
               height={160}
               alt="listing-thumbnail"
             />
           </Card.Section>
 
-            <Text weight={500}>{listing.data.title}</Text>
+          <Text weight={500}>{listing.data.title}</Text>
 
           <Group position="center" mt={16}>
             <Link href={`/admin/listings/${listing.id}`}>
-            <Button color="blue" radius="md" style={{width: "calc(50% - 8px"}}>
-              Edit
-            </Button>
+              <Button
+                color="blue"
+                radius="md"
+                style={{ width: "calc(50% - 8px" }}
+              >
+                Edit
+              </Button>
             </Link>
-            <Button color="green" radius="md" style={{width: "calc(50% - 8px"}}>
-             Mark as Sold
+            <Button
+              color="green"
+              radius="md"
+              style={{ width: "calc(50% - 8px" }}
+            >
+              Mark as Sold
             </Button>
           </Group>
         </Card>
       ))}
-      <div className="admin-listings__add-listing" onClick={handleAddBtn}><p>+</p></div>
+      <div className="admin-listings__add-listing" onClick={handleAddBtn}>
+        <p>+</p>
+      </div>
     </div>
   );
 };
