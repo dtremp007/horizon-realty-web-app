@@ -40,7 +40,7 @@ const Footer = () => {
       </div>
       <div>
         <AiOutlineMail size={32} />
-        <a href="mailto: info@horizonrealty.com.mx">
+        <a href="mailto: info@horizonrealty.mx">
           info@horizonrealty.com.mx
         </a>
       </div>

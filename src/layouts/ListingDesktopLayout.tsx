@@ -129,7 +129,7 @@ const ListingDesktopLayout = ({ data }: Props) => {
               </div>
               <div className="detail-page--card flow-content">
                 <h2 className="desktop-page__title">{title}</h2>
-                <div dangerouslySetInnerHTML={{ __html: description }} />
+                <div className="desktop-page__description" dangerouslySetInnerHTML={{ __html: description }} />
               </div>
               <h2 style={{}}>Ubicación</h2>
               <SingleMapView coordinates={coordinates} />
