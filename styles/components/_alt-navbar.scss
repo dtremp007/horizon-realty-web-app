@@ -144,11 +144,13 @@
   opacity: 0%;
   transition: all 200ms ease-in-out;
   visibility: hidden;
+  pointer-events: none;
 
   &.open {
     transform: translateY(0px);
     opacity: 100%;
     visibility: visible;
+    pointer-events: all;
   }
 }
 
@@ -316,5 +318,6 @@
         transform: translateY(0px);
         opacity: 100%;
         visibility: visible;
+        pointer-events: all;
       }
 }

@@ -36,7 +36,7 @@ import {
 } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { storage } from "../../../../lib/firebase.config";
-import process from "process";
+import process, { env } from "process";
 import ImageSelectorModal from "./ImageSelectorModal";
 import useDragAndDrop from "../../../hooks/useDragAndDrop";
 
@@ -319,7 +319,7 @@ const ImagePreview = ({
   handleDelete,
 }: ImagePreviewProps) => {
   const thumbnail = useMemo(() => {
-    if (image.uploaded) {
+    if (image.uploaded && process.env.NODE_ENV !== "development") {
       const regexp = /(\.[^.]*?\?)/;
       return image.url.replace(regexp, "_1280x720.jpeg?");
     }

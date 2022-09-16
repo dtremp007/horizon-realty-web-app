@@ -3,7 +3,8 @@ import ListingInfotag from "../../src/components/listing-card/ListingInfotag";
 import { Divider, Space, Accordion, AccordionItem } from "@mantine/core";
 import ListingLocation from "../../src/components/listing-card/ListingLocation";
 import SingleMapView from "../../src/components/map/SingleMapView";
-import PriceDisplay from "../shared/PriceDisplay"
+import PriceDisplay from "../shared/PriceDisplay";
+import InfoTagWrapper from "../components/listing-card/InfoTagWrapper";
 
 type Props = {
   data: any;
@@ -26,19 +27,20 @@ const ListingDetailLayout = ({ data }: Props) => {
   return (
     <>
       <div className="detail-page__container">
-      <CarouselContainer images={imageUrls} title={title} />
+        <CarouselContainer images={imageUrls} title={title} />
         <div className="detail-page__main-content flow-content">
-          <div className="detail-page__price-wrapper">
-            <PriceDisplay price={price} currency={currency} />
-            <p>{paymentType}</p>
+          <div className="flow-content">
+            <div className="detail-page__price-wrapper">
+              <PriceDisplay price={price} currency={currency} />
+              <p>{paymentType}</p>
+            </div>
+            <ListingLocation address={address} />
+            <InfoTagWrapper {...data} />
           </div>
-          <ListingLocation address={address} />
-          <div className="listing-card__info-tag-wrapper">
-            <ListingInfotag quantity={landArea} variant="land" />
+          <div className=" flow-content">
+            <h2 className="detail-page__title">{title}</h2>
+            <div dangerouslySetInnerHTML={{ __html: description }} />
           </div>
-          <Divider />
-          <h2 className="detail-page__title">{title}</h2>
-          <div dangerouslySetInnerHTML={{ __html: description }} />
           {/* <Accordion iconPosition="right">
                 <AccordionItem label={<h2>Payments Options</h2>}>
                   <p>1 Payment - $50,000</p>
@@ -100,7 +102,7 @@ const ListingDetailLayout = ({ data }: Props) => {
             </a>
           </div>
           <Divider />
-          <p style={{ textAlign: "center" }}>Visits: N/A</p>
+          <p style={{ textAlign: "center" }}>Visitas: N/A</p>
         </div>
       </div>
       <div className="space r4"></div>

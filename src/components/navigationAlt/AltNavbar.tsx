@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Burger, Button, Tooltip } from "@mantine/core";
+import { ActionIcon, Burger, Button, Tooltip } from "@mantine/core";
 import Show from "../HOC/Show";
 import { FaWhatsapp } from "react-icons/fa";
 import { useState, useRef, useEffect, useContext } from "react";
@@ -138,15 +138,18 @@ const AltNavbar = () => {
           </Tooltip>
         </Link>
         <AltNavMenu open={open} toggle={toggle} />
-        <Button
-          className={toggle("alt-navbar__contact-btn")}
-          rightIcon={<FaWhatsapp size={30} />}
-          onClick={() => window.open("https://wa.me/526251459646", "_blank")}
-          uppercase
-          //   style={{backgroundColor: "#1971c2"}}
-        >
-          Contáctanos
-        </Button>
+
+        <Show blacklistRoutes={["/listings/[id]"]} altOptions="isBlacklisted" alt={<div style={{ width: "180.98px", height: "36px", marginRight: "10px" }}/>}>
+          <Button
+            className={toggle("alt-navbar__contact-btn")}
+            variant="default"
+            leftIcon={<FaWhatsapp size={30} />}
+            onClick={() => window.open("https://wa.me/526251459646", "_blank")}
+            uppercase
+          >
+            (625)145 9645
+          </Button>
+        </Show>
       </div>
     </nav>
   );
@@ -216,6 +219,7 @@ const AltNavMenuItem = ({
         childLinks={childLinks as Links[]}
         label={label}
         toggle={toggle}
+        open={open}
       />
     );
   }
@@ -235,10 +239,11 @@ type AltNavSubMenuProps = {
   childLinks: Links[];
   toggle: Function;
   label: string;
+  open: boolean;
 };
 
 const AltNavSubMenu = React.forwardRef<HTMLDivElement, AltNavSubMenuProps>(
-  ({ childLinks, toggle, label }, ref) => {
+  ({ childLinks, toggle, label, open }, ref) => {
     const [subOpen, setSubOpen] = useState(false);
     const toggleSub = getToggleFunction("open", subOpen);
     const subRef = useRef<HTMLDivElement>(null);

@@ -1,0 +1,76 @@
+{
+    "listings": {
+        "fields": {
+            "address": {
+                "type": "string",
+                "options": "None"
+            },
+            "bathrooms": {
+                "type": "number",
+                "options": "None"
+            },
+            "bedrooms": {
+                "type": "number",
+                "options": "None"
+            },
+            "coordinates": {
+                "type": "array",
+                "subtype": "number",
+                "options": "None"
+            },
+            "currency": {
+                "type": "string",
+                "options": ["USD", "MXN"]
+            },
+            "description": {
+                "type": "string",
+                "options": "None"
+            },
+            "electricity": {
+                "type": "boolean",
+                "options": "None"
+            },
+            "houseSize": {
+                "type": "number",
+                "options": "None"
+            },
+            "houseSizeUnits": {
+                "type": "string",
+                "options": ["SQ.FT."]
+            },
+            "imageUrls": {
+                "type": "array",
+                "subtype": "string",
+                "options": "None"
+            },
+            "landArea": {
+                "type": "number",
+                "options": "None"
+            },
+            "landAreaUnits": {
+                "type": "number",
+                "options": "None"
+            },
+            "listingType": {
+                "type": "string",
+                "options": ["LOTE", "CASA", "BODEGA"]
+            },
+            "paymentType": {
+                "type": "string",
+                "options": "None"
+            },
+            "price": {
+                "type": "number",
+                "options": "None"
+            },
+            "title": {
+                "type": "string",
+                "options": "None"
+            },
+            "water": {
+                "type": "boolean",
+                "options": "None"
+            }
+        }
+    }
+}

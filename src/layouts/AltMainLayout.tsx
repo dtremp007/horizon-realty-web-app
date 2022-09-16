@@ -12,7 +12,7 @@ const AltMainLayout = ({ children }: Props) => {
     <>
       <AltNavbar />
       <main className="alt-layout__main">{children}</main>
-      <Show blacklistRoutes={["/listings/[id]"]}>
+      <Show blacklistRoutes={["/listings/[id]", "/test"]}>
         <Footer />
       </Show>
     </>

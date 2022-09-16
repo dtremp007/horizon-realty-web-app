@@ -14,7 +14,8 @@ type Props = {
     | "conditionFails"
     | "breakpointFails"
     | "always"
-    | "force";
+    | "force"
+    | "isBlacklisted";
   forceAlt?: boolean;
   blacklistRoutes?: string[];
 };
@@ -66,6 +67,10 @@ const Show = ({
   }
 
  if (alt && altOptions === "conditionFails" && !when && isInMediaQuery) {
+    return <>{alt}</>
+ }
+
+ if (alt && altOptions === "isBlacklisted") {
     return <>{alt}</>
  }
 

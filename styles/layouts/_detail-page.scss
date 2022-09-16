@@ -1,72 +1,240 @@
 @use "../abstracts" as *;
 
 .detail-page__container {
-    margin-top: 60px;
+  margin-top: 60px;
 }
 
 .detail-page__main-content {
-    margin: .5rem $gutter;
-    text-align: left;
-    color: #C1C2C5;
+  margin: 0.5rem $gutter;
+  text-align: left;
+  color: #c1c2c5;
 }
 
 .detail-page__title {
-    font-size: 1.25rem;
-    font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .detail-page__accordion-label {
-    font-size: 2rem;
+  font-size: 2rem;
 }
 
 .detail-page__cta {
-    position: fixed;
-    z-index: 100;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    height: 3.5rem;
-    background-color: $background-secondary;
-    line-height: 3rem;
-    box-shadow: 0 -2px 5px 1px rgba($color: #000, $alpha: .2);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    gap: 1rem;
+  position: fixed;
+  z-index: 100;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 3.5rem;
+  background-color: $background-secondary;
+  line-height: 3rem;
+  box-shadow: 0 -2px 5px 1px rgba($color: #000, $alpha: 0.2);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1rem;
 }
 
 .detail-page__map-link {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: $gutter;
-    margin: $gutter auto;
-    background-color: $background-secondary;
-    width: fit-content;
-    padding: .5rem $gutter;
-    border-radius: $button-radius;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $gutter;
+  margin: $gutter auto;
+  background-color: $background-secondary;
+  width: fit-content;
+  padding: 0.5rem $gutter;
+  border-radius: $button-radius;
 
-    a {
-        text-decoration: none;
-        color: $text-primary;
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
+  a {
+    text-decoration: none;
+    color: $text-primary;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
 }
 
 .detail-page__price-wrapper {
-    display: flex;
-    width: fit-content;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: .5rem;
-    width: min(420px, 100%);
+  display: flex;
+  width: fit-content;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0.5rem;
+  width: min(420px, 100%);
 
-    p {
-        background-color: $listing-card-infotag-bg;
-        color: $text-inverted;
-        border-radius: 1rem;
-        padding: 0 0.5rem;
-    }
+  p {
+    background-color: $listing-card-infotag-bg;
+    color: $text-inverted;
+    border-radius: 1rem;
+    padding: 0 0.5rem;
+  }
+}
+
+.detail-page--card {
+  padding: 0.5rem;
+  background: rgba(#000, 0.3);
+  border-radius: 16px;
+  box-shadow: -3px 3px 32px -10px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.noise {
+  width: 100vw;
+  height: 100%;
+  position: fixed;
+  z-index: -1;
+  filter: contrast(100%) brightness(100%);
+  background: radial-gradient(
+      circle at 75% 40%,
+      rgba(90, 90, 100, 0.8) 5%,
+      rgba(33, 33, 40, 0.9) 90%
+    ),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+@media screen and (max-width: 694px) {
+  .noise {
+    background: radial-gradient(
+        circle at 50% 30%,
+        rgba(90, 90, 100, 0.7) 5%,
+        rgba(23, 23, 30, 0.9) 90%
+      ),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+}
+
+/* =======================
+   DETAIL-PAGE FOR DESKTOP
+   ======================= */
+
+.desktop-page__container {
+  margin-top: 60px;
+  position: fixed;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.wrap-the-wrapper {
+  position: relative;
+}
+
+.grid-wrapper {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow: auto;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #2b2b2b;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #6b6b6b;
+  border-radius: 0.5rem;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.desktop-page__mosaic {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(auto-fit, 250px);
+  gap: 0.25rem;
+
+  div {
+    overflow: hidden;
+  }
+}
+
+.full {
+  grid-column: span 2 / auto;
+  grid-row: span 3 / auto;
+}
+
+.last {
+  grid-column: span 2 / auto;
+}
+
+.desktop-page__main-content {
+  padding: 0.5rem;
+  text-align: left;
+  color: #c1c2c5;
+  overflow: auto;
+}
+
+.desktop-page__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.desktop-page__map-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $gutter;
+  margin: $gutter auto;
+  background-color: $background-secondary;
+  width: fit-content;
+  padding: 0.5rem $gutter;
+  border-radius: $button-radius;
+
+  a {
+    text-decoration: none;
+    color: $text-primary;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+}
+
+.desktop-page__price-wrapper {
+  display: flex;
+  width: fit-content;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0.5rem;
+  width: min(420px, 100%);
+
+  p {
+    background-color: $listing-card-infotag-bg;
+    color: $text-inverted;
+    border-radius: 1rem;
+    padding: 0 0.5rem;
+  }
+}
+
+.desktop-page__cta {
+  display: flex;
+//   justify-content: space-between;
+  align-items: center;
+  gap: .25rem;
+  padding-right: 0.5rem;
+}
+
+.desktop-page__bbtn {
+  position: fixed;
+  top: calc(60px + 1rem);
+  left: 1rem;
+  background-color: $background-secondary;
+  border-radius: 100%;
+  z-index: 50;
+  padding: 0.5rem;
+  box-shadow: -3px 3px 32px -10px rgba(0, 0, 0, 0.35);
 }
