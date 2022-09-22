@@ -62,11 +62,18 @@ const AltNavbar = () => {
   const navRef = useRef<HTMLDivElement>(null);
   const { user } = useContext(AuthUserContext);
 
-  //   const navbarStyle = {
-  //     background: "var(--background-secondary)",
-  //     background: "none",
-  //     color: "var(--text-inverted)"
-  //   };
+  const logoClickhandler = (e: React.MouseEvent) => {
+    if (user) {
+      router.push("/admin/listings");
+    } else {
+      if (e.metaKey) {
+        router.push("/signin");
+      } else {
+        if (router.pathname === "/") return;
+        router.push("/");
+      }
+    }
+  };
 
   useEffect(() => {
     function handleRouterChange() {
@@ -126,20 +133,29 @@ const AltNavbar = () => {
         </Show>
       </div>
       <div className={toggle("alt-navbar__content")}>
-        <Link href={user ? "/admin/listings" : "/"}>
-          <Tooltip label={user ? "Go to admin site" : "Home"}>
-            <div className={toggle("alt-navbar__logo-wrapper")}>
-              {logoSvg}
-              <div className="alt-navbar__logo-text">
-                <p className="horizon">HORIZON</p>
-                <p className="rlst">Real&nbsp;Estate</p>
-              </div>
+        <Tooltip label={user ? "Go to admin site" : "Home"}>
+          <div
+            className={toggle("alt-navbar__logo-wrapper")}
+            onClick={logoClickhandler}
+          >
+            {logoSvg}
+            <div className="alt-navbar__logo-text">
+              <p className="horizon">HORIZON</p>
+              <p className="rlst">Real&nbsp;Estate</p>
             </div>
-          </Tooltip>
-        </Link>
+          </div>
+        </Tooltip>
         <AltNavMenu open={open} toggle={toggle} />
 
-        <Show blacklistRoutes={["/listings/[id]"]} altOptions="isBlacklisted" alt={<div style={{ width: "180.98px", height: "36px", marginRight: "10px" }}/>}>
+        <Show
+          blacklistRoutes={["/listings/[id]"]}
+          altOptions="isBlacklisted"
+          alt={
+            <div
+              style={{ width: "180.98px", height: "36px", marginRight: "10px" }}
+            />
+          }
+        >
           <Button
             className={toggle("alt-navbar__contact-btn")}
             variant="default"
@@ -147,7 +163,7 @@ const AltNavbar = () => {
             onClick={() => window.open("https://wa.me/526251459646", "_blank")}
             uppercase
           >
-            (625)145 9645
+            (625)145 9646
           </Button>
         </Show>
       </div>

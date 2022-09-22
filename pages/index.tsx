@@ -43,7 +43,7 @@ const Home: NextPage<HomeProps> = ({ videoSrc }) => {
     <>
       <div className="landing-page__video-container">
         <video ref={videoRef} muted autoPlay loop playsInline>
-          <source src={videoSrc} />
+          <source src={require("../public/landing-page-video.mp4")} />
         </video>
         <Link href="/listings">
           <a className="landing-page__link">Ver Listados</a>
