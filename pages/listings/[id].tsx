@@ -44,7 +44,7 @@ const DetailedPage: NextPage<Props> = ({ data }) => {
             size="lg"
             onClick={() =>
               window.open(
-                `mailto:info@horizonrealty.com.mx?subject=${encodeURIComponent(
+                `mailto:info@horizonrealty.mx?subject=${encodeURIComponent(
                   data.title
                 )}&body=${encodeURIComponent(
                   "Hola, estoy escribiendo sobre " + data.title
