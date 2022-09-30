@@ -1,25 +1,32 @@
 import { GetServerSideProps, NextPage } from "next";
+import dynamic from "next/dynamic";
 import FilterMenu from "../../src/components/filter/FilterMenu";
 import ListingsLayout from "../../src/layouts/ListingsLayout";
 import { useMediaQuery } from "@mantine/hooks";
 import { getDocs, collection, where } from "firebase/firestore";
 import { db } from "../../lib/firebase.config";
-import { QuerySnapshot, DocumentData } from "firebase/firestore";
 import ListingsContext, {
   ListingsProvider,
 } from "../../src/context/listingsContext/listingsContext";
 import Router, { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
-import MapView from "../../src/components/map/MapView";
-import MapListingsOverlay from "../../src/components/map/MapListingsOverlay";
-import { Button, Group } from "@mantine/core";
 import Link from "next/link";
+import {ListingSchema} from "../../lib/interfaces/Listings"
+import path from "path"
+import {readFileSync} from "fs"
+import { FilterElement_V2_Props } from "../../lib/interfaces/FilterTypes";
+import AuthUserContext from "../../src/context/authUserContext";
+import { getToggleFunction } from "../../lib/util";
+
+const MapView = dynamic(() => import("../../src/components/map/MapView"))
+const MapListingsOverlay = dynamic(() => import("../../src/components/map/MapListingsOverlay"))
 
 type Props = {
   firebaseDocs: {
     id: string;
-    data: DocumentData;
+    data: ListingSchema;
   }[];
+  filters: FilterElement_V2_Props[];
 };
 
 /*
@@ -27,11 +34,14 @@ type Props = {
     - Renable filter
 */
 
-const Listings: NextPage<Props> = ({ firebaseDocs }) => {
+const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
   const isDesktop = useMediaQuery("(min-width: 695px)", true);
   const router = useRouter();
   const [view, setView] = useState(router.query.view);
-  const { dispatch } = useContext(ListingsContext);
+  const {user} = useContext(AuthUserContext);
+
+  const shouldShowFilter = user && isDesktop || process.env.NODE_ENV === "development"
+  const toggleFilterView = getToggleFunction("show-filter", !shouldShowFilter)
 
   useEffect(() => {
     if (router.query.foo) {
@@ -83,18 +93,17 @@ const Listings: NextPage<Props> = ({ firebaseDocs }) => {
   }
 
   return (
-    <ListingsProvider firebaseDocs={firebaseDocs}>
+    <ListingsProvider firebaseDocs={firebaseDocs} filters={filters}>
       {view === "map" ? (
         <>
           <MapListingsOverlay />
           <MapView />
         </>
       ) : (
-        <ListingsLayout />
-        //   isDesktop && <FilterMenu />
-        // <div className="listing-page__layout">
-        //   <ListingsLayout />
-        // </div>
+        <div className={toggleFilterView("listing-page__layout")}>
+          {shouldShowFilter && <FilterMenu/> }
+          <ListingsLayout />
+        </div>
       )}
     </ListingsProvider>
   );
@@ -106,15 +115,13 @@ export const getServerSideProps: GetServerSideProps = async () => {
     id: listing.id,
     data: listing.data(),
   }));
-  //   const fileName = path.join(__dirname, "..","..","..","lib", "data.json");
-  //   console.log(fileName)
-  //   const data = readFileSync(fileName, { encoding: "utf8" });
-  //   const docs = JSON.parse(data).docs;
+    const fileName = path.join(process.cwd(),"lib", "filters.json");
+    const filters = readFileSync(fileName, { encoding: "utf8" });
 
   return {
     props: {
       firebaseDocs,
-      // firebaseDocs: docs
+      filters: JSON.parse(filters).filters
     },
   };
 };

@@ -58,7 +58,7 @@ type EditListingProps = {
 };
 
 const EditListing = ({ id, data, mode }: EditListingProps) => {
-  const [uploaded, setUploaded] = useState(false);
+  const [uploaded, setUploaded] = useState(!R.isEmpty(data));
   const defaultPropertyValues: ListingData = {
     address: "",
     coordinates: [],
@@ -85,9 +85,9 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
 
   useEffect(() => {
     if (form.isDirty()) {
-        setUploaded(false)
+      setUploaded(false);
     }
-  }, [form.isDirty()])
+  }, [form.isDirty()]);
 
   async function handleSubmit(values: undefined) {
     await setDoc(doc(db, "listings", id as string), values);
@@ -111,6 +111,9 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
           <Button disabled={!form.isDirty()} type="submit">
             Save
           </Button>
+          <Link href={`/listings/${id}`}>
+            <Button disabled={!uploaded}>View Listing</Button>
+          </Link>
         </Group>
       </Group>
       <TextInput

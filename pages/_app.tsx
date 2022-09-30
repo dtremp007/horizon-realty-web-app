@@ -1,11 +1,13 @@
+import dynamic from "next/dynamic";
 import "../styles/style.scss";
 import { MantineProvider } from "@mantine/core";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import AdminLayout from "../src/layouts/AdminLayout";
 import { AuthUserProvider } from "../src/context/authUserContext";
 import AltMainLayout from "../src/layouts/AltMainLayout";
 import Head from "next/head";
+
+const AdminLayout = dynamic(() => import("../src/layouts/AdminLayout"))
 
 //TODO: make router path a global property
 function MyApp({ Component, pageProps }: AppProps) {

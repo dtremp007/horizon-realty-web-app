@@ -15,15 +15,19 @@ type Props = {
 const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
   const [listings, setListings] = useState<Props["firebaseDocs"]>(
     firebaseDocs.map((listing) => {
+      if (listing.data.imageUrls.length === 0) return listing;
       const regexp = /(\.[^.]*?\?)/;
-      const thumbnail: string = listing.data.imageUrls[0].replace(regexp, "_1280x720.jpeg?");
+      const thumbnail: string = listing.data.imageUrls[0].replace(
+        regexp,
+        "_1280x720.jpeg?"
+      );
       return {
         id: listing.id,
         data: {
-            ...listing.data,
-            thumbnail
-        }
-      }
+          ...listing.data,
+          thumbnail,
+        },
+      };
     })
   );
   const router = useRouter();

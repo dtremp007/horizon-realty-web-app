@@ -1,16 +1,18 @@
-import { CheckboxGroup, Checkbox } from "@mantine/core"
+import { CheckboxGroup, Checkbox, Group, Text } from "@mantine/core";
 
 type Props = {
-    filterProps: any,
-    value: string[],
-    handleChange: Function
-}
+  filterProps: any;
+  legend: string;
+  handleChange: Function;
+};
 
-const CheckboxGroupWrapper = ({filterProps, value, handleChange}: Props) => {
+const CheckboxGroupWrapper = ({ filterProps, legend, handleChange }: Props) => {
   return (
-    <CheckboxGroup orientation="vertical" size="md" value={value} onChange={handleChange as (e: any)=>any}>
-        {filterProps.data.map((item: any) => <Checkbox key={item.value} {...item}/>)}
-    </CheckboxGroup>
-  )
-}
-export default CheckboxGroupWrapper
+    <Group direction="column">
+      {filterProps.data.map((item: any) => (
+        <Checkbox key={item.value} onChange={handleChange} {...item} />
+      ))}
+    </Group>
+  );
+};
+export default CheckboxGroupWrapper;

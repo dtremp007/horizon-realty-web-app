@@ -1,0 +1,27 @@
+@use "../abstracts" as *;
+/* ===============
+   EDIT-FILTER
+   =============== */
+
+.filter-ui-overlay {
+    visibility: collapse;
+    transition: all 200ms;
+}
+
+.filter-ui-overlay--padding {
+    padding: .125rem 1rem;
+}
+
+.filter-ui-overlay__container {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-ui-overlay__container:hover {
+    background-color: rgba($color: #fff, $alpha: .05);
+    border-radius: 1rem;
+}
+
+.filter-ui-overlay__container:hover > .filter-ui-overlay {
+    visibility: visible;
+}

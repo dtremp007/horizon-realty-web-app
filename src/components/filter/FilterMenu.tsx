@@ -8,156 +8,88 @@ import {
   CheckboxGroup,
   Button,
   ActionIcon,
+  Modal,
 } from "@mantine/core";
 import RadioButtonGroup from "./RadioButtonGroup";
-import type {
-  FilterParameter,
-  RadioButtonGroupProps,
-} from "../../../lib/interfaces/FilterTypes";
 import { useRouter } from "next/router";
-import { FilterItem } from "./FilterItem";
-
-const filters: FilterParameter[] = [
-    {
-      filterName: "location",
-      filterDescription: "",
-      filterType: "NativeSelect",
-      layout: "",
-      hasLegend: true,
-      legendValue: "Choose a location:",
-      filterProps: {
-        data: ["All","Cuauhtemoc", "Chihuahua"],
-      },
-      position: 1,
-      target: "location",
-      fallback: "All",
-    },
-    {
-      filterName: "listingType",
-      filterDescription: "",
-      filterType: "RadioButtonGroup",
-      layout: "",
-      hasLegend: true,
-      legendValue: "Listing Type",
-      filterProps: {
-        data: [
-          { id: 1, label: "Any", value: "any" },
-          { id: 2, label: "Homes", value: "homes" },
-          { id: 3, label: "Farm Land", value: "farm-land" },
-        ],
-      },
-      position: 2,
-      style: {
-        flexFlow: "row wrap",
-        justifyContent: "center",
-        columnGap: ".75rem",
-        rowGap: ".25rem",
-        paddingLeft: "0",
-        paddingRight: "0"
-      },
-      target: "listingType",
-      fallback: "any",
-    },
-    {
-      filterName: "priceRange",
-      filterDescription: "",
-      filterType: "RangeSlider",
-      layout: "",
-      hasLegend: true,
-      legendValue: "Price Range",
-      filterProps: {
-          label: (value: number) => {
-            return `\$${value.toLocaleString("en")}`;
-          },
-        // label: [
-        //   "value",
-        //   "return '$' + value.toLocaleString('en')}",
-        // ],
-        min: 0,
-        max: 500000,
-        step: 1000,
-        labelAlwaysOn: true,
-      },
-      position: 3,
-      style: {
-        display: "block",
-        paddingTop: "2rem"
-      },
-      target: "price",
-      fallback: [0, 500000]
-    },
-    {
-      filterName: "bedrooms",
-      filterDescription: "",
-      filterType: "SegmentControl",
-      layout: "",
-      hasLegend: false,
-      legendValue: "",
-      filterProps: {
-        data: [
-          { label: "1", value: 1 },
-          { label: "2", value: 2 },
-          { label: "3", value: 3 },
-          { label: "4+", value: 4 },
-          { label: "any", value: "any" },
-        ],
-        variant: "bedrooms",
-      },
-      position: 4,
-      target: "bedrooms",
-      fallback: "any"
-    },
-    {
-      filterName: "utilities",
-      filterDescription: "",
-      filterType: "CheckboxGroup",
-      layout: "",
-      hasLegend: true,
-      legendValue: "Utilities",
-      filterProps: {
-        data: [
-          { label: "Gas", value: "gas" },
-          { label: "Water", value: "water" },
-          { label: "Electricity", value: "electricity" },
-        ],
-      },
-      position: 5,
-      target: "utilities",
-      fallback: [],
-    },
-  ];
+import { useContext, useState, useMemo } from "react";
+import ListingsContext, {
+  ListingsState,
+} from "../../context/listingsContext/listingsContext";
+import { ListingSchema } from "../../../lib/interfaces/Listings";
+import FilterElementWrapper from "../filter_v2/FilterElementWrapper";
+import {IconAdjustments} from "@tabler/icons"
+import { NavContext } from "../../layouts/AltMainLayout";
+import { getToggleFunction } from "../../../lib/util";
 
 export default function FilterMenu() {
   const router = useRouter();
+  const { listingsState, dispatch } = useContext(ListingsContext);
+  const {nav_state, dispatch_to_nav} = useContext(NavContext)
+
+  const toggle_filter = getToggleFunction("open", nav_state.isFilterOpen)
 
   return (
-    <div className="filter-menu__container ">
-      {router.pathname === "/filter" && (
-        <ActionIcon
-          onClick={() => router.back()}
-          style={{ alignSelf: "flex-start", margin: ".5rem 0 0 .5rem" }}
-        >
-          <svg
-            style={{ justifySelf: "flex-start" }}
-            width={24}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 20"
-          >
-            <path
-              className="back-icon--inverse"
-              d="M1.5,10,10,18.5M1.5,10h21m-21,0L10,1.5"
-            />
-          </svg>
+    <>
+    <div className="filter-menu__toggle-btn">
+        <ActionIcon size="lg" onClick={() => dispatch_to_nav({type: "TOGGLE_FILTER"})}>
+            <IconAdjustments size={30} />
         </ActionIcon>
-      )}
-      <form className="filter-menu__form flow-content">
-        <Space />
-        {filters.map(filter => (
-            <FilterItem key={filter.position} {...filter} />
-        ))}
-        <Button onClick={() => router.push("/listings")}>Apply Filters</Button>
-        <Space />
-      </form>
     </div>
+      <FilterDebugConsole listingsState={listingsState} />
+      <div className={toggle_filter("filter-menu__container")}>
+        <form className="filter-menu__form flow-content">
+          <Space />
+          {Array.from(listingsState.filters).map(([id, filter]) => (
+            <FilterElementWrapper key={id} {...filter}/>
+          ))}
+          <Button onClick={() => dispatch({ type: "APPLY_FILTERS" })}>
+            Apply Filters
+          </Button>
+          <Space />
+        </form>
+      </div>
+    </>
   );
 }
+
+type FilterDebugConsoleProps = {
+  listingsState: ListingsState;
+};
+
+const FilterDebugConsole = ({ listingsState }: FilterDebugConsoleProps) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  return (
+    <>
+      <Modal opened={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className="debug-console">
+          {listingsState.filterLog.length === 0 ? (
+            <pre>
+              <span className="comment">&#47;&#47; No filters</span>
+            </pre>
+          ) : (
+            listingsState.filterLog.map((log) => (
+              <div key={log.filterTitle} >
+                <div
+                  dangerouslySetInnerHTML={{ __html: log.stringifiedFunction }}
+                />
+                {log.entries.map((entry) => (
+                  <div
+                    key={entry.listingTitle}
+                    dangerouslySetInnerHTML={{ __html: entry.stringify() }}
+                  />
+                ))}
+              </div>
+            ))
+          )}
+        </div>
+      </Modal>
+      <div className="modal-btn">
+        <Button onClick={() => setModalOpen((prev) => !prev)}>
+          Debug Modal
+        </Button>
+      </div>
+    </>
+  );
+};

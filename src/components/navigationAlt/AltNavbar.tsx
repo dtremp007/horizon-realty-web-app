@@ -8,6 +8,7 @@ import BackButton from "../navigation/BackButton";
 import { IconChevronDown } from "@tabler/icons";
 import React from "react";
 import AuthUserContext from "../../context/authUserContext";
+import { NavContext } from "../../layouts/AltMainLayout";
 
 const links: Links[] = [
   { href: "/", label: "Home", isActive: (router) => router.pathname === "/" },
@@ -54,10 +55,7 @@ const links: Links[] = [
 ];
 
 const AltNavbar = () => {
-  const [open, setOpen] = useState(false);
-  const [goBack, setGoBack] = useState(false);
-  const [isBlack, setIsBlack] = useState(true);
-  const toggle = getToggleFunction("open", open);
+  const { nav_state, dispatch_to_nav, toggle_menu, toggle_header } = useContext(NavContext);
   const router = useRouter();
   const navRef = useRef<HTMLDivElement>(null);
   const { user } = useContext(AuthUserContext);
@@ -77,7 +75,7 @@ const AltNavbar = () => {
 
   useEffect(() => {
     function handleRouterChange() {
-      setOpen(false);
+      dispatch_to_nav({ type: "TOGGLE_MENU", payload: false });
     }
 
     router.events.on("routeChangeComplete", handleRouterChange);
@@ -89,17 +87,17 @@ const AltNavbar = () => {
 
   useEffect(() => {
     if (router.pathname === "/listings/[id]") {
-      setGoBack(true);
+      dispatch_to_nav({ type: "WE'RE_AT_A_DEADEND" });
     } else {
-      setGoBack(false);
+      dispatch_to_nav({ type: "GO_AS_YOU_PLEASE" });
     }
 
     if (router.pathname === "/") {
       navRef.current?.style.setProperty("color", "var(--text-inverted)");
-      setIsBlack(true);
+      dispatch_to_nav({ type: "TOGGLE_IS_BLACK", payload: true });
     } else {
       navRef.current?.style.setProperty("color", "var(--text-primary)");
-      setIsBlack(false);
+      dispatch_to_nav({ type: "TOGGLE_IS_BLACK", payload: false });
     }
 
     if (router.pathname !== "/") {
@@ -113,29 +111,30 @@ const AltNavbar = () => {
   }, [router.pathname, router.query]);
 
   return (
-    <nav className={toggle("alt-navbar")} ref={navRef}>
+    <nav className={toggle_header("alt-navbar")} ref={navRef}>
       <div className="alt-navbar__icon-container">
         <Show
-          when={!goBack}
+          when={!nav_state.youHaveToGoBack}
           breakpoint="(max-width: 694px)"
           initialValue
           alt={<BackButton />}
         >
           <Burger
-            opened={open}
+            opened={nav_state.isMenuOpen}
             size="md"
             onClick={() => {
-              setOpen((prev) => !prev);
-              if (router.pathname === "/") setIsBlack((prev) => !prev);
+              dispatch_to_nav({ type: "TOGGLE_MENU" });
+              if (router.pathname === "/")
+                dispatch_to_nav({ type: "TOGGLE_IS_BLACK" });
             }}
-            color={isBlack ? "black" : "white"}
+            color={nav_state.burgerIsBlack ? "black" : "white"}
           />
         </Show>
       </div>
-      <div className={toggle("alt-navbar__content")}>
+      <div className={toggle_menu("alt-navbar__content")}>
         <Tooltip label={user ? "Go to admin site" : "Home"}>
           <div
-            className={toggle("alt-navbar__logo-wrapper")}
+            className={toggle_menu("alt-navbar__logo-wrapper")}
             onClick={logoClickhandler}
           >
             {logoSvg}
@@ -145,7 +144,7 @@ const AltNavbar = () => {
             </div>
           </div>
         </Tooltip>
-        <AltNavMenu open={open} toggle={toggle} />
+        <AltNavMenu />
 
         <Show
           blacklistRoutes={["/listings/[id]"]}
@@ -157,7 +156,7 @@ const AltNavbar = () => {
           }
         >
           <Button
-            className={toggle("alt-navbar__contact-btn")}
+            className={toggle_menu("alt-navbar__contact-btn")}
             variant="default"
             leftIcon={<FaWhatsapp size={30} />}
             onClick={() => window.open("https://wa.me/526251459646", "_blank")}
@@ -174,28 +173,20 @@ export default AltNavbar;
 
 type Links = Omit<AltNavMenuItem, "index" | "activeLink" | "toggle" | "open">;
 
-type AltNavMenuProps = {
-  open: boolean;
-  toggle: Function;
-};
+const AltNavMenu = () => {
+  const { nav_state, dispatch_to_nav, links, toggle_menu } =
+    useContext(NavContext);
 
-const AltNavMenu = ({ toggle, open }: AltNavMenuProps) => {
   return (
-    <div className={toggle("alt-navbar__menu")}>
+    <div className={toggle_menu("alt-navbar__menu")}>
       {links.map((link, index) => (
-        <AltNavMenuItem
-          key={index}
-          {...link}
-          index={index}
-          open={open}
-          toggle={toggle}
-        />
+        <AltNavMenuItem key={index} {...link} index={index} />
       ))}
     </div>
   );
 };
 
-type AltNavMenuItem = {
+export type AltNavMenuItem = {
   index: number;
   href?:
     | string
@@ -204,8 +195,6 @@ type AltNavMenuItem = {
         query: any;
       };
   label: string;
-  open: boolean;
-  toggle: Function;
   isActive: (router: NextRouter) => boolean;
   containsChildren?: boolean;
   childLinks?: Links[];
@@ -215,12 +204,12 @@ const AltNavMenuItem = ({
   index,
   href,
   label,
-  open,
-  toggle,
   isActive,
   containsChildren,
   childLinks,
 }: AltNavMenuItem) => {
+  const { nav_state, dispatch_to_nav, links, toggle_menu } =
+    useContext(NavContext);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -234,14 +223,12 @@ const AltNavMenuItem = ({
         ref={ref}
         childLinks={childLinks as Links[]}
         label={label}
-        toggle={toggle}
-        open={open}
       />
     );
   }
 
   return (
-    <div className={toggle("alt-navbar__menu-item")} ref={ref}>
+    <div className={toggle_menu("alt-navbar__menu-item")} ref={ref}>
       <Link href={href as string}>
         <a className={isActive(router) ? "nav-link active-link" : "nav-link"}>
           {label}
@@ -253,13 +240,13 @@ const AltNavMenuItem = ({
 
 type AltNavSubMenuProps = {
   childLinks: Links[];
-  toggle: Function;
   label: string;
-  open: boolean;
 };
 
 const AltNavSubMenu = React.forwardRef<HTMLDivElement, AltNavSubMenuProps>(
-  ({ childLinks, toggle, label, open }, ref) => {
+  ({ childLinks, label }, ref) => {
+    const { nav_state, dispatch_to_nav, links, toggle_menu } =
+      useContext(NavContext);
     const [subOpen, setSubOpen] = useState(false);
     const toggleSub = getToggleFunction("open", subOpen);
     const subRef = useRef<HTMLDivElement>(null);
@@ -278,7 +265,7 @@ const AltNavSubMenu = React.forwardRef<HTMLDivElement, AltNavSubMenuProps>(
     }, []);
 
     return (
-      <div className={toggle("alt-navbar__menu-parent")} ref={ref}>
+      <div className={toggle_menu("alt-navbar__menu-parent")} ref={ref}>
         <span onClick={() => setSubOpen((prev) => !prev)}>
           {label}
           <IconChevronDown

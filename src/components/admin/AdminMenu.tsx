@@ -7,6 +7,7 @@ import {
 } from "@tabler/icons";
 import { ThemeIcon, UnstyledButton, Group, Text } from "@mantine/core";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface MainLinkProps {
   icon: React.ReactNode;
@@ -16,6 +17,8 @@ interface MainLinkProps {
 }
 
 function AdminLink({ icon, color, label, href }: MainLinkProps) {
+    const router = useRouter();
+
   return (
     <Link href={href}>
       <UnstyledButton
@@ -24,8 +27,8 @@ function AdminLink({ icon, color, label, href }: MainLinkProps) {
           width: "100%",
           padding: theme.spacing.xs,
           borderRadius: theme.radius.sm,
-          color:
-            theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+          color: theme.colors.dark[0],
+          backgroundColor: router.pathname === href ? theme.colors.dark[8] : "",
 
           "&:hover": {
             backgroundColor:
@@ -54,9 +57,24 @@ const data = [
     label: "Listings",
     href: "/admin/listings",
   },
-  { icon: <IconFilter size={16} />, color: "yellow", label: "Filters", href: "/admin/filters" },
-  { icon: <IconSettings size={16} />, color: "green", label: "Settings", href: "/admin/settings" },
-  { icon: <IconNotebook size={16} />, color: "blue", label: "Pages", href: "/admin/pages" },
+  {
+    icon: <IconFilter size={16} />,
+    color: "yellow",
+    label: "Filters",
+    href: "/admin/filters",
+  },
+  {
+    icon: <IconSettings size={16} />,
+    color: "green",
+    label: "Settings",
+    href: "/admin/settings",
+  },
+  {
+    icon: <IconNotebook size={16} />,
+    color: "blue",
+    label: "Pages",
+    href: "/admin/pages",
+  },
 ];
 
 const AdminMenu = () => {

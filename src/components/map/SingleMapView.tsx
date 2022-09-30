@@ -1,6 +1,5 @@
 import Map, { MapRef, ViewStateChangeEvent } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { SampleListing } from "../../../lib/interfaces/Listings";
 import { Marker } from "react-map-gl";
 import { GrLocation } from "react-icons/gr";
 import { useRef, useState } from "react";

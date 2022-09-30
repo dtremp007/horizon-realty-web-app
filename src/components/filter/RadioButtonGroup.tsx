@@ -1,30 +1,27 @@
 import { ChangeEvent, useState } from "react";
-import type { FilterParameter } from "../../../lib/interfaces/FilterTypes";
-import { randomId } from "../../../lib/random-id/random-id.js";
-import type { RadioButtonGroupProps } from "../../../lib/interfaces/FilterTypes";
 
-type Props = {
-    filterProps: FilterParameter["filterProps"],
-    filterName: FilterParameter["filterName"],
-    handleChange: Function,
-    selected: string
+export type RadioButtonGroupProps = {
+    data: {label: string, value: string}[],
+    filterName: string,
+    onChange?: RadioButtonProps["handleChange"],
+    selected?: string
 }
 
 const RadioButtonGroup = ({
-    filterProps,
+    data,
     filterName,
-    handleChange,
+    onChange,
     selected,
-}: Props) => {
+}: RadioButtonGroupProps) => {
 
   return (
     <>
-      {filterProps.data.map((props: any) => (
+      {data.map((props) => (
         <RadioButton
-          key={props.id}
+          key={props.label}
           filterName={filterName}
-          handleChange={handleChange}
-          selected={selected}
+          handleChange={onChange as RadioButtonProps["handleChange"]}
+          selected={selected as string}
           {...props}
         />
       ))}
@@ -33,13 +30,12 @@ const RadioButtonGroup = ({
 };
 export default RadioButtonGroup;
 
-//TODO: figure out the prop for the changleHandler
-type RadioButtonProps = {
+export type RadioButtonProps = {
   filterName: string;
   value: string;
   label: string;
-  selected: string | null;
-  handleChange: (e: any) => void;
+  selected: string;
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 const RadioButton = ({

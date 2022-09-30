@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async (
     const id = (context.params as ParsedUrlQuery).id as string;
     const docRef = doc(db, "listings", id);
     const docSnap = await getDoc(docRef);
-    const firebaseDoc = docSnap.data() || null;
+    const firebaseDoc = docSnap.data() || {};
 
     return {
       props: {

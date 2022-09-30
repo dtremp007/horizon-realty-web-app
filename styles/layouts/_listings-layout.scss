@@ -1,14 +1,13 @@
 @use "../abstracts" as *;
 
-.listing-page__layout {
-    margin: $gutter;
-}
-
 @media screen and (min-width: 695px){
     .listing-page__layout {
         display: grid;
-        gap: $gutter;
         grid-template-columns: min(420px, 50%) auto;
+
+        &.show-filter {
+            display: block;
+        }
     }
 }
 

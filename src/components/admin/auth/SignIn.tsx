@@ -4,12 +4,17 @@ import AuthUserContext from "../../../context/authUserContext";
 import Show from "../../HOC/Show";
 import { Button } from "@mantine/core";
 import { useRouter } from "next/router";
+import { createDummyUser } from "../../../../lib/util";
 
 const SignIn = () => {
   const { user, loading, signIn } = useContext(AuthUserContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") createDummyUser();
+  }, [])
 
   useEffect(() => {
     if (user) {
