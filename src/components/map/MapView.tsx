@@ -1,13 +1,11 @@
-import dynamic from "next/dynamic";
-import type { MapRef } from "react-map-gl";
+import Map, { MapRef, ViewStateChangeEvent } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Marker } from "react-map-gl";
+import { GrLocation } from "react-icons/gr";
 import { useRef, useState, useContext, useEffect } from "react";
 import useSupercluster from "use-supercluster";
 import type { BBox } from "geojson";
 import ListingsContext from "../../context/listingsContext/listingsContext";
-
-const Map = dynamic(import("react-map-gl"))
 
 //TODO: Add constraints to how far out use can zoom using turf. Check out this page https://visgl.github.io/react-map-gl/docs/get-started/state-management
 //TODO: Produce a popup, when a listing is pressed. Also, make better icons.

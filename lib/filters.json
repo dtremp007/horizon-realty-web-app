@@ -1,20 +1,6 @@
 {
   "filters": [
     {
-      "id": "location",
-      "type": "NativeSelect",
-      "fieldKey": "address",
-      "comparisonOperator": "===",
-      "filterValue": "Any",
-      "filterProps": {
-        "data": ["Here", "There", "Everywhere", "Any"]
-      },
-      "fallback": "Any",
-      "legend": "Location",
-      "active": false,
-      "position": 0
-    },
-    {
       "id": "listingType",
       "type": "RadioButtonGroup",
       "fieldKey": "listingType",
@@ -50,6 +36,24 @@
       "legend": "Price Range",
       "active": false,
       "position": 2
+    },
+    {
+      "id": "bedrooms",
+      "type": "SegmentedControl",
+      "fieldKey": "bedrooms",
+      "comparisonOperator": "===",
+      "filterProps": {
+        "data": [
+          { "label": "1", "value": "1" },
+          { "label": "2", "value": "2" },
+          { "label": "3", "value": "3" },
+          { "label": "4+", "value": ">=4" },
+          { "label": "any", "value": "any" }
+        ]
+      },
+      "fallback": "any",
+      "active": false,
+      "position": 3
     },
     {
       "id": "bathrooms",
