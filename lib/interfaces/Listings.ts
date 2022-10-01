@@ -17,6 +17,7 @@ export interface ListingSchema {
   description: string;
   imageUrls: string[];
   paymentType: string;
+  availability: "sold" | "available" | "pending";
   title: string;
   water: boolean;
 }

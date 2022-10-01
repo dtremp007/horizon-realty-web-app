@@ -39,6 +39,7 @@ export default function ListingCard({
     status,
     bedrooms,
     bathrooms,
+    availability,
   } = data;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -71,6 +72,7 @@ export default function ListingCard({
         currency={currency}
         imageUrl={thumbnail}
         status={status}
+        availability={availability}
       />
       <div className="listing-card__info-wrapper">
         <h3 className="listing-card__h3">{title}</h3>

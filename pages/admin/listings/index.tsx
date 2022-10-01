@@ -1,14 +1,21 @@
 import { GetServerSideProps, NextPage } from "next";
-import { Card, Image, Text, Badge, Button, Group } from "@mantine/core";
+import { Card, Image, Text, Badge, Button, Group, Menu } from "@mantine/core";
 import { useState } from "react";
-import { getDocs, collection, DocumentData, doc } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  DocumentData,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../../lib/firebase.config";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ListingSchema } from "../../../lib/interfaces/Listings";
 type Props = {
   firebaseDocs: {
     id: string;
-    data: DocumentData;
+    data: ListingSchema;
   }[];
 };
 
@@ -44,36 +51,7 @@ const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
   return (
     <div style={{ margin: "0" }} className="listings__container">
       {listings.map((listing) => (
-        <Card key={listing.id} shadow="sm" p="lg" radius="md" withBorder>
-          <Card.Section>
-            <Image
-              src={listing.data.thumbnail}
-              height={160}
-              alt="listing-thumbnail"
-            />
-          </Card.Section>
-
-          <Text weight={500}>{listing.data.title}</Text>
-
-          <Group position="center" mt={16}>
-            <Link href={`/admin/listings/${listing.id}`}>
-              <Button
-                color="blue"
-                radius="md"
-                style={{ width: "calc(50% - 8px" }}
-              >
-                Edit
-              </Button>
-            </Link>
-            <Button
-              color="green"
-              radius="md"
-              style={{ width: "calc(50% - 8px" }}
-            >
-              Mark as Sold
-            </Button>
-          </Group>
-        </Card>
+        <AdminListingCard key={listing.id} {...listing} />
       ))}
       <div className="admin-listings__add-listing" onClick={handleAddBtn}>
         <p>+</p>
@@ -82,6 +60,55 @@ const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
   );
 };
 export default AdminListngs;
+
+type AdminListingCardProps = {
+  id: string;
+  data: ListingSchema & { thumbnail?: string };
+};
+
+const AdminListingCard = (listing: AdminListingCardProps) => {
+    const [availability, setAvailability] = useState(listing.data.availability)
+
+  const handleAvailabilityChange = () => {
+    const listingRef = doc(db, "listings", listing.id);
+    updateDoc(listingRef, { availability: availability === "sold" ? "available" : "sold" });
+
+    setAvailability(prev => prev === "sold" ? "available" : "sold")
+  };
+
+  return (
+    <Card shadow="sm" p="lg" radius="md" withBorder>
+      <Card.Section>
+        <Image
+          src={listing.data.thumbnail}
+          height={160}
+          alt="listing-thumbnail"
+        />
+      </Card.Section>
+
+    <Group position="apart">
+      <Text weight={500}>{listing.data.title}</Text>
+      <Badge color={availability === "sold" ? "red" : "green"} variant="light">{availability === "sold" ? "Sold" : "Available"}</Badge>
+    </Group>
+
+      <Group position="center" mt={16}>
+        <Link href={`/admin/listings/${listing.id}`}>
+          <Button color="blue" radius="md" style={{ width: "calc(50% - 8px" }}>
+            Edit
+          </Button>
+        </Link>
+        <Button
+          color="green"
+          radius="md"
+          style={{ width: "calc(50% - 8px" }}
+          onClick={handleAvailabilityChange}
+        >
+        {availability === "sold" ? "Mark as Available" : "Mark as Sold"}
+        </Button>
+      </Group>
+    </Card>
+  );
+};
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const querySnapshot = await getDocs(collection(db, "listings"));

@@ -12,10 +12,7 @@ import {
   Modal,
   Group,
 } from "@mantine/core";
-import {
-  buildFilterParameters,
-  increaseByGenerator,
-} from "../../lib/util";
+import { buildFilterParameters, increaseByGenerator } from "../../lib/util";
 import {
   FilterElement,
   FilterCreateOptions,
@@ -131,22 +128,6 @@ const AdminFilters: NextPage<AdminFilterProps> = ({
 };
 export default AdminFilters;
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const filtersFile = path.join(process.cwd(), "lib", "filters.json");
-  const metadataFile = path.join(process.cwd(), "lib", "metadata.json");
-  const filters = JSON.parse(
-    readFileSync(filtersFile, { encoding: "utf8" }) // I removed .toString(), I'm not sure why it was here. I don't think it's necessary.
-  ).filters;
-  const metadata = JSON.parse(readFileSync(metadataFile, { encoding: "utf8" }));
-
-  return {
-    props: {
-      filters,
-      metadata,
-    },
-  };
-};
-
 export type LocalMetadata = {
   listings: {
     fields: Map<ListingFieldKey, ListingFieldOptions>;
@@ -168,7 +149,7 @@ function parseMetadata(metadata: WebsiteMetadata): LocalMetadata {
       ),
     },
     filters: {
-        // @ts-ignore
+      // @ts-ignore
       defaultOptions: new Map(Object.entries(metadata.filters.defaultOptions)),
       ofType: new Map(
         Object.entries(metadata.filters.ofType) as [
@@ -214,4 +195,20 @@ const editFiltersReducer: Reducer<EditFilterState, EditFilterActions> = (
     default:
       return state;
   }
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const filtersFile = path.join(process.cwd(), "lib", "filters.json");
+  const metadataFile = path.join(process.cwd(), "lib", "metadata.json");
+  const filters = JSON.parse(
+    readFileSync(filtersFile, { encoding: "utf8" }) // I removed .toString(), I'm not sure why it was here. I don't think it's necessary.
+  ).filters;
+  const metadata = JSON.parse(readFileSync(metadataFile, { encoding: "utf8" }));
+
+  return {
+    props: {
+      filters,
+      metadata,
+    },
+  };
 };

@@ -23,15 +23,16 @@
   &:hover::after {
     content: "";
     position: absolute;
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     background-color: #000;
-    opacity: .2;
+    opacity: 0.2;
     z-index: 10;
     border-radius: $listing-card-radius;
   }
 
   &:active {
-    transform: scale(.99);
+    transform: scale(0.99);
   }
 
   &.visited {
@@ -73,6 +74,32 @@
   justify-content: space-between;
 }
 
+.listing-card--sold {
+    &::before {
+        content: "";
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(255,255,255, .3);
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+    }
+
+  &::after {
+    content: "VENDIDO";
+    color:rgba(0, 0, 0, 0.4);
+    position: absolute;
+    font-weight: 600;
+    letter-spacing: .125rem;
+    top: 50%;
+    left: 50%;
+    font-size: 3.25rem;
+    transform: translate(-50%, -50%);
+  }
+}
+
 .listing-card--flex-between {
   display: flex;
   flex-direction: row;
@@ -95,9 +122,10 @@
   width: fit-content;
   padding: 0.1rem 0.5rem;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  z-index: 10;
 
   span {
-    font-size: .9rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -181,12 +209,12 @@
   align-items: center;
   flex-grow: 1;
   gap: 0.5rem;
-  color:  $logo-yellow;
+  color: $logo-yellow;
   padding: 0 0.5rem;
 }
 
 .listing-card__info-tag + * {
-    border-left: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .listing-card__divider {
@@ -226,7 +254,7 @@
 .land-area-4,
 .land-area-5 {
   fill: none;
-  stroke:  currentColor;
+  stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -234,8 +262,8 @@
   stroke-width: 2px;
 }
 .land-area-2 {
-//   fill: $text-inverted;
-  fill:  currentColor;
+  //   fill: $text-inverted;
+  fill: currentColor;
 }
 .land-area-3,
 .land-area-4,
@@ -250,7 +278,7 @@
 }
 
 .square-icon {
-    fill: currentColor;
+  fill: currentColor;
 }
 
 /* ===============
@@ -263,7 +291,7 @@
   background-color: $listing-card-background;
   border-radius: $listing-card-radius;
   overflow: hidden;
-//   max-width: 350px;
+  //   max-width: 350px;
 }
 
 .listing-card__thumbnailv2 {
