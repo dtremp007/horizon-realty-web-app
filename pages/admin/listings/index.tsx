@@ -86,7 +86,7 @@ const AdminListingCard = (listing: AdminListingCardProps) => {
         />
       </Card.Section>
 
-    <Group direction="column" position="right">
+    <Group direction="column" position="right" mt={16}>
       <Badge color={availability === "sold" ? "red" : "green"} variant="light">{availability === "sold" ? "Sold" : "Available"}</Badge>
       <Text weight={500}>{listing.data.title}</Text>
     </Group>
