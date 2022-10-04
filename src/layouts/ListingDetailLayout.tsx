@@ -16,6 +16,8 @@ import InfoTagWrapper from "../components/listing-card/InfoTagWrapper";
 import { googleMapsLogo } from "./ListingDesktopLayout";
 import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { getToggleFunction } from "../../lib/util";
 
 type Props = {
   data: any;
@@ -34,6 +36,45 @@ const ListingDetailLayout = ({ data }: Props) => {
     description,
     paymentType,
   } = data;
+
+  const [show, setShow] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const timeoutId = useRef<any>();
+
+  const handleScroll = (e?: Event) => {
+    if (typeof window !== "undefined") {
+        clearTimeout(timeoutId.current)
+
+        if (window.scrollY > (document.body.scrollHeight - window.innerHeight)) return
+
+        if (window.scrollY < lastScrollY) {
+            setShow(false)
+        } else {
+            setShow(true)
+        }
+        setLastScrollY(window.scrollY)
+
+        timeoutId.current = setTimeout(() => {
+            setShow(false)
+        }, 2000);
+    }
+  }
+
+  const toggleCTA = getToggleFunction("hide", !show)
+
+  useEffect(() => {handleScroll()}, [])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+        window.addEventListener("scroll", handleScroll)
+
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll)
+        }
+    }
+
+  }, [lastScrollY])
 
   return (
     <>
@@ -94,7 +135,7 @@ const ListingDetailLayout = ({ data }: Props) => {
       <div className="space r4"></div>
 
       {/* CTA */}
-      <div className="detail-page__cta">
+      <div className={toggleCTA("detail-page__cta")}>
         <ActionIcon
           size="lg"
           onClick={() =>
