@@ -12,11 +12,13 @@ import { db } from "../../../lib/firebase.config";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ListingSchema } from "../../../lib/interfaces/Listings";
+import { WebsiteMetadata } from "../filters";
 type Props = {
   firebaseDocs: {
     id: string;
     data: ListingSchema;
   }[];
+  metadata: WebsiteMetadata
 };
 
 const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {

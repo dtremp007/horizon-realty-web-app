@@ -58,7 +58,7 @@
       },
       "listingType": {
         "dataType": "array",
-        "options": ["LOTE", "CASA", "BODEGA"],
+        "options": ["LOTE", "CASA", "BODEGA", "LOTES COMMERCIALES"],
         "arrayDataType": "string"
       },
       "paymentType": {

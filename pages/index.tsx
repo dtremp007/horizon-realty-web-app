@@ -1,6 +1,7 @@
 import type { GetStaticProps, NextPage } from "next";
 import Image from "next/image";
 import imgSrc from "../public/golden-horizon-logo-3d.png";
+import imgSrcFlat from "../public/golden-horizon-logo.png";
 import { ref, getDownloadURL } from "firebase/storage";
 import Link from "next/link";
 import { storage } from "../lib/firebase.config";
@@ -58,7 +59,7 @@ const Home: NextPage<HomeProps> = ({ videoSrc }) => {
           <div>
             <Image
               priority={true}
-              src={imgSrc}
+              src={imgSrcFlat}
               layout="responsive"
               alt="golden-horizon-logo"
             />

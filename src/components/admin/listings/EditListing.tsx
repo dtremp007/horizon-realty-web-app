@@ -15,7 +15,7 @@ import {
   Text,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { DocumentData, setDoc } from "firebase/firestore";
+import { DocumentData, query, setDoc } from "firebase/firestore";
 import ImageUploader from "./ImageUploader";
 import Tiptap from "./Tiptap";
 import {
@@ -30,6 +30,7 @@ import { IconArrowLeft, IconCheck } from "@tabler/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import * as R from "rambda";
+import { WebsiteMetadata } from "../../../../pages/admin/filters";
 
 type ListingData = {
   address: string;
@@ -55,10 +56,12 @@ type EditListingProps = {
   id?: string;
   data?: DocumentData;
   mode: "edit" | "new";
+  metadata: WebsiteMetadata;
 };
 
-const EditListing = ({ id, data, mode }: EditListingProps) => {
+const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
   const [uploaded, setUploaded] = useState(!R.isEmpty(data));
+  const [metadata, setMetadata] = useState(md)
   const defaultPropertyValues: ListingData = {
     address: "",
     coordinates: [],
@@ -127,7 +130,7 @@ const EditListing = ({ id, data, mode }: EditListingProps) => {
         <AccordionItem label={<p>Details</p>}>
           <Select
             label="Type"
-            data={["LOTE", "CASA", "BODEGA"]}
+            data={metadata.listings.fields.listingType.options}
             searchable
             placeholder="Listing type"
             {...form.getInputProps("listingType")}

@@ -6,17 +6,21 @@ import EditListing from "../../../src/components/admin/listings/EditListing";
 import Spinner from "../../../src/shared/Spinner";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
+import {readFileSync} from "fs"
+import path from "path"
+import { WebsiteMetadata } from "../filters";
 
 type Props = {
   firebaseDoc: DocumentData;
+  metadata: WebsiteMetadata;
 };
 
-const EditPage: NextPage<Props> = ({ firebaseDoc }) => {
+const EditPage: NextPage<Props> = ({ firebaseDoc, metadata }) => {
   const [data, setData] = useState<DocumentData>(firebaseDoc);
   const router = useRouter();
   const id = router.query.id as string;
 
-  return <EditListing id={id} data={data} mode="edit" />;
+  return <EditListing id={id} data={data} mode="edit" metadata={metadata}/>;
 };
 export default EditPage;
 
@@ -27,10 +31,13 @@ export const getServerSideProps: GetServerSideProps = async (
     const docRef = doc(db, "listings", id);
     const docSnap = await getDoc(docRef);
     const firebaseDoc = docSnap.data() || {};
+  const metadataFile = path.join(process.cwd(), "lib", "metadata.json");
+  const metadata = JSON.parse(readFileSync(metadataFile, { encoding: "utf8" }));
 
     return {
       props: {
         firebaseDoc,
+        metadata
       },
     };
 };

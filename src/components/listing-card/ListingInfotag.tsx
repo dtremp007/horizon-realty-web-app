@@ -1,6 +1,8 @@
+import {IconDroplet, IconBolt, IconBoltOff, IconDropletOff} from "@tabler/icons"
+
 type Props = {
-  variant: "bedroom" | "bathroom" | "area" | "land";
-  quantity: number;
+  variant: "bedroom" | "bathroom" | "area" | "land" | "electricity" | "water" | "no_electricity" | "no_water";
+  quantity: number | string;
   units?: string;
 };
 
@@ -124,6 +126,14 @@ function getIcon(variant: string) {
         />
       </svg>
     );
+  } else if (variant === "electricity") {
+    return <IconBolt />
+  } else if (variant === "water") {
+    return <IconDroplet />
+  } else if (variant === "no_water") {
+    return <IconDropletOff />
+  } else if (variant === "no_electricity") {
+    return <IconBoltOff />
   }
 }
 

@@ -4,8 +4,6 @@ import {
   GetStaticPropsContext,
   NextPage,
 } from "next";
-import { FaWhatsapp } from "react-icons/fa";
-import { AiOutlineMail } from "react-icons/ai";
 import { useContext, useEffect } from "react";
 import ListingsContext from "../../src/context/listingsContext/listingsContext";
 import { useRouter } from "next/router";
@@ -37,37 +35,6 @@ const DetailedPage: NextPage<Props> = ({ data }) => {
         <ListingDesktopLayout data={data} />
       ) : (
         <ListingDetailLayout data={data} />
-      )}
-      {isDesktop ? null : (
-        <div className="detail-page__cta">
-          <ActionIcon
-            size="lg"
-            onClick={() =>
-              window.open(
-                `mailto:info@horizonrealty.mx?subject=${encodeURIComponent(
-                  data.title
-                )}&body=${encodeURIComponent(
-                  "Hola, estoy escribiendo sobre " + data.title
-                )}`
-              )
-            }
-          >
-            <AiOutlineMail size={35} />
-          </ActionIcon>
-          <ActionIcon
-            size="lg"
-            onClick={() =>
-              window.open(
-                `https://wa.me/526251459646?text=${encodeURIComponent(
-                  "Hola, estoy escribiendo sobre " + data.title
-                )}`,
-                "_blank"
-              )
-            }
-          >
-            <FaWhatsapp size={32} />
-          </ActionIcon>
-        </div>
       )}
     </>
   );
