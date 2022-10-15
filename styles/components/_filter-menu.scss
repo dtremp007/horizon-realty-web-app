@@ -9,7 +9,7 @@
   border-radius: 1rem;
   margin-top: calc(60px + 1rem);
   margin-left: 1rem;
-  min-height: fit-content;
+  height: fit-content;
 }
 
 .filter-menu__toggle-btn {
@@ -41,11 +41,13 @@
     right: 0;
     left: 0;
     z-index: 800;
+    transform: scaleY(0);
 
     &.open {
       visibility: visible;
       top: 0;
       opacity: 100%;
+      transform: scaleY(1);
     }
   }
 }

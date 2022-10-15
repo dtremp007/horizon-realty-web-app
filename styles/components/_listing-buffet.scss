@@ -1,0 +1,64 @@
+@use "../abstracts/variables" as *;
+
+section.listing-buffet {
+  margin: 5rem 1rem;
+}
+
+@media screen and (max-width: 694px) {
+  section.listing-buffet {
+    margin: 1rem;
+  }
+}
+
+.listing-buffet__grid-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.listing-buffet__card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: $background-secondary;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  cursor: pointer;
+}
+
+.listing-buffet__background {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+
+  & > span {
+    transform: scale(1);
+    transition: all 200ms ease-in;
+  }
+
+  &:hover > span {
+    transform: scale(1.1);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    // background-color: rgba($color: #000000, $alpha: 0.3);
+  }
+}
+
+.listing-buffet__overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: grid;
+  justify-items: center;
+  align-items: end;
+  padding-bottom: 1rem;
+}

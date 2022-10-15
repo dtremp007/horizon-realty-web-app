@@ -199,7 +199,7 @@
   align-self: end;
   justify-content: space-evenly;
   overflow: hidden;
-  column-gap: 0.5rem;
+  column-gap: 0.125rem;
 }
 
 .listing-card__info-tag {
@@ -211,6 +211,17 @@
   gap: 0.5rem;
   color: $logo-yellow;
   padding: 0 0.5rem;
+}
+
+@media screen and (max-width: 694px){
+    .listing-card__info-wrapper {
+        padding: 0.8rem 0.2rem;
+    }
+
+   .listing-card__info-tag {
+    gap: .3rem;
+    padding: 0 .2;
+   }
 }
 
 .listing-card__info-tag + * {

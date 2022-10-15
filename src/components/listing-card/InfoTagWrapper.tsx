@@ -12,23 +12,32 @@ export default function InfoTagWrapper({
   electricity,
   water,
 }: DocumentData) {
-  if (listingType === "CASA") {
+  if (listingType === "CASA" || listingType === "BODEGA") {
     return (
-      <div className="listing-card__info-tag-wrapper">
-        {bedrooms > 0 && (
-          <ListingInfotag quantity={bedrooms} variant="bedroom" />
-        )}
-        {bathrooms > 0 && (
-          <ListingInfotag quantity={bathrooms} variant="bathroom" />
-        )}
-        {houseSize > 0 && (
-          <ListingInfotag
-            quantity={houseSize}
-            variant="area"
-            units={houseSizeUnits}
-          />
-        )}
-      </div>
+      <>
+        <div className="listing-card__info-tag-wrapper">
+          {bedrooms > 0 && (
+            <ListingInfotag quantity={bedrooms} variant="bedroom" />
+          )}
+          {bathrooms > 0 && (
+            <ListingInfotag quantity={bathrooms} variant="bathroom" />
+          )}
+          {houseSize > 0 && (
+            <ListingInfotag
+              quantity={houseSize}
+              variant="area"
+              units={houseSizeUnits}
+            />
+          )}
+          {landArea > 0 && (
+            <ListingInfotag
+              quantity={landArea}
+              variant="land"
+              units={landAreaUnits}
+            />
+          )}
+        </div>
+      </>
     );
   }
 
@@ -42,7 +51,12 @@ export default function InfoTagWrapper({
             units={landAreaUnits}
           />
         )}
-        {<ListingInfotag quantity="" variant={electricity ? "electricity" : "no_electricity"} />}
+        {
+          <ListingInfotag
+            quantity=""
+            variant={electricity ? "electricity" : "no_electricity"}
+          />
+        }
         {<ListingInfotag quantity="" variant={water ? "water" : "no_water"} />}
       </div>
     );
