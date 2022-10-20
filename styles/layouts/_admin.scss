@@ -34,12 +34,13 @@
 
 
 .mantine-AppShell-main {
-    position: absolute;
-    width: calc(100vw - 300px);
+    position: fixed;
+    width: auto;
     min-height: 100%;
     left: 300px;
     right: 0;
     top: 60px;
+    padding: 0;
 }
 
 /* ===============
