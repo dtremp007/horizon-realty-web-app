@@ -35,7 +35,8 @@
       },
       "houseSize": {
         "dataType": "number",
-        "options": "None"
+        "options": "None",
+        "unit": "houseSizeUnits"
       },
       "houseSizeUnits": {
         "dataType": "string",
@@ -49,7 +50,8 @@
       },
       "landArea": {
         "dataType": "number",
-        "options": "None"
+        "options": "None",
+        "unit": "landAreaUnits"
       },
       "landAreaUnits": {
         "dataType": "number",
@@ -67,7 +69,8 @@
       },
       "price": {
         "dataType": "number",
-        "options": "None"
+        "options": "None",
+        "unit": "currency"
       },
       "title": {
         "dataType": "string",
@@ -85,25 +88,30 @@
     "defaultOptions": {
       "id": {
         "type": "text",
-        "required": true,
-        "label": "Name"
+        "label": "Filter Name"
       },
       "legend": {
         "type": "text",
-        "required": false,
-        "label": "Title"
+        "label": "Legend"
       },
       "fieldKey": {
         "type": "select",
-        "required": true,
-        "options": "useWith",
+        "data": {
+          "functionCall": "getCompatibleFieldKeys",
+          "arguments": []
+        },
         "label": "Compare Against..."
       },
       "fallback": {
         "type": "text",
-        "required": true,
         "label": "Fallback"
       }
+    },
+    "defaultParameters": {
+      "id": "Any",
+      "fieldKey": "Any",
+      "active": false,
+      "comparisonOperator": "==="
     },
     "ofType": {
       "NativeSelect": {
@@ -113,69 +121,218 @@
           "only": ""
         },
         "defaultParameters": {
-          "key": "",
-          "name": "",
-          "fallback": "Any",
           "type": "NativeSelect",
-          "comparisonOperator": "===",
+          "filterValue": "Option1",
+          "fallback": "Option3",
           "filterProps": {
-            "data": ["Option1", "Option2", "Option3", "Any"]
+            "data": [
+              { "label": "Option1", "value": "Option1" },
+              { "label": "Option2", "value": "Option2" },
+              { "label": "Option3", "value": "Option3" }
+            ]
+          }
+        },
+        "options": {
+          "fallback": {
+            "type": "select",
+            "data": {
+              "functionCall": "getFallbackValueSelection"
+            }
+          },
+          "filterProps": {
+            "type": "group",
+            "data": {
+              "type": "list",
+              "label": {
+                "type": "text"
+              },
+              "value": {
+                "type": "select",
+                "data": {
+                  "functionCall": "getOptionsForFieldKey"
+                }
+              }
+            }
           }
         }
       },
       "RangeSlider": {
         "useWith": {
-            "type": "number"
+          "type": "number"
         },
-        "defaultFilterProps": {
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "labelAlwaysOn": false
+        "defaultParameters": {
+          "type": "RangeSlider",
+          "comparisonOperator": "range",
+          "filterProps": {
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "labelAlwaysOn": false
+          }
         },
-        "fallback": "{[defaultFilterProps.min, defaultFilterProps.max]}"
+        "options": {
+          "fallback": {
+            "hide": true
+          },
+          "filterProps": {
+            "type": "group",
+            "label": {
+              "type": "select",
+              "label": "Label",
+              "data": [
+                {
+                  "label": "Money ($)",
+                  "value": "(value) => { return `\\$${value.toLocaleString('en')}`;}"
+                },
+                {
+                  "label": "Squared Feet",
+                  "value": "(value) => { return `${value} pies²`;}"
+                },
+                {
+                  "label": "Acres",
+                  "value": "(value) => { return `${value} ac.`;}"
+                }
+              ]
+            },
+            "min": {
+              "type": "number",
+              "label": "Start of range"
+            },
+            "max": {
+              "type": "number",
+              "label": "End of range"
+            },
+            "step": {
+              "type": "number",
+              "label": "Step by:"
+            },
+            "labelAlwaysOn": {
+              "type": "checkbox",
+              "label": "Label Always On"
+            }
+          }
+        }
       },
       "SegmentedControl": {
         "useWith": {
-            "only": ["bathrooms, bedrooms"]
+          "include": ["bathrooms", "bedrooms"]
         },
-        "defaultFilterProps": {
-          "data": [
-            { "label": "1", "value": "1" },
-            { "label": "2", "value": "2" },
-            { "label": "3", "value": "3" },
-            { "label": "4+", "value": ">=4" },
-            { "label": "any", "value": "any" }
-          ]
+        "defaultParameters": {
+          "type": "SegmentedControl",
+          "comparisonOperator": "===",
+          "fallback": "ANY",
+          "filterProps": {
+            "data": [
+              { "label": "1", "value": "1" },
+              { "label": "2", "value": "2" },
+              { "label": "3", "value": "3" },
+              { "label": "4+", "value": ">=4" },
+              { "label": "any", "value": "ANY" }
+            ]
+          }
+        },
+        "options": {
+          "fallback": {
+            "type": "select",
+            "data": {
+              "functionCall": "getFallbackValueSelection"
+            }
+          },
+          "legend": {
+            "hide": true
+          },
+          "filterProps": {
+            "type": "group",
+            "data": {
+              "type": "list",
+              "label": {
+                "type": "text"
+              },
+              "value": {
+                "type": "text"
+              }
+            }
+          }
         }
       },
-      "Checkbox": {
+      "CheckboxList": {
         "useWith": {
-            "type": "boolean"
+          "type": "boolean"
         },
-        "defaultFilterProps": {
-          "label": "Option"
-        }
-      },
-      "ParentNode": {
-        "defaultFilterProps": {
+        "defaultParameters": {
+          "type": "CheckboxList",
+          "legend": "Checklist",
           "children": [
             {
               "name": "option1",
-              "key": "{nextBoolean}",
+              "fieldKey": "{nextBoolean}",
+              "type": "Checkbox",
+              "fallback": false,
               "filterProps": {
                 "label": "{nextBoolean.replace(/^./, uppercase)}"
               }
             }
           ]
+        },
+        "options": {
+          "fieldKey": {
+            "hide": true
+          },
+          "fallback": {
+            "hide": true
+          },
+          "children": {
+            "type": "list",
+            "filterProps.label": {
+              "type": "text"
+            },
+            "fieldKey": {
+              "type": "select",
+              "data": {
+                "functionCall": "getCompatibleFieldKeys"
+              }
+            }
+          }
         }
       },
       "RadioButtonGroup": {
         "useWith": {
-            "type": "array"
+          "type": "array"
         },
-        "defaultFilterProps": {
-          "data": ["Option1", "Option2", "Option3", "Any"]
+        "defaultParameters": {
+          "type": "RadioButtonGroup",
+          "filterValue": "Option1",
+          "fallback": "Option3",
+          "filterProps": {
+            "data": [
+              { "label": "Option1", "value": "Option1" },
+              { "label": "Option2", "value": "Option2" },
+              { "label": "Option3", "value": "Option3" }
+            ]
+          }
+        },
+        "options": {
+          "fallback": {
+            "type": "select",
+            "data": {
+              "functionCall": "getFallbackValueSelection"
+            }
+          },
+          "filterProps": {
+            "type": "group",
+            "data": {
+              "type": "list",
+              "label": {
+                "type": "text"
+              },
+              "value": {
+                "type": "select",
+                "data": {
+                  "functionCall": "getOptionsForFieldKey"
+                }
+              }
+            }
+          }
         }
       }
     }

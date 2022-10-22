@@ -50,20 +50,20 @@ export type FilterCreateOptions = {
     exclude?: ListingFieldKey | ListingFieldKey[];
     include?: ListingFieldKey | ListingFieldKey[];
   };
-  defaultParameters: {
-    key: ListingFieldKey;
-    name: string;
-    fallback: any;
-    filterProps: Object;
-    label?: any;
-  };
-  options: FilterConfigurationOptions
+  defaultParameters: FilterElement_V2_Props;
+  options: FilterConfigOptions;
 };
 
-export type FilterConfigurationOptions = {
-            type: "text" | "number" | "select" | "checkbox";
-            required: boolean;
+export type FilterConfigOptions = {
+    [key: string]: FilterConfigInputProps;
+}
+
+export type FilterConfigInputProps = {
+            type: "text" | "number" | "select" | "checkbox" | "list" | "group";
+            required?: boolean;
+            data: {label: string, value: string}[];
             label: string;
+            [key: string]: any;
 }
 
 export type FilterElement_V2_Props<T = any, E = (e: ChangeEvent) => void> = {

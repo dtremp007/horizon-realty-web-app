@@ -16,6 +16,7 @@ import AuthUserContext from "../context/authUserContext";
 import { useRouter } from "next/router";
 import { logoSvg } from "../components/navigationAlt/AltNavbar";
 import Link from "next/link";
+import HelpModal from "../components/admin/auth/HelpModal";
 
 type Props = {
   children: React.ReactNode;
@@ -77,8 +78,10 @@ const AdminLayout = ({ children }: Props) => {
         },
       })}
     >
-      {/* <div className="admin-layout__main">{children}</div> */}
-      {children}
+      <>
+        {children}
+        <HelpModal />
+      </>
     </AppShell>
   );
 };

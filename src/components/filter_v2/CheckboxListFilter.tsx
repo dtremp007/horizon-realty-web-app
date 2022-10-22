@@ -1,6 +1,6 @@
 import { Checkbox, CheckboxProps, Group } from "@mantine/core";
 import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
-import { ChangeEvent, useCallback } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import {
   any,
   isEmpty,
@@ -26,26 +26,17 @@ const CheckboxListFilter = (props: FilterElement_V2_Props<CheckboxProps>) => {
     children,
   } = props;
 
-  const extractValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const label = e.currentTarget.labels![0].innerText;
-    const checked = e.currentTarget.checked;
+  const extractValue = useCallback(
+    (index: number) => {
+      return (checked: boolean) => {
+        const checkbox = children![index];
 
-    const updateFilterValue = mergeLeft({
-      filterValue: checked,
-      active: checked,
-    });
-    // @ts-ignore
-    const children = map(
-      when((x: FilterElement_V2_Props) => x.filterProps.label === label, updateFilterValue),
-      props.children
-    );
-
-    return {
-      id: props.id,
-      active: any(view(lensProp("active")), props.children!), // work with this
-      children,
-    };
-  }, [props]);
+        // @ts-ignore
+        handleOnChange({[checkbox.id]: checked})
+      };
+    },
+    [props]
+  );
 
   if (isEmpty(children)) return null;
 
@@ -53,43 +44,59 @@ const CheckboxListFilter = (props: FilterElement_V2_Props<CheckboxProps>) => {
     <fieldset>
       <legend>{legend}</legend>
       <Group direction="column" spacing={9}>
-        {children!.map(({ id, filterValue, filterProps }, index) => (
-          <Checkbox
-            key={id}
-            {...filterProps}
-            checked={filterValue}
-            // @ts-ignore
-            onChange={pipe(extractValue, handleOnChange)}
-          />
+        {children!.map((filter, index) => (
+            <CheckboxWrapper key={filter.id} filter={filter} handleOnChange={extractValue(index)}/>
         ))}
       </Group>
     </fieldset>
   );
 };
 
+type CheckboxWrapperProps = {
+    filter: FilterElement_V2_Props<CheckboxProps>;
+    handleOnChange: (checked: boolean) => void
+}
+
+const CheckboxWrapper = ({filter, handleOnChange}: CheckboxWrapperProps) => {
+    const [checked, setChecked] = useState(filter.filterValue)
+
+    return (
+          <Checkbox
+            {...filter.filterProps}
+            checked={checked}
+            onChange={(e) => {
+                const checked = e.currentTarget.checked;
+                handleOnChange(checked)
+                setChecked(checked)
+            }}
+          />
+    )
+}
+
 export default CheckboxListFilter;
 
-export function updateCheckboxListFilter(
-  dispatch: ListingsContextType["dispatch"],
-  props: FilterElement_V2_Props
-) {
-  return function (e: ChangeEvent<HTMLInputElement>) {
-    const label = e.currentTarget.labels![0].innerText;
-    const checked = e.currentTarget.checked;
+// export function updateCheckboxListFilter(
+//   dispatch: ListingsContextType["dispatch"],
+//   props: FilterElement_V2_Props
+// ) {
+//   return function (e: ChangeEvent<HTMLInputElement>) {
+//     const label = e.currentTarget.labels![0].innerText;
+//     const checked = e.currentTarget.checked;
 
-    const updateFilterValue = mergeLeft({
-      filterValue: checked,
-      active: checked,
-    });
-    // @ts-ignore
-    const children = map( when((x) => x.filterProps.label === label, updateFilterValue),
-      props.children
-    );
+//     const updateFilterValue = mergeLeft({
+//       filterValue: checked,
+//       active: checked,
+//     });
+//     // @ts-ignore
+//     const children = map(
+//       when((x) => x.filterProps.label === label, updateFilterValue),
+//       props.children
+//     );
 
-    return {
-      id: props.id,
-      active: any(view(lensProp("active")), props.children!),
-      children,
-    };
-  };
-}
+//     return {
+//       id: props.id,
+//       active: any(view(lensProp("active")), props.children!),
+//       children,
+//     };
+//   };
+// }

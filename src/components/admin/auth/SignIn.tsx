@@ -4,7 +4,7 @@ import AuthUserContext from "../../../context/authUserContext";
 import Show from "../../HOC/Show";
 import { Button } from "@mantine/core";
 import { useRouter } from "next/router";
-import { createDummyUser } from "../../../../lib/util";
+import { createDummyUser } from "../../../context/authUserContext";
 
 const SignIn = () => {
   const { user, loading, signIn } = useContext(AuthUserContext);

@@ -3,7 +3,11 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../../lib/firebase.config";
-import {QuerySnapshot, DocumentData, QueryDocumentSnapshot} from "firebase/firestore"
+import {
+  QuerySnapshot,
+  DocumentData,
+  QueryDocumentSnapshot,
+} from "firebase/firestore";
 import ListingsContext from "../context/listingsContext/listingsContext";
 import Spinner from "../shared/Spinner";
 
@@ -13,30 +17,42 @@ import Spinner from "../shared/Spinner";
  * I will try anyway.
  */
 export default function ListingsLayout() {
-    const {listingsState, dispatch} = useContext(ListingsContext)
-    const [listings, setListings] = useState<QueryDocumentSnapshot<DocumentData>[]>([])
-    const router = useRouter();
+  const { listingsState, dispatch } = useContext(ListingsContext);
+  const [listings, setListings] = useState<
+    QueryDocumentSnapshot<DocumentData>[]
+  >([]);
+  const router = useRouter();
 
-    const {firebaseDocs, loading} = listingsState;
+  const { firebaseDocs, loading } = listingsState;
 
-    useEffect(() => {
-      if (router.query.filter) {
-        dispatch({type: "FILTER", payload: router.query.filter})
-        return
-      }
-      dispatch({type: "GET_ALL"})
-    }, [router.query])
+  useEffect(() => {
 
-
-    if (!firebaseDocs) {
-        return <h3>No listings to display.</h3>
+    if (router.query) {
+      dispatch({
+        type: "UPDATE_AND_APPLY_MULTIPLE_FILTER",
+        payload: router.query,
+      });
     }
+  }, [router.query]);
+
+  if (!firebaseDocs) {
+    return <h3>No listings to display.</h3>;
+  }
 
   return (
     <div className="listings__container">
-        {!loading ? firebaseDocs.map(listing => (
-            <ListingCard key={listing.id} id={listing.id} data={listing.data} variant="full"/>
-        )) : <Spinner/>}
+      {!loading ? (
+        firebaseDocs.map((listing) => (
+          <ListingCard
+            key={listing.id}
+            id={listing.id}
+            data={listing.data}
+            variant="full"
+          />
+        ))
+      ) : (
+        <Spinner />
+      )}
     </div>
-  )
+  );
 }

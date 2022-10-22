@@ -12,13 +12,13 @@ import {
   Modal,
   Group,
 } from "@mantine/core";
-import { buildFilterParameters, increaseByGenerator } from "../../lib/util";
 import {
   FilterElement,
   FilterCreateOptions,
   JSON_FilterProps,
-  FilterConfigurationOptions,
+  FilterConfigInputProps,
   FilterElement_V2_Props,
+  FilterConfigOptions,
 } from "../../lib/interfaces/FilterTypes";
 import {
   createContext,
@@ -54,8 +54,13 @@ import R, {
   has,
   mergeAll,
   isEmpty,
+  concat,
+  reduce,
+  tail,
 } from "rambda";
 import FilterBuilder from "../../src/components/admin/filters/FilterBuilder";
+import FilterBuffet from "../../src/components/admin/filters/FilterBuffet";
+import { updateFallbackValues } from "../../lib/util";
 
 type AdminFilterProps = {
   filters: FilterElement_V2_Props[];
@@ -69,7 +74,11 @@ export type EditFilterActions = {
     | "DELETE_FILTER"
     | "OPEN_MODAL"
     | "CLOSE_MODAL"
-    | "FILTER_TO_EDIT_MODE";
+    | "FILTER_TO_EDIT_MODE"
+    | "ADD_FILTER"
+    | "TO_FILTER_CREATION_MODE"
+    | "UPDATE_FILTER_SAVED_STATUS"
+    | "DELETE_FILTER";
   payload?: any;
 };
 
@@ -80,7 +89,8 @@ export type WebsiteMetadata = {
     };
   };
   filters: {
-    defaultOptions: FilterConfigurationOptions;
+    defaultOptions: { [key: string]: FilterConfigInputProps };
+    defaultParameters: FilterElement_V2_Props;
     ofType: {
       [Property in FilterElement]: FilterCreateOptions;
     };
@@ -91,12 +101,16 @@ export type EditFilterState = {
   savedFilters: Map<string, FilterElement_V2_Props>;
   isModalOpen: boolean;
   filterBeingEdited: string | null;
+  filterCreationMode: boolean;
+  filterSaved: boolean;
+  positionOfNextFilter: number;
 };
 
 type EditFilterContextType = {
   state: EditFilterState;
   dispatch: Dispatch<EditFilterActions>;
   metadata: LocalMetadata;
+  saveFilters: () => void;
 };
 
 export const EditFilterContext = createContext<EditFilterContextType>(
@@ -111,17 +125,38 @@ const AdminFilters: NextPage<AdminFilterProps> = ({
     savedFilters: parseFilters(filters),
     isModalOpen: false,
     filterBeingEdited: null,
+    filterCreationMode: false,
+    filterSaved: true,
+    positionOfNextFilter: filters.length + 1,
   };
 
   const metadata = useMemo(parseMetadata.bind(null, metadata_from_json), []);
 
   const [state, dispatch] = useReducer(editFiltersReducer, initialState);
 
+  const saveFilters = async () => {
+    const res = await fetch("/api/save-filters", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: stringifyFilters(state.savedFilters, [updateFallbackValues]),
+    });
+
+    if (res.status === 200)
+      dispatch({ type: "UPDATE_FILTER_SAVED_STATUS", payload: true });
+  };
+
   return (
-    <EditFilterContext.Provider value={{ state, dispatch, metadata }}>
+    <EditFilterContext.Provider
+      value={{ state, dispatch, metadata, saveFilters }}
+    >
       <SimpleGrid cols={2}>
         <FilterPreview />
-        {!isNil(state.filterBeingEdited) && <FilterBuilder />}
+        {!isNil(state.filterBeingEdited) && (
+          <FilterBuilder key={state.filterBeingEdited} />
+        )}
+        {state.filterCreationMode && <FilterBuffet />}
       </SimpleGrid>
     </EditFilterContext.Provider>
   );
@@ -133,12 +168,13 @@ export type LocalMetadata = {
     fields: Map<ListingFieldKey, ListingFieldOptions>;
   };
   filters: {
-    defaultOptions: Map<string, FilterConfigurationOptions>;
+    defaultOptions: FilterConfigOptions;
+    defaultParameters: FilterElement_V2_Props;
     ofType: Map<FilterElement, FilterCreateOptions>;
   };
 };
 
-function parseMetadata(metadata: WebsiteMetadata): LocalMetadata {
+export function parseMetadata(metadata: WebsiteMetadata): LocalMetadata {
   return {
     listings: {
       fields: new Map(
@@ -149,8 +185,8 @@ function parseMetadata(metadata: WebsiteMetadata): LocalMetadata {
       ),
     },
     filters: {
-      // @ts-ignore
-      defaultOptions: new Map(Object.entries(metadata.filters.defaultOptions)),
+      defaultOptions: metadata.filters.defaultOptions,
+      defaultParameters: metadata.filters.defaultParameters,
       ofType: new Map(
         Object.entries(metadata.filters.ofType) as [
           FilterElement,
@@ -179,23 +215,74 @@ const editFiltersReducer: Reducer<EditFilterState, EditFilterActions> = (
         modalOpenedAt: null,
       };
     case "UPDATE_FILTER":
-      const filterId = action.payload.id;
       return {
         ...state,
         filters: state.savedFilters.set(
-          filterId,
-          mergeAll([state.savedFilters.get(filterId), action.payload])
+          state.filterBeingEdited!,
+          mergeAll([state.savedFilters.get(state.filterBeingEdited!), action.payload])
         ),
       };
     case "FILTER_TO_EDIT_MODE":
       return {
         ...state,
+        filterCreationMode: false,
         filterBeingEdited: action.payload,
+      };
+    case "ADD_FILTER":
+      return {
+        ...state,
+        filterCreationMode: false,
+        filterSaved: false,
+        filterBeingEdited: action.payload.id,
+        savedFilters: state.savedFilters.set(
+          action.payload.id,
+          action.payload.filter
+        ),
+      };
+    case "TO_FILTER_CREATION_MODE":
+      return {
+        ...state,
+        filterCreationMode: true,
+        filterBeingEdited: null,
+        positionOfNextFilter: action.payload,
+      };
+    case "UPDATE_FILTER_SAVED_STATUS":
+      return {
+        ...state,
+        filterSaved: action.payload,
+      };
+    case "DELETE_FILTER":
+      state.savedFilters.delete(action.payload);
+      return {
+        ...state,
+        filterBeingEdited:
+          state.filterBeingEdited === action.payload
+            ? null
+            : state.filterBeingEdited,
+        filterSaved: false,
       };
     default:
       return state;
   }
 };
+
+type FilterTransformer = (
+  f: FilterElement_V2_Props[]
+) => FilterElement_V2_Props[];
+
+function stringifyFilters(
+  filters: Map<string, FilterElement_V2_Props>,
+  transformers: FilterTransformer[]
+) {
+  transformers.push((f: FilterElement_V2_Props[]) =>
+    f.sort((a, b) => a.position - b.position)
+  );
+  const transform = pipe.apply(null, transformers as any);
+
+  return JSON.stringify({
+    filters: transform(Array.from(filters).map(([key, filter]) => filter)),
+  });
+}
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const filtersFile = path.join(process.cwd(), "lib", "filters.json");

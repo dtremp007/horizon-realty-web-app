@@ -1,5 +1,5 @@
 import { EditFilterContext } from "../../../../pages/admin/filters";
-import { ActionIcon, Group, Space } from "@mantine/core";
+import { ActionIcon, Group, ScrollArea, Space } from "@mantine/core";
 import { extractor } from "../../../../lib/util";
 import R, {
   any,
@@ -14,7 +14,7 @@ import R, {
   when,
   has,
 } from "rambda";
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import CheckboxListFilter from "../../filter_v2/CheckboxListFilter";
 import NativeSelectFilter, {
   updateNativeSelectFilter,
@@ -31,19 +31,27 @@ import { IconTrash, IconEdit, IconCirclePlus } from "@tabler/icons";
 
 const FilterPreview = () => {
   const { state, dispatch } = useContext(EditFilterContext);
+
+  const sortedFilter = Array.from(state.savedFilters).sort(([key_1, filter_1],[key_2, filter_2]) => filter_1.position - filter_2.position)
+
   return (
-    <form className="filter-menu__form flow-content">
-      <Space />
-      {Array.from(state.savedFilters).map(([key, filter]) => (
-        <FilterUIOverlay key={key} filterProps={filter}/>
-      ))}
-      <Space />
-    </form>
+    <ScrollArea style={{ height: "calc(100vh - 60px)" }}>
+      <form
+        className="flow-content"
+        style={{ maxWidth: "400px", margin: "auto" }}
+      >
+        <Space />
+        {sortedFilter.map(([key, filter]) => (
+          <FilterUIOverlay key={key} filter_id={key} filterProps={filter} />
+        ))}
+        <Space />
+      </form>
+    </ScrollArea>
   );
 };
 export default FilterPreview;
 
-const FilterWrapper = (props: FilterElement_V2_Props) => {
+export const FilterWrapper = (props: FilterElement_V2_Props) => {
   const { state, dispatch } = useContext(EditFilterContext);
 
   const updateFilterWithPayload = (value: any) => {
@@ -108,28 +116,45 @@ const FilterWrapper = (props: FilterElement_V2_Props) => {
         />
       );
     default:
-      return (
-        <div style={{height: "200px"}}/>
-      );
+      return <div style={{ height: "200px" }} />;
   }
 };
 
-const FilterUIOverlay = ({filterProps }: { filterProps: FilterElement_V2_Props }) => {
+const FilterUIOverlay = ({
+    filter_id,
+  filterProps,
+}: {
+    filter_id: string;
+  filterProps: FilterElement_V2_Props;
+}) => {
   const { state, dispatch } = useContext(EditFilterContext);
 
   return (
     <div className="filter-ui-overlay__container">
-      <Group position="right" className="filter-ui-overlay filter-ui-overlay--padding">
-        <ActionIcon onClick={() => dispatch({type: "FILTER_TO_EDIT_MODE", payload: filterProps.id})}>
+      <Group
+        position="right"
+        className="filter-ui-overlay filter-ui-overlay--padding"
+      >
+        <ActionIcon
+          onClick={() =>
+            dispatch({ type: "FILTER_TO_EDIT_MODE", payload: filterProps.id })
+          }
+        >
           <IconEdit />
         </ActionIcon>
-        <ActionIcon>
+        <ActionIcon
+          onClick={() =>
+            dispatch({ type: "DELETE_FILTER", payload: filter_id })
+          }
+        >
           <IconTrash />
         </ActionIcon>
       </Group>
       <FilterWrapper {...filterProps} />
       <Group position="center" className="filter-ui-overlay">
-        <ActionIcon>
+        <ActionIcon
+          onClick={() => dispatch({ type: "TO_FILTER_CREATION_MODE", payload: filterProps.position + 1})}
+        >
           <IconCirclePlus />
         </ActionIcon>
       </Group>

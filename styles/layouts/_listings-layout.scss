@@ -22,6 +22,7 @@
 
 @media screen and (max-width: 694px) {
    .listings__container {
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
     margin-left: 6px;
     margin-right: 6px;
    }

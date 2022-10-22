@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import {
+    createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
@@ -60,3 +61,16 @@ export const AuthUserProvider = ({ children }: Props) => {
 };
 
 export default AuthUserContext;
+
+
+export async function createDummyUser() {
+  try {
+    await createUserWithEmailAndPassword(
+      auth,
+      process.env.DUMMY_USER as string,
+      process.env.DUMMY_PASSWORD as string
+    );
+  } catch (error: any) {
+    console.log(error.message);
+  }
+}

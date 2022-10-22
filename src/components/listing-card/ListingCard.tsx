@@ -52,6 +52,7 @@ export default function ListingCard({
 
   const thumbnail = useMemo(() => {
     const regexp = /(\.[^.]*?\?)/
+    if (typeof imageUrls[0] === "undefined") return ""
     return imageUrls[0].replace(regexp, "_1280x720.jpeg?")
   }, [imageUrls]);
 

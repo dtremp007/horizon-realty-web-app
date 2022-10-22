@@ -1,0 +1,127 @@
+{
+  "filters": [
+    {
+      "id": "listingType",
+      "type": "RadioButtonGroup",
+      "fieldKey": "listingType",
+      "comparisonOperator": "===",
+      "filterValue": "ALL",
+      "filterProps": {
+        "data": [
+          { "label": "Todos", "value": "ALL" },
+          { "label": "Casas", "value": "CASA" },
+          { "label": "Lotes", "value": "LOTE" },
+          { "label": "Bodegas", "value": "BODEGA" },
+          { "label": "Lotes Commerciales", "value": "LOTES_COMMERCIALES" }
+        ],
+        "filterName": "listingType"
+      },
+      "fallback": "ALL",
+      "legend": "Tipo",
+      "active": false,
+      "position": 1
+    },
+    {
+      "id": "priceRange",
+      "type": "RangeSlider",
+      "fieldKey": "price",
+      "comparisonOperator": "range",
+      "filterProps": {
+        "label": "(value) => { return `\\$${value.toLocaleString('en')}`;}",
+        "min": 0,
+        "max": 500000,
+        "step": 1000,
+        "labelAlwaysOn": true
+      },
+      "fallback": [0, 500000],
+      "legend": "Price Range",
+      "active": false,
+      "position": 2
+    },
+    {
+      "id": "bedrooms",
+      "type": "SegmentedControl",
+      "fieldKey": "bedrooms",
+      "comparisonOperator": "===",
+      "filterProps": {
+        "data": [
+          { "label": "1", "value": "1" },
+          { "label": "2", "value": "2" },
+          { "label": "3", "value": "3" },
+          { "label": "4+", "value": ">=4" },
+          { "label": "any", "value": "any" }
+        ]
+      },
+      "fallback": "any",
+      "active": false,
+      "position": 3
+    },
+    {
+      "id": "bathrooms",
+      "type": "SegmentedControl",
+      "fieldKey": "bathrooms",
+      "comparisonOperator": "===",
+      "filterProps": {
+        "data": [
+          { "label": "1", "value": "1" },
+          { "label": "2", "value": "2" },
+          { "label": "3", "value": "3" },
+          { "label": "4+", "value": ">=4" },
+          { "label": "any", "value": "any" }
+        ]
+      },
+      "fallback": "any",
+      "active": false,
+      "position": 5
+    },
+    {
+      "id": "utilities",
+      "type": "CheckboxList",
+      "legend": "Utilities",
+      "comparisonOperator": null,
+      "filterValue": null,
+      "fieldKey": null,
+      "position": 6,
+      "children": [
+        {
+          "id": "electricity",
+          "fieldKey": "electricity",
+          "type": "Checkbox",
+          "comparisonOperator": "===",
+          "filterValue": false,
+          "filterProps": { "label": "Electricity" },
+          "fallback": false,
+          "active": false,
+          "position": 0
+        },
+        {
+          "id": "water",
+          "fieldKey": "water",
+          "type": "Checkbox",
+          "comparisonOperator": "===",
+          "filterValue": false,
+          "filterProps": { "label": "Water" },
+          "fallback": false,
+          "active": false,
+          "position": 1
+        }
+      ],
+      "fallback": null
+    },
+    {
+      "id": "219195f2-8b22-45e0-9737-ea07fee6e168",
+      "fieldKey": "houseSize",
+      "comparisonOperator": "===",
+      "type": "RangeSlider",
+      "filterProps": {
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "labelAlwaysOn": true,
+        "label": "(value) => { return `${value} pies²`;}"
+      },
+      "position": 4,
+      "legend": "House Size"
+    }
+  ]
+}

@@ -40,7 +40,7 @@ const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
   const [view, setView] = useState(router.query.view);
   const {user} = useContext(AuthUserContext);
 
-  const shouldShowFilter = user && isDesktop || process.env.NODE_ENV === "development"
+  const shouldShowFilter = user || process.env.NODE_ENV === "development";
   const toggleFilterView = getToggleFunction("show-filter", !shouldShowFilter)
 
   useEffect(() => {
@@ -52,45 +52,6 @@ const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
   useEffect(() => {
     setView(router.query.view);
   }, [router.query.view]);
-
-  if (!router.query.filter && !router.query.view) {
-    return (
-      <div
-        style={{
-          margin: "78px auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          alignItems: "center",
-        }}
-      >
-        <Link
-          href={{
-            pathname: "/listings",
-            query: { filter: "CASA" },
-          }}
-        >
-          <a className="listings-page__link">Casas</a>
-        </Link>
-        <Link
-          href={{
-            pathname: "/listings",
-            query: { filter: "LOTE" },
-          }}
-        >
-          <a className="listings-page__link">Lotes</a>
-        </Link>
-        <Link
-          href={{
-            pathname: "/listings",
-            query: { filter: "BODEGA" },
-          }}
-        >
-          <a className="listings-page__link">Bodegas</a>
-        </Link>
-      </div>
-    );
-  }
 
   return (
     <ListingsProvider firebaseDocs={firebaseDocs} filters={filters}>

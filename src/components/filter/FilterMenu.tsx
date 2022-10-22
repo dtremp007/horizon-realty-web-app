@@ -9,49 +9,90 @@ import {
   Button,
   ActionIcon,
   Modal,
+  Indicator,
 } from "@mantine/core";
 import RadioButtonGroup from "./RadioButtonGroup";
 import { useRouter } from "next/router";
-import { useContext, useState, useMemo } from "react";
+import { useContext, useState, useMemo, useRef, useEffect } from "react";
 import ListingsContext, {
   ListingsState,
 } from "../../context/listingsContext/listingsContext";
-import { ListingSchema } from "../../../lib/interfaces/Listings";
 import FilterElementWrapper from "../filter_v2/FilterElementWrapper";
-import {IconAdjustments} from "@tabler/icons"
+import { IconAdjustmentsHorizontal } from "@tabler/icons";
 import { NavContext } from "../../layouts/AltMainLayout";
 import { getToggleFunction } from "../../../lib/util";
+import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
 
 export default function FilterMenu() {
   const router = useRouter();
   const { listingsState, dispatch } = useContext(ListingsContext);
-  const {nav_state, dispatch_to_nav} = useContext(NavContext)
+  const { nav_state, dispatch_to_nav } = useContext(NavContext);
 
-  const toggle_filter = getToggleFunction("open", nav_state.isFilterOpen)
+  const toggle_filter = getToggleFunction("open", nav_state.isFilterOpen);
 
   return (
     <>
-    <div className="filter-menu__toggle-btn">
-        <ActionIcon size="lg" onClick={() => dispatch_to_nav({type: "TOGGLE_FILTER"})}>
-            <IconAdjustments size={30} />
-        </ActionIcon>
-    </div>
+      <div className="filter-menu__toggle-btn">
+        <Indicator color="green" size={22} disabled={listingsState.activeFiltersCount === 0} label={listingsState.activeFiltersCount} inline position="bottom-start">
+          <ActionIcon
+            size="lg"
+            onClick={() => dispatch_to_nav({ type: "TOGGLE_FILTER" })}
+          >
+            <IconAdjustmentsHorizontal size={30} />
+          </ActionIcon>
+        </Indicator>
+      </div>
       <FilterDebugConsole listingsState={listingsState} />
       <div className={toggle_filter("filter-menu__container")}>
-        <form className="filter-menu__form flow-content">
+        <form className={toggle_filter("filter-menu__form flow-content")}>
           <Space />
-          {Array.from(listingsState.filters).map(([id, filter]) => (
-            <FilterElementWrapper key={id} {...filter}/>
+          {Array.from(listingsState.filters).map(([id, filter], index) => (
+            <WrapsTheWrapper
+              key={id}
+              toggle_filter={toggle_filter}
+              offset={index}
+            >
+              <FilterElementWrapper {...filter} />
+            </WrapsTheWrapper>
           ))}
-          <Button onClick={() => dispatch({ type: "APPLY_FILTERS" })}>
-            Apply Filters
-          </Button>
+          {/* <WrapsTheWrapper
+            toggle_filter={toggle_filter}
+            offset={listingsState.filters.size}
+          >
+            <Button onClick={() => dispatch({ type: "APPLY_FILTERS" })}>
+              Apply Filters
+            </Button>
+          </WrapsTheWrapper> */}
           <Space />
         </form>
       </div>
     </>
   );
 }
+
+type WrapsTheWrapperProps = {
+  children: React.ReactNode;
+  toggle_filter: (s: string) => string;
+  offset: number;
+};
+
+const WrapsTheWrapper = ({
+  children,
+  toggle_filter,
+  offset,
+}: WrapsTheWrapperProps) => {
+  const divRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    divRef.current?.style?.setProperty("--offset", `-${(offset + 1) * 100}px`);
+  }, []);
+
+  return (
+    <div className={toggle_filter("filter-menu__filter-wrapper")} ref={divRef}>
+      {children}
+    </div>
+  );
+};
 
 type FilterDebugConsoleProps = {
   listingsState: ListingsState;
@@ -70,7 +111,7 @@ const FilterDebugConsole = ({ listingsState }: FilterDebugConsoleProps) => {
             </pre>
           ) : (
             listingsState.filterLog.map((log) => (
-              <div key={log.filterTitle} >
+              <div key={log.filterTitle}>
                 <div
                   dangerouslySetInnerHTML={{ __html: log.stringifiedFunction }}
                 />

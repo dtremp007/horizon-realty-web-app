@@ -18,6 +18,7 @@ type NavState = {
   youHaveToGoBack: boolean;
   burgerIsBlack: boolean;
   isFilterOpen: boolean;
+  previousScrollY: number;
 };
 
 type NavContext = {
@@ -50,26 +51,26 @@ const links: Links[] = [
       {
         href: {
           pathname: "/listings",
-          query: { filter: "CASA" },
+          query: { listingType: "CASA" },
         },
         label: "Casas",
-        isActive: (router) => "/listings" && router.query.filter === "CASA",
+        isActive: (router) => "/listings" && router.query.listingType === "CASA",
       },
       {
         href: {
           pathname: "/listings",
-          query: { filter: "LOTE" },
+          query: { listingType: "LOTE" },
         },
         label: "Lotes",
-        isActive: (router) => "/listings" && router.query.filter === "LOTE",
+        isActive: (router) => "/listings" && router.query.listingType === "LOTE",
       },
       {
         href: {
           pathname: "/listings",
-          query: { filter: "BODEGA" },
+          query: { listingType: "BODEGA" },
         },
         label: "Bodegas",
-        isActive: (router) => "/listings" && router.query.filter === "BODEGA",
+        isActive: (router) => "/listings" && router.query.listingType === "BODEGA",
       },
     ],
     isActive: (router) => false,
@@ -83,7 +84,8 @@ const AltMainLayout = ({ children }: Props) => {
     isSubmenuOpen: false,
     youHaveToGoBack: false,
     burgerIsBlack: true,
-    isFilterOpen: false
+    isFilterOpen: false,
+    previousScrollY: 0,
   };
 
 
@@ -105,7 +107,7 @@ const AltMainLayout = ({ children }: Props) => {
 export default AltMainLayout;
 
 type NavActions = {
-  type: "TOGGLE_HEADER" | "TOGGLE_MENU" | "WE'RE_AT_A_DEADEND" | "GO_AS_YOU_PLEASE" | "TOGGLE_IS_BLACK" | "TOGGLE_FILTER";
+  type: "TOGGLE_HEADER" | "TOGGLE_MENU" | "WE'RE_AT_A_DEADEND" | "GO_AS_YOU_PLEASE" | "TOGGLE_IS_BLACK" | "TOGGLE_FILTER" | "UPDATE_SCROLL_Y" | "TOGGLE_MENU_WATCH_FILTER";
   payload?: any;
 };
 
@@ -142,6 +144,13 @@ const navReducer: Reducer<NavState, NavActions> = (state, action) => {
             ...state,
             isHeaderExpanded: action.payload ?? !state.isHeaderExpanded,
             isFilterOpen: action.payload ?? !state.isFilterOpen
+        }
+    case "TOGGLE_MENU_WATCH_FILTER":
+        if (state.isFilterOpen) return state
+        return {
+            ...state,
+            isHeaderExpanded: action.payload ?? !state.isHeaderExpanded,
+            isMenuOpen: action.payload ?? !state.isHeaderExpanded
         }
     default:
       return state;

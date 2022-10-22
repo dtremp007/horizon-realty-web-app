@@ -28,6 +28,18 @@ function MyApp({ Component, pageProps }: AppProps) {
             "#282828",
             "#0d0d0d",
           ],
+          gold: [
+            "#fcf4e3",
+            "#e8dec7",
+            "#d6c8a6",
+            "#c4b286",
+            "#b49c65",
+            "#78663a",
+            "#574928",
+            "#342c15",
+            "#AA9053",
+            "#140f00",
+          ],
         },
       }}
     >

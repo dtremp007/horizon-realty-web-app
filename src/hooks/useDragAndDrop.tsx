@@ -276,7 +276,7 @@ function buildOverlapCalculator(activeElement: HTMLElement) {
     const activeMiddle = left + width / 2;
     const proximity = activeMiddle - inactiveMiddle; // If both middles are aligned, proximity will be 0. If active is to the left, proximity will be a negative value, and vica versa.
 
-    if (proximity > width && proximity < width * -1) {
+    if (proximity > width || proximity < width * -1) {
       return NONE;
     }
 
@@ -291,3 +291,11 @@ function buildOverlapCalculator(activeElement: HTMLElement) {
     return NONE;
   };
 }
+
+/**
+ * I want to extend the funcionality for this hook. Here's a list of things I know I need to do.
+ *
+ * 1. buildOverlapCalculator() should return different functions depending on whether our list is vertical, horizontal, or both.
+ * 2. the mouseDown() function on line 95 checks if it should pick up the element with the quick'n'dirty if check. This could be something the user has to pass into the hook.
+ * 3. rename the syncronizationFunction to onDragEnd() and pass it an object with information about the active element.
+ */

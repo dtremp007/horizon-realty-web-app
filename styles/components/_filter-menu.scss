@@ -5,7 +5,6 @@
   flex-direction: column;
   align-items: center;
   background-color: #191a1c;
-  //   width: 100%;
   border-radius: 1rem;
   margin-top: calc(60px + 1rem);
   margin-left: 1rem;
@@ -32,22 +31,31 @@
 @media screen and (max-width: 694px) {
   .filter-menu__container {
     position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 800;
     background: none;
     margin-left: 0;
+    transition: all 300ms ease-in-out;
+    height: 0;
+
+    &.open {
+        height: 100vh;
+        bottom: 0;
+    }
+  }
+
+  .filter-menu__form {
+    width: min(90%, 350px);
+    z-index: 800;
     opacity: 0%;
     visibility: collapse;
     transition: all 300ms ease-in-out;
-    top: -100vh;
-    right: 0;
-    left: 0;
-    z-index: 800;
-    transform: scaleY(0);
 
     &.open {
-      visibility: visible;
-      top: 0;
-      opacity: 100%;
-      transform: scaleY(1);
+        visibility: visible;
+        opacity: 100%;
     }
   }
 }
@@ -153,4 +161,17 @@ input[type="radio"]:checked ~ label {
 .mantine-1fxz185 {
   width: fit-content;
   min-width: 400px;
+}
+
+@media screen and (max-width: 694px) {
+  .filter-menu__filter-wrapper {
+    --offset: 0px;
+    transform: translateY(var(--offset));
+    transition: all 300ms ease-in-out;
+    z-index: 800;
+
+    &.open {
+      transform: translateY(0px);
+    }
+  }
 }

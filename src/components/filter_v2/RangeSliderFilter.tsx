@@ -1,7 +1,7 @@
 import { RangeSlider, RangeSliderProps } from "@mantine/core";
 import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
 import { ListingsContextType } from "../../context/listingsContext/listingsContext";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { equals, isNil } from "rambda";
 
 const RangeSliderFilter = ({
@@ -12,6 +12,7 @@ const RangeSliderFilter = ({
   filterProps,
   handleOnChange,
 }: FilterElement_V2_Props<RangeSliderProps, RangeSliderProps["onChange"]>) => {
+  const [state, setState] = useState(filterValue);
   const parsedLabel = useMemo(() => {
     const label = filterProps.label;
 
@@ -33,8 +34,9 @@ const RangeSliderFilter = ({
       {legend && <legend>{legend}</legend>}
       <RangeSlider
         {...filterProps}
-        value={filterValue}
-        onChange={handleOnChange}
+        value={state}
+        onChange={setState}
+        onChangeEnd={handleOnChange}
         label={parsedLabel}
       />
     </fieldset>
@@ -54,14 +56,14 @@ export function updateRangeSliderFilter(
 }
 
 function parseLabelFunction(code: string) {
-    const formatterFunction = eval(code) as (value: number) => string;
-    if (typeof formatterFunction(1000) === "string") {
-      return formatterFunction;
-    } else {
-      console.log(
-        `You're formatter function printed out ${formatterFunction(
-          1000
-        )}, what the hell.`
-      );
-    }
+  const formatterFunction = eval(code) as (value: number) => string;
+  if (typeof formatterFunction(1000) === "string") {
+    return formatterFunction;
+  } else {
+    console.log(
+      `You're formatter function printed out ${formatterFunction(
+        1000
+      )}, what the hell.`
+    );
   }
+}

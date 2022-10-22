@@ -68,7 +68,8 @@ const SegmentedControlFilter = (
         <SegmentedControl
           {...filterProps}
           // @ts-ignore
-          onChange={pipe(extractValue, handleOnChange)}
+          onChange={handleOnChange}
+        //   value={filterValue}
           fullWidth
           radius="md"
           size="md"

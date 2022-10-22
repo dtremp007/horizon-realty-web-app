@@ -5,7 +5,9 @@ import {
 } from "../../../lib/interfaces/FilterTypes";
 import {
   createListingEntryStringifyFunction,
+  queryParamsToFilterValues,
   stringifyComparisonFunction,
+  updateMultipleFilters,
 } from "../../../lib/util";
 import { isEmpty, mergeAll } from "rambda";
 
@@ -53,9 +55,10 @@ export type ListingsState = {
     index: number;
   };
   filterLog: FilterLog[];
+  activeFiltersCount: number;
 };
 
-type FiltersMap<> = Map<string, FilterElement_V2_Props<any, any>>;
+export type FiltersMap<> = Map<string, FilterElement_V2_Props<any, any>>;
 
 export type FilterLog = {
   filterTitle: string;
@@ -85,7 +88,8 @@ type ListingsActions = {
     | "UPDATE_MAP_FOCUS_POINT"
     | "FILTER"
     | "GET_ALL"
-    | "APPLY_FILTERS";
+    | "APPLY_FILTERS"
+    | "UPDATE_AND_APPLY_MULTIPLE_FILTER";
   payload?: any;
 };
 
@@ -171,6 +175,7 @@ export const ListingsProvider = ({
       index: 0,
     },
     filterLog: [],
+    activeFiltersCount: 0,
   };
 
   const [listingsState, dispatch] = useReducer(listingReducer, initialState);
@@ -256,6 +261,17 @@ const listingReducer: Reducer<ListingsState, ListingsActions> = (
           mergeAll([state.filters.get(filterId), action.payload])
         ),
       };
+    case "UPDATE_AND_APPLY_MULTIPLE_FILTER":
+      return {
+        ...state,
+        activeFiltersCount: [...state.filters].reduce((acc, curr) => curr[1].active ? (acc + 1) : (acc + 0), 0),
+        filters: queryParamsToFilterValues(state.filters, action.payload),
+        firebaseDocs: applyFilters(
+          [...state.snapshot],
+          state.filters,
+          state.filterLog
+        ),
+      }
     default:
       return state;
   }
@@ -321,7 +337,6 @@ function recursiveFilter(
   logger: Logger
 ): ListingsState["firebaseDocs"] {
   const result = iterator.next();
-  console.log(result.value)
   if (result.done) {
     return firebaseDocs;
   }
@@ -357,8 +372,6 @@ function initiateFilter(filter: FilterElement_V2_Props, logger: Logger) {
       filterValue
     )(listing);
 
-    console.log("test = " + didPass)
-
     log.append(listing, didPass);
 
     return didPass;
@@ -388,6 +401,7 @@ function initiateChecklistFilter(
     for (let i = 0; i < arrayOfFilters.length; i++) {
       const result = arrayOfFilters[i](listing);
 
+      // Is this the last iteration or did the listing just fail a test?
       if (i === arrayOfFilters.length - 1 || !result) return result;
     }
     console.log(

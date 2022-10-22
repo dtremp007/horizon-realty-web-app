@@ -3,15 +3,40 @@ import {
   ComparisonFunction,
   ComparisonFunctionItem,
   ComparisonOpType,
+  FiltersMap,
 } from "../../src/context/listingsContext/listingsContext";
 import { ListingsState } from "../../src/context/listingsContext/listingsContext";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase.config";
-import { EditFilterState, LocalMetadata, WebsiteMetadata } from "../../pages/admin/filters";
-import { FilterElement, FilterElement_V2_Props } from "../interfaces/FilterTypes";
+import {
+  EditFilterState,
+  LocalMetadata,
+  WebsiteMetadata,
+} from "../../pages/admin/filters";
+import {
+  FilterConfigOptions,
+  FilterElement,
+  FilterElement_V2_Props,
+} from "../interfaces/FilterTypes";
 import { ListingFieldKey, ListingFieldOptions } from "../interfaces/Listings";
-import { isEmpty, isNil, mergeDeepRight } from "rambda";
+import {
+  all,
+  concat,
+  equals,
+  isEmpty,
+  isNil,
+  map,
+  merge,
+  mergeAll,
+  mergeDeepRight,
+  objOf,
+} from "rambda";
 import { JSON_FilterProps } from "../interfaces/FilterTypes";
+import path from "path";
+import fs from "fs";
+import { GetInputProps, UseFormReturnType } from "@mantine/form/lib/types";
+const __ = { "@@functional/placeholder": true };
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * This function is almost intentical to `createComparisonFunction`, but instead of a closure, it returns the
@@ -69,18 +94,6 @@ export function createListingEntryStringifyFunction(
       didPass ? "passed" : "failed"
     }</span></pre>`;
   };
-}
-
-export async function createDummyUser() {
-  try {
-    await createUserWithEmailAndPassword(
-      auth,
-      process.env.DUMMY_USER as string,
-      process.env.DUMMY_PASSWORD as string
-    );
-  } catch (error: any) {
-    console.log(error.message);
-  }
 }
 
 /**
@@ -152,45 +165,23 @@ function _this(value: string | string[] | undefined) {
 }
 
 function* countGenerator() {
-    let count = 0;
-    while(true) {
-        yield ++count;
-    }
+  let count = 0;
+  while (true) {
+    yield ++count;
+  }
 }
 
 const count = countGenerator();
 
 function generateFilterName(filterType: FilterElement) {
-    return `${filterType}_${count.next().value}`
+  return `${filterType}_${count.next().value}`;
 }
-
-/**
- * Build a PublicFilterParameters object with the data passed in and filling in the rest.
- */
-export function buildFilterParameters(
-  metadata: LocalMetadata,
-  userPreferences: any,
-  sender: FilterElement
-): FilterElement_V2_Props {
-    const defaultParameters = {...metadata.filters.ofType.get(sender)?.defaultParameters};
-    console.dir(defaultParameters)
-    if (defaultParameters) {
-        defaultParameters.name = generateFilterName(sender);
-        defaultParameters.key = getCompatibleFieldKeys(metadata, sender)[0];
-    } else {
-        throw "Could not find specified filter type."
-    }
-
-
-    return mergeDeepRight(defaultParameters, userPreferences)
-}
-
 
 export function* increaseByGenerator(inc: number) {
-    let count = 10;
-    while(true) {
-        yield count += inc;
-    }
+  let count = 10;
+  while (true) {
+    yield (count += inc);
+  }
 }
 
 export function extractor(key1: string | null, key2: string | null, prop: any) {
@@ -216,4 +207,243 @@ export function getToggleFunction(className: string, condition: boolean) {
 
     return defaultClass;
   };
+}
+
+/**
+ * This function takes a filtersMap, and an array of key value pairs (ex. [["listingType", "CASA"], ...])
+ * and merges the key value pair with the oldFilter object, checking if filterValue ("CASA") is equal to
+ * the filter fallback ("ALL").
+ * ```
+ * dispatch({
+ *      type: "UPDATE_AND_APPLY_MULTIPLE_FILTER",
+ *      payload: Object.entries(router.query),
+ * });
+ * // context.ts
+ * return {
+ *    ...state,
+ *    filters: updateMultipleFilters(state.filters, action.payload),
+ * }
+ * ```
+ */
+export function updateMultipleFilters(
+  filtersMap: FiltersMap,
+  filters: [string, any][]
+) {
+  for (const [id, filterValue] of filters) {
+    if (filtersMap.has(id)) {
+      const oldFilter = filtersMap.get(id) as FilterElement_V2_Props;
+      filtersMap.set(
+        id,
+        mergeAll([
+          oldFilter,
+          { filterValue, active: !(oldFilter.fallback === filterValue) },
+        ])
+      );
+    }
+  }
+  return filtersMap;
+}
+
+export function queryParamsToFilterValues(
+  filtersMap: FiltersMap,
+  params: {[key: string]: any}
+) {
+   for (const [key, filter] of filtersMap) {
+    let newValue = deserializeQueryParams(params[key])
+    if (newValue !== undefined) {
+        // Don't change anything if the values haven't changed.
+        if (equals(newValue, filter.filterValue)) continue;
+
+        filter.active = !equals(newValue, filter.fallback)
+        filter.filterValue = newValue;
+    }
+    if (filter.type === "CheckboxList" && filter.children) {
+        let filterActive = false;
+        for (const child of filter.children) {
+            newValue = deserializeQueryParams(params[child.id]) as boolean
+            if (newValue === undefined) continue;
+
+            child.filterValue = newValue;
+            child.active = newValue;
+
+            if (newValue) filterActive = true;
+        }
+        filter.active = filterActive;
+    }
+   }
+
+   return filtersMap;
+}
+
+export function curryStringInput(f: GetInputProps<any>, seperator?: string) {
+  function concatArguments(arg1?: any, arg2?: any): any {
+    if (arguments.length === 0) throw "You gave 0 arguments.";
+
+    if (arguments[0] === 0) return concatArguments.bind(null, arguments[1]); // first call
+
+    if (arguments.length > 1) {
+      if (all((prop) => typeof prop === "string", Array.from(arguments)))
+        return concatArguments.bind(
+          null,
+          Array.from(arguments).join(seperator ? seperator : ".")
+        );
+
+      if (typeof arguments[1] === "object") {
+        const [path, options] = Array.from(arguments);
+        return f(path, options);
+      }
+    }
+    return f(arguments[0]);
+  }
+
+  return concatArguments.bind(null, 0);
+}
+
+type CreatePathSnowballOptions = {
+  initialString?: string;
+  separator?: string;
+};
+
+/**
+ * This function returns a function that takes a string, and returns a function which can be called
+ * on empty to return a path string concatenated from each call of the funciton. It's especially useful with
+ * recursive prop drilling, and mantine's use-form hook.
+ * ```
+ * const pathSnowball = createPathSnowball({})
+ *
+ * const func = pathSnowball("filterProps")
+ * const func_2 = func("data")
+ *
+ * const path = func_2() // -> "filterProps.data"
+ * form.getInputProps(path)
+ * ```
+ */
+export function createPathSnowball({
+  initialString,
+  separator = ".",
+}: CreatePathSnowballOptions) {
+  function pathSnowball_2(path: string[]) {
+    return (...strings: string[]) => {
+      if (strings.length === 0) {
+        return path.join(separator);
+      }
+
+      if (strings[0].length > 0) {
+        return pathSnowball_2(concat(path, strings));
+      }
+
+      return pathSnowball_2(path);
+    };
+  }
+
+  return pathSnowball_2(initialString ? [initialString] : []);
+}
+
+/**
+ * I ~~stole~~ **took inspiration for** this function from the mantine repo. It works by running `split(".")` on the path string.
+ * It uses the first element in the array to index into values, returns that value, and does this again with
+ * the next element in the array.
+ * ```
+ * let value = values[splitPath[0]]
+ * // ...
+ * return value[splitPath[last]]
+ * ```
+ * @param path - path string seperated by '.'
+ * @param values - object to index into
+ * @returns value at specified path.
+ */
+export function getObjectPath(path: string, values: { [key: string]: any }) {
+  const splitPath = typeof path === "string" ? path.split(".") : [];
+
+  if (splitPath.length === 0 || typeof values !== "object" || values === null) {
+    return undefined;
+  }
+
+  let value = values[splitPath[0]];
+  for (let i = 1; i < splitPath.length; i++) {
+    if (value === undefined) {
+      break;
+    }
+
+    value = value[splitPath[i]];
+  }
+
+  return value;
+}
+
+/**
+ * Use this function when need to add items to a list.
+ * ```
+ * form.insertListItem("filterProps.data", createFilterPropListItem(form, listInputs))
+ * ```
+ * @param form - form object from `@mantine/use-form`
+ * @param listInput - the inputs for each item in a list eg. `{value: string, label: string}`
+ * @returns object to append to the list.
+ */
+export function createFilterPropListItem(
+  form: UseFormReturnType<FilterElement_V2_Props>,
+  listInput: FilterConfigOptions
+) {
+  const type = form.values.type;
+  if (type !== "CheckboxList") return map((v) => "", listInput);
+
+  return {
+    id: uuidv4(),
+    fieldKey: "water",
+    type: "Checkbox",
+    comparisonOperator: "===",
+    filterValue: false,
+    filterProps: {
+      label: "Water",
+    },
+    fallback: false,
+    active: false,
+  };
+}
+
+export function makeRoomForNewFilter(filterMap: FiltersMap, index: number) {
+  Array.from(filterMap).forEach(([_, filter]) => {
+    if (filter.position >= index) filter.position++;
+  });
+}
+
+export function getFallbackValue(filter: FilterElement_V2_Props) {
+  if (filter.type === "RangeSlider") {
+    return [filter.filterProps.min, filter.filterProps.max];
+  }
+}
+
+export function getFallbackValueSelection(filter: FilterElement_V2_Props) {
+  if (filter.filterProps.data) {
+    return filter.filterProps.data.map(
+      ({ label, value }: { label: string; value: string }) => value
+    );
+  }
+}
+
+export function getOptionsForFieldKey(metadata: LocalMetadata, filter: FilterElement_V2_Props) {
+    const field = metadata.listings.fields.get(filter.fieldKey)
+
+    if (!isNil(field) && field.options !== "None") {
+        console.log(field.options)
+        return concat(["ALL"], field.options)
+    }
+
+    return ["ALL"]
+}
+
+export function deserializeQueryParams(value: string | string[]) {
+  if (!isNaN(+value)) return +value;
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return value;
+}
+
+export function updateFallbackValues(filters: FilterElement_V2_Props[]) {
+    for (const filter of filters) {
+        if (filter.type === "RangeSlider") {
+            filter.fallback = [filter.filterProps.min, filter.filterProps.max]
+        }
+    }
+    return filters
 }

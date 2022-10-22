@@ -2,13 +2,14 @@ import Link from "next/link";
 import { ActionIcon, Burger, Button, Tooltip } from "@mantine/core";
 import Show from "../HOC/Show";
 import { FaWhatsapp } from "react-icons/fa";
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useRef, useEffect, useContext, useCallback } from "react";
 import { NextRouter, useRouter } from "next/router";
 import BackButton from "../navigation/BackButton";
 import { IconChevronDown } from "@tabler/icons";
 import React from "react";
 import AuthUserContext from "../../context/authUserContext";
 import { NavContext } from "../../layouts/AltMainLayout";
+import { useWindowScroll } from "@mantine/hooks";
 
 const links: Links[] = [
   { href: "/", label: "Home", isActive: (router) => router.pathname === "/" },
@@ -55,10 +56,13 @@ const links: Links[] = [
 ];
 
 const AltNavbar = () => {
-  const { nav_state, dispatch_to_nav, toggle_menu, toggle_header } = useContext(NavContext);
+  const { nav_state, dispatch_to_nav, toggle_menu, toggle_header } =
+    useContext(NavContext);
   const router = useRouter();
   const navRef = useRef<HTMLDivElement>(null);
   const { user } = useContext(AuthUserContext);
+  const [scroll] = useWindowScroll();
+  const pathRef = useRef(router.pathname);
 
   const logoClickhandler = (e: React.MouseEvent) => {
     if (user) {
@@ -73,9 +77,27 @@ const AltNavbar = () => {
     }
   };
 
+  const adjustNavbarStyle = useCallback(
+    (isTextBlack: boolean) => {
+      if (isTextBlack) {
+        navRef.current?.style.setProperty("color", "var(--text-inverted)");
+        dispatch_to_nav({ type: "TOGGLE_IS_BLACK", payload: true });
+        navRef.current?.style.setProperty("background", "none");
+      } else {
+        navRef.current?.style.setProperty("color", "var(--text-primary)");
+        dispatch_to_nav({ type: "TOGGLE_IS_BLACK", payload: false });
+        navRef.current?.style.setProperty(
+          "background",
+          "var(--background-secondary)"
+        );
+      }
+    },
+    [router.pathname]
+  );
+
   useEffect(() => {
-    function handleRouterChange() {
-      dispatch_to_nav({ type: "TOGGLE_MENU", payload: false });
+    function handleRouterChange(e: string) {
+      dispatch_to_nav({ type: "TOGGLE_MENU_WATCH_FILTER", payload: false });
     }
 
     router.events.on("routeChangeComplete", handleRouterChange);
@@ -83,7 +105,13 @@ const AltNavbar = () => {
     return () => {
       router.events.on("routeChangeComplete", handleRouterChange);
     };
-  }, []);
+  }, [nav_state.isHeaderExpanded]);
+
+  useEffect(() => {
+    if (router.pathname !== "/") return;
+
+    adjustNavbarStyle(scroll.y === 0);
+  }, [scroll]);
 
   useEffect(() => {
     if (router.pathname === "/listings/[id]") {
@@ -92,22 +120,7 @@ const AltNavbar = () => {
       dispatch_to_nav({ type: "GO_AS_YOU_PLEASE" });
     }
 
-    if (router.pathname === "/") {
-      navRef.current?.style.setProperty("color", "var(--text-inverted)");
-      dispatch_to_nav({ type: "TOGGLE_IS_BLACK", payload: true });
-    } else {
-      navRef.current?.style.setProperty("color", "var(--text-primary)");
-      dispatch_to_nav({ type: "TOGGLE_IS_BLACK", payload: false });
-    }
-
-    if (router.pathname !== "/") {
-      navRef.current?.style.setProperty(
-        "background",
-        "var(--background-secondary)"
-      );
-    } else {
-      navRef.current?.style.setProperty("background", "none");
-    }
+    adjustNavbarStyle(router.pathname === "/");
   }, [router.pathname, router.query]);
 
   return (
@@ -120,9 +133,13 @@ const AltNavbar = () => {
           alt={<BackButton />}
         >
           <Burger
-            opened={nav_state.isMenuOpen}
+            opened={nav_state.isMenuOpen || nav_state.isFilterOpen}
             size="md"
             onClick={() => {
+              if (nav_state.isFilterOpen) {
+                dispatch_to_nav({ type: "TOGGLE_FILTER" });
+                return;
+              }
               dispatch_to_nav({ type: "TOGGLE_MENU" });
               if (router.pathname === "/")
                 dispatch_to_nav({ type: "TOGGLE_IS_BLACK" });

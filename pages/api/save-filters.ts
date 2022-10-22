@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { join } from "path";
 
 type Data = {
-  name: string;
+  [key: string]: any;
 };
 
 export default function handler(
@@ -12,8 +12,9 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   writeFileSync(
-    join(process.cwd(), "lib", "sample.json"),
+    join(process.cwd(), "lib", "filters.json"),
     JSON.stringify(req.body)
   );
-  res.status(200).json({ name: "John Doe" });
+
+  res.status(200).json({ success: true });
 }

@@ -28,15 +28,19 @@ import RangeSliderFilter, {
 } from "./RangeSliderFilter";
 import SegmentedControlFilter from "./SegmentedControlFilter";
 import { extractor } from "../../../lib/util";
+import useUrlState from "../../hooks/useUrlState";
 
 const FilterElementWrapper = (props: FilterElement_V2_Props<any, any>) => {
   const { listingsState, dispatch } = useContext(ListingsContext);
-  const updateFilterWith = curry(updateFilter)(dispatch); // waiting for a payload
-  const returnsPayload = (filterValue: any) => ({
-    id: props.id,
-    filterValue,
-    active: !equals(props.fallback, filterValue),
+  const [value, setValue] = useUrlState({
+    [props.fieldKey]: props.filterValue,
   });
+
+  const returnsPayload = (filterValue: any) => ({
+    [props.id]: filterValue,
+  });
+
+  const updateFilterWith = (payload: any) => setValue(payload);
   const updateFilterWithPayload = pipe(returnsPayload, updateFilterWith);
 
   switch (props.type) {
@@ -70,7 +74,10 @@ const FilterElementWrapper = (props: FilterElement_V2_Props<any, any>) => {
     // value
     case "SegmentedControl":
       return (
-        <SegmentedControlFilter {...props} handleOnChange={updateFilterWith} />
+        <SegmentedControlFilter
+          {...props}
+          handleOnChange={updateFilterWithPayload}
+        />
       );
     //currentTarget.checked
     case "CheckboxList":
