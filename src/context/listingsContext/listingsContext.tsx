@@ -132,7 +132,7 @@ const getAverageCoordinates = (
 export function parseFilters(
   unparsedFilters: FilterElement_V2_Props[]
 ): FiltersMap {
-  return new Map(unparsedFilters.map(filter => [filter.id, filter]));
+  return new Map(unparsedFilters.sort((a, b) => a.position - b.position).map(filter => [filter.id, filter]));
 }
 
 /**

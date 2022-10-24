@@ -11,15 +11,17 @@ import ListingsContext, {
 import Router, { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
 import Link from "next/link";
-import {ListingSchema} from "../../lib/interfaces/Listings"
-import path from "path"
-import {readFileSync} from "fs"
+import { ListingSchema } from "../../lib/interfaces/Listings";
+import path from "path";
+import { readFileSync } from "fs";
 import { FilterElement_V2_Props } from "../../lib/interfaces/FilterTypes";
 import AuthUserContext from "../../src/context/authUserContext";
 import { getToggleFunction } from "../../lib/util";
 
-const MapView = dynamic(() => import("../../src/components/map/MapView"))
-const MapListingsOverlay = dynamic(() => import("../../src/components/map/MapListingsOverlay"))
+const MapView = dynamic(() => import("../../src/components/map/MapView"));
+const MapListingsOverlay = dynamic(
+  () => import("../../src/components/map/MapListingsOverlay")
+);
 
 type Props = {
   firebaseDocs: {
@@ -38,16 +40,16 @@ const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
   const isDesktop = useMediaQuery("(min-width: 695px)", true);
   const router = useRouter();
   const [view, setView] = useState(router.query.view);
-  const {user} = useContext(AuthUserContext);
+  const { user } = useContext(AuthUserContext);
 
   const shouldShowFilter = user || process.env.NODE_ENV === "development";
-  const toggleFilterView = getToggleFunction("show-filter", !shouldShowFilter)
+  const toggleFilterView = getToggleFunction("show-filter", !shouldShowFilter);
 
   useEffect(() => {
     if (router.query.foo) {
-        /* some code */
+      /* some code */
     }
-  }, [router.query.foo])
+  }, [router.query.foo]);
 
   useEffect(() => {
     setView(router.query.view);
@@ -62,7 +64,7 @@ const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
         </>
       ) : (
         <div className={toggleFilterView("listing-page__layout")}>
-          {shouldShowFilter && <FilterMenu/> }
+          {shouldShowFilter && <FilterMenu />}
           <ListingsLayout />
         </div>
       )}
@@ -76,17 +78,18 @@ export const getServerSideProps: GetServerSideProps = async () => {
     id: listing.id,
     data: listing.data(),
   }));
-    const fileName = path.join(process.cwd(),"lib", "filters.json");
-    const filters = readFileSync(fileName, { encoding: "utf8" });
-    // const filterQuerySnapshot = await getDocs(collection(db, "filters"));
-    // const filters = filterQuerySnapshot.docs.map((filter) => {
-    //   return filter.data();
-    // });
+  // const fileName = path.join(process.cwd(),"lib", "filters.json");
+  // const filters = readFileSync(fileName, { encoding: "utf8" });
+  const filterQuerySnapshot = await getDocs(collection(db, "filters"));
+  const filters = filterQuerySnapshot.docs.map((filter) => {
+    return filter.data();
+  });
 
   return {
     props: {
       firebaseDocs,
-      filters: JSON.parse(filters).filters
+      //   filters: JSON.parse(filters).filters
+      filters,
     },
   };
 };
