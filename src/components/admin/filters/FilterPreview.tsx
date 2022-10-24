@@ -127,7 +127,7 @@ const FilterUIOverlay = ({
     filter_id: string;
   filterProps: FilterElement_V2_Props;
 }) => {
-  const { state, dispatch } = useContext(EditFilterContext);
+  const { state, dispatch, deleteFilter } = useContext(EditFilterContext);
 
   return (
     <div className="filter-ui-overlay__container">
@@ -144,7 +144,7 @@ const FilterUIOverlay = ({
         </ActionIcon>
         <ActionIcon
           onClick={() =>
-            dispatch({ type: "DELETE_FILTER", payload: filter_id })
+            deleteFilter(filter_id)
           }
         >
           <IconTrash />

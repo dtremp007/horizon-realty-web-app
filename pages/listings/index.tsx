@@ -76,13 +76,17 @@ export const getServerSideProps: GetServerSideProps = async () => {
     id: listing.id,
     data: listing.data(),
   }));
-    const fileName = path.join(process.cwd(),"lib", "filters.json");
-    const filters = readFileSync(fileName, { encoding: "utf8" });
+    // const fileName = path.join(process.cwd(),"lib", "filters.json");
+    // const filters = readFileSync(fileName, { encoding: "utf8" });
+    const filterQuerySnapshot = await getDocs(collection(db, "filters"));
+    const filters = filterQuerySnapshot.docs.map((filter) => {
+      return filter.data();
+    });
 
   return {
     props: {
       firebaseDocs,
-      filters: JSON.parse(filters).filters
+      filters
     },
   };
 };

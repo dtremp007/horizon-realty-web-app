@@ -6,11 +6,35 @@ import { useRouter } from "next/router";
 import { AuthUserProvider } from "../src/context/authUserContext";
 import AltMainLayout from "../src/layouts/AltMainLayout";
 import Head from "next/head";
+import { getAnalytics, logEvent } from "firebase/analytics";
+import { useEffect } from "react";
+import { analytics } from "../lib/firebase.config";
 
 const AdminLayout = dynamic(() => import("../src/layouts/AdminLayout"));
 
 //TODO: make router path a global property
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") analytics();
+  }, []);
+
+  useEffect(() => {
+    const analytics = getAnalytics();
+
+    const logRouteChange = (url: string) => {
+      // @ts-ignore
+      logEvent(analytics, "screen_view", {
+        firebase_screen: url,
+      });
+    };
+
+    router.events.on("routeChangeComplete", logRouteChange);
+
+    return () => router.events.off("routeChangeComplete", logRouteChange);
+  }, []);
+
   return (
     <MantineProvider
       theme={{

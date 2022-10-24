@@ -25,6 +25,7 @@ import {
   Dispatch,
   Reducer,
   useContext,
+  useEffect,
   useMemo,
   useReducer,
   useState,
@@ -35,7 +36,7 @@ import {
   FirestoreDataTypes,
   ListingFieldOptions,
 } from "../../lib/interfaces/Listings";
-import { DocumentData } from "firebase/firestore";
+import { DocumentData, setDoc } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { IconCirclePlus } from "@tabler/icons";
 import { parseFilters } from "../../src/context/listingsContext/listingsContext";
@@ -61,6 +62,17 @@ import R, {
 import FilterBuilder from "../../src/components/admin/filters/FilterBuilder";
 import FilterBuffet from "../../src/components/admin/filters/FilterBuffet";
 import { updateFallbackValues } from "../../lib/util";
+import {
+  doc,
+  collection,
+  addDoc,
+  updateDoc,
+  Timestamp,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
+import { db } from "../../lib/firebase.config";
+import { nextTick } from "process";
 
 type AdminFilterProps = {
   filters: FilterElement_V2_Props[];
@@ -78,7 +90,8 @@ export type EditFilterActions = {
     | "ADD_FILTER"
     | "TO_FILTER_CREATION_MODE"
     | "UPDATE_FILTER_SAVED_STATUS"
-    | "DELETE_FILTER";
+    | "DELETE_FILTER"
+    | "SET_ALL_FILTERS";
   payload?: any;
 };
 
@@ -111,6 +124,7 @@ type EditFilterContextType = {
   dispatch: Dispatch<EditFilterActions>;
   metadata: LocalMetadata;
   saveFilters: () => void;
+  deleteFilter: (id: string) => void;
 };
 
 export const EditFilterContext = createContext<EditFilterContextType>(
@@ -122,7 +136,7 @@ const AdminFilters: NextPage<AdminFilterProps> = ({
   metadata: metadata_from_json,
 }) => {
   const initialState: EditFilterState = {
-    savedFilters: parseFilters(filters),
+    savedFilters: filters.length > 0 ? parseFilters(filters) : new Map(),
     isModalOpen: false,
     filterBeingEdited: null,
     filterCreationMode: false,
@@ -134,22 +148,45 @@ const AdminFilters: NextPage<AdminFilterProps> = ({
 
   const [state, dispatch] = useReducer(editFiltersReducer, initialState);
 
-  const saveFilters = async () => {
-    const res = await fetch("/api/save-filters", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: stringifyFilters(state.savedFilters, [updateFallbackValues]),
-    });
+  const resetFilters = () => {
+    const getFilterBackup = async () => {
+      return await fetch("/api/filter-backup");
+    };
 
-    if (res.status === 200)
-      dispatch({ type: "UPDATE_FILTER_SAVED_STATUS", payload: true });
+    getFilterBackup()
+      .then((res) => res.json())
+      .then((filters) => {
+        dispatch({ type: "SET_ALL_FILTERS", payload: filters });
+      });
+  };
+
+  useEffect(() => {
+    if (state.savedFilters.size === 0) {
+        resetFilters();
+    }
+  }, []);
+
+  const saveFilters = async () => {
+    const filters = transformFilters(state.savedFilters, [
+      updateFallbackValues,
+    ]);
+
+    for (const filter of filters) {
+      setDoc(doc(db, "filters", filter.id), filter);
+    }
+
+    dispatch({ type: "UPDATE_FILTER_SAVED_STATUS", payload: true });
+  };
+
+  const deleteFilter = async (id: string) => {
+    await deleteDoc(doc(db, "filters", id));
+
+    dispatch({ type: "DELETE_FILTER", payload: id });
   };
 
   return (
     <EditFilterContext.Provider
-      value={{ state, dispatch, metadata, saveFilters }}
+      value={{ state, dispatch, metadata, saveFilters, deleteFilter }}
     >
       <SimpleGrid cols={2}>
         <FilterPreview />
@@ -219,7 +256,10 @@ const editFiltersReducer: Reducer<EditFilterState, EditFilterActions> = (
         ...state,
         filters: state.savedFilters.set(
           state.filterBeingEdited!,
-          mergeAll([state.savedFilters.get(state.filterBeingEdited!), action.payload])
+          mergeAll([
+            state.savedFilters.get(state.filterBeingEdited!),
+            action.payload,
+          ])
         ),
       };
     case "FILTER_TO_EDIT_MODE":
@@ -259,7 +299,12 @@ const editFiltersReducer: Reducer<EditFilterState, EditFilterActions> = (
           state.filterBeingEdited === action.payload
             ? null
             : state.filterBeingEdited,
-        filterSaved: false,
+        filterSaved: true,
+      };
+    case "SET_ALL_FILTERS":
+      return {
+        ...state,
+        savedFilters: parseFilters(action.payload),
       };
     default:
       return state;
@@ -270,27 +315,32 @@ type FilterTransformer = (
   f: FilterElement_V2_Props[]
 ) => FilterElement_V2_Props[];
 
-function stringifyFilters(
+function transformFilters(
   filters: Map<string, FilterElement_V2_Props>,
   transformers: FilterTransformer[]
 ) {
   transformers.push((f: FilterElement_V2_Props[]) =>
     f.sort((a, b) => a.position - b.position)
   );
-  const transform = pipe.apply(null, transformers as any);
+  const transform = pipe.apply(null, transformers as any) as (
+    f: any
+  ) => FilterElement_V2_Props[];
 
-  return JSON.stringify({
-    filters: transform(Array.from(filters).map(([key, filter]) => filter)),
-  });
+
+  return transform(Array.from(filters).map(([key, filter]) => filter));
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const filtersFile = path.join(process.cwd(), "lib", "filters.json");
   const metadataFile = path.join(process.cwd(), "lib", "metadata.json");
-  const filters = JSON.parse(
-    readFileSync(filtersFile, { encoding: "utf8" }) // I removed .toString(), I'm not sure why it was here. I don't think it's necessary.
-  ).filters;
   const metadata = JSON.parse(readFileSync(metadataFile, { encoding: "utf8" }));
+    // const filtersFile = path.join(process.cwd(), "lib", "filters.json");
+    // const filters = JSON.parse(
+    //   readFileSync(filtersFile, { encoding: "utf8" }) // I removed .toString(), I'm not sure why it was here. I don't think it's necessary.
+    // ).filters;
+    const querySnapshot = await getDocs(collection(db, "filters"));
+    const filters = querySnapshot.docs.map((filter) => {
+      return filter.data();
+    });
 
   return {
     props: {
