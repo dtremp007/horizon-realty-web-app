@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import houseThumbnail from "../../../public/country-home-unsplash.jpg";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 type ListingBuffetProps = {
   listingTypeFilter: FilterElement_V2_Props<RadioButtonGroupProps>;
@@ -21,30 +22,35 @@ const ListingBuffet = ({ listingTypeFilter }: ListingBuffetProps) => {
   const [filter, setFilter] = useState(listingTypeFilter);
   const router = useRouter();
 
-  const handleNavigation = (listingType: string) => {
-    router.push({pathname: "/listings", query: {listingType}})
-  }
-
   return (
     <section className="listing-buffet">
       <div className="listing-buffet__grid-layout">
         {filter.filterProps.data.slice(1, 4).map(({ label, value }, index) => (
-          <div
-            key={value}
-            className="listing-buffet__card"
-            onClick={() => handleNavigation(value)}
-          >
-            <div className="listing-buffet__background">
-              <Image src={listingTypeBackgrounds[index]} layout="fill" objectFit="cover" />
-            </div>
-            <Group position="center" mt={18} mb={18} style={{color: "#AA9053"}}>
-              {/* <Button variant="outline" color="gold" size="lg" rightIcon={getIcon(value)}>
+          <Link href={{pathname: "/listings", query: {listingType: value}}} key={value}>
+            <div
+              className="listing-buffet__card"
+            >
+              <div className="listing-buffet__background">
+                <Image
+                  src={listingTypeBackgrounds[index]}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
+              <Group
+                position="center"
+                mt={18}
+                mb={18}
+                style={{ color: "#AA9053" }}
+              >
+                {/* <Button variant="outline" color="gold" size="lg" rightIcon={getIcon(value)}>
                 {label}
-              </Button> */}
-              {getIcon(value)}
-              {label}
-            </Group>
-          </div>
+            </Button> */}
+                {getIcon(value)}
+                {label}
+              </Group>
+            </div>
+          </Link>
         ))}
       </div>
     </section>
@@ -55,13 +61,13 @@ export default ListingBuffet;
 function getIcon(type: string) {
   switch (type) {
     case "CASA":
-      return <IconHome/>;
+      return <IconHome />;
     case "LOTE":
       return lotIcon;
     case "BODEGA":
       return <IconBuildingWarehouse />;
     case "LOTES_COMMERCIALES":
-        return <IconBuildingCommunity/>
+      return <IconBuildingCommunity />;
     default:
       return <IconLayout2 />;
   }
@@ -104,8 +110,8 @@ const lotIcon = (
 );
 
 const listingTypeBackgrounds = [
-    "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2F6D0D76DE-3475-4B13-9137-7657C812505F_1280x720.jpeg?alt=media&token=0c8e322a-77c1-468d-a9b5-d7c291adb39a",
-    "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2FIMG_0698_1280x720.jpeg?alt=media&token=08220c2d-e6b2-4557-9d79-3745517c7e43",
-    "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2Fphoto31_1280x720.jpeg?alt=media&token=e5b60458-4979-4e5d-a5ff-2e635a2c87f9",
-    "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2F2CEF9E40-5597-44FF-8745-9D682CAF4687_1280x720.jpeg?alt=media&token=8cfa3c7a-0e4d-4516-a6f2-70605e988857",
-]
+  "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2F6D0D76DE-3475-4B13-9137-7657C812505F_1280x720.jpeg?alt=media&token=0c8e322a-77c1-468d-a9b5-d7c291adb39a",
+  "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2FIMG_0698_1280x720.jpeg?alt=media&token=08220c2d-e6b2-4557-9d79-3745517c7e43",
+  "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2Fphoto31_1280x720.jpeg?alt=media&token=e5b60458-4979-4e5d-a5ff-2e635a2c87f9",
+  "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2F2CEF9E40-5597-44FF-8745-9D682CAF4687_1280x720.jpeg?alt=media&token=8cfa3c7a-0e4d-4516-a6f2-70605e988857",
+];
