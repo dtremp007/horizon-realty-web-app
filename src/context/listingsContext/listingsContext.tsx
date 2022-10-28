@@ -158,10 +158,12 @@ export const ListingsProvider = ({
 }: Props) => {
   const [latitude, longitude] = firebaseDocs[0].data.coordinates;
 
+  const firebaseDocsImagesOnly = firebaseDocs.filter(listing => listing.data.imageUrls.length > 0)
+
   const initialState: ListingsState = {
     loading: false,
-    snapshot: [...firebaseDocs],
-    firebaseDocs,
+    snapshot: [...firebaseDocsImagesOnly],
+    firebaseDocs: firebaseDocsImagesOnly,
     mapViewState: {
       latitude,
       longitude,
