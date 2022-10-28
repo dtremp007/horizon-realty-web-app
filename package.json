@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest",
+    "dev-router": "next dev -H 192.168.8.10"
   },
   "dependencies": {
     "@formkit/auto-animate": "^1.0.0-beta.1",
@@ -44,7 +45,8 @@
     "swiper": "^8.3.2",
     "tabler-icons-react": "^1.54.0",
     "use-supercluster": "^0.4.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "zod": "^3.19.1"
   },
   "devDependencies": {
     "@types/node": "18.0.6",

@@ -42,3 +42,7 @@ firebase.json
 firestore.indexes.json
 *.rules
 /functions
+
+# shit code
+/src/components/admin/form-builder
+/src/components/admin/form-builder-2

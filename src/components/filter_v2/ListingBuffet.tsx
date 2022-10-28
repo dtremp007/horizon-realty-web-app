@@ -11,6 +11,9 @@ import {
 } from "@tabler/icons";
 import Image from "next/image";
 import houseThumbnail from "../../../public/country-home-unsplash.jpg";
+import detailedHouseIcon from "../../../public/Icons/detailed-home-icon.svg";
+import ranchLandIcon from "../../../public/Icons/farm-land-icon.svg";
+import casaBodegaIcon from "../../../public/Icons/casabodega-icon.svg";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -25,28 +28,35 @@ const ListingBuffet = ({ listingTypeFilter }: ListingBuffetProps) => {
   return (
     <section className="listing-buffet">
       <div className="listing-buffet__grid-layout">
-        {filter.filterProps.data.slice(1, 4).map(({ label, value }, index) => (
-          <Link href={{pathname: "/listings", query: {listingType: value}}} key={value}>
-            <div
-              className="listing-buffet__card"
-            >
-              <div className="listing-buffet__background">
+        {filter.filterProps.data.slice(1).map(({ label, value }, index) => (
+          <Link
+            href={{ pathname: "/listings", query: { listingType: value } }}
+            key={value}
+          >
+            <div className="listing-buffet__card">
+              {/* <div className="listing-buffet__background">
                 <Image
                   src={listingTypeBackgrounds[index]}
                   layout="fill"
                   objectFit="cover"
+                  // objectFit="contain"
                 />
-              </div>
+              </div> */}
               <Group
                 position="center"
-                mt={18}
-                mb={18}
-                style={{ color: "#AA9053" }}
+                pt={22}
+                align="center"
+                style={{ height: "100%" }}
               >
-                {/* <Button variant="outline" color="gold" size="lg" rightIcon={getIcon(value)}>
-                {label}
-            </Button> */}
                 {getIcon(value)}
+              </Group>
+              <Group
+                className="listing-buffet__label"
+                position="center"
+                pt={10}
+                pb={10}
+              >
+                {/* {getIcon(value)} */}
                 {label}
               </Group>
             </div>
@@ -61,20 +71,22 @@ export default ListingBuffet;
 function getIcon(type: string) {
   switch (type) {
     case "CASA":
-      return <IconHome />;
+      return <Image src={detailedHouseIcon} />;
     case "LOTE":
       return lotIcon;
     case "BODEGA":
-      return <IconBuildingWarehouse />;
-    case "LOTES_COMMERCIALES":
-      return <IconBuildingCommunity />;
+      return <Image src={casaBodegaIcon} />;
+    case "LOTES_COMERCIALES":
+      return <IconBuildingCommunity size={80} />;
+    case "LABORES/RANCHOS":
+      return <Image src={ranchLandIcon} />;
     default:
       return <IconLayout2 />;
   }
 }
 
 const lotIcon = (
-  <svg height={24} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.55 24.49">
+  <svg height={70} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.55 24.49">
     <g id="icons">
       <polyline
         className="land-area-1"
@@ -108,10 +120,3 @@ const lotIcon = (
     </g>
   </svg>
 );
-
-const listingTypeBackgrounds = [
-  "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2F6D0D76DE-3475-4B13-9137-7657C812505F_1280x720.jpeg?alt=media&token=0c8e322a-77c1-468d-a9b5-d7c291adb39a",
-  "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2FIMG_0698_1280x720.jpeg?alt=media&token=08220c2d-e6b2-4557-9d79-3745517c7e43",
-  "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2Fphoto31_1280x720.jpeg?alt=media&token=e5b60458-4979-4e5d-a5ff-2e635a2c87f9",
-  "https://firebasestorage.googleapis.com/v0/b/horizon-real-estate-30201.appspot.com/o/images%2F2CEF9E40-5597-44FF-8745-9D682CAF4687_1280x720.jpeg?alt=media&token=8cfa3c7a-0e4d-4516-a6f2-70605e988857",
-];

@@ -1,7 +1,7 @@
 @use "../abstracts/variables" as *;
 
 section.listing-buffet {
-  margin: 5rem 1rem;
+  margin: 78px 1rem;
 }
 
 @media screen and (max-width: 694px) {
@@ -22,13 +22,19 @@ section.listing-buffet {
   overflow: hidden;
   background-color: $background-secondary;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: $logo-yellow;
+//   height: 200px;
   cursor: pointer;
 }
 
 .listing-buffet__background {
   position: relative;
   width: 100%;
-  height: 200px;
+  //   height: 200px;
+  height: 300px;
   overflow: hidden;
 
   & > span {
@@ -58,7 +64,15 @@ section.listing-buffet {
   top: 0;
   left: 0;
   display: grid;
-  justify-items: center;
-  align-items: end;
-  padding-bottom: 1rem;
+  //   justify-items: center;
+  align-items: flex-end;
+  //   padding-bottom: 1rem;
+
+  font-size: x-large;
+}
+
+.listing-buffet__label {
+  color: $logo-yellow;
+//   color: $text-inverted;
+  font-weight: 600;
 }
