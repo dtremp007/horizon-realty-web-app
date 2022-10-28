@@ -42,7 +42,7 @@ export default function ListingsLayout() {
   return (
     <div className="listings__container">
       {!loading ? (
-        firebaseDocs.map((listing) => (
+        firebaseDocs.filter(listing => listing.data.imageUrls.length > 0).map((listing) => (
           <ListingCard
             key={listing.id}
             id={listing.id}
