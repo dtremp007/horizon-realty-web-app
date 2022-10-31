@@ -62,7 +62,7 @@ const links: Links[] = [
           query: { listingType: "LOTE" },
         },
         label: "Lotes",
-        isActive: (router) => "/listings" && router.query.listingType === "LOTE",
+        isActive: (router) => "/listings" && router.query.listingType === "LOTES_RESIDENCIALES",
       },
       {
         href: {

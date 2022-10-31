@@ -47,7 +47,7 @@ const links: Links[] = [
           pathname: "/listings",
           query: { filter: "BODEGA" },
         },
-        label: "Bodegas",
+        label: "Casa Bodegas",
         isActive: (router) => "/listings" && router.query.filter === "BODEGA",
       },
     ],

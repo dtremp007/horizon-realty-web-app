@@ -41,7 +41,7 @@ export default function InfoTagWrapper({
     );
   }
 
-  if (listingType === "LOTE") {
+  if ((listingType as string).startsWith("LOTE")) {
     return (
       <div className="listing-card__info-tag-wrapper">
         {landArea > 0 && (
