@@ -72,6 +72,7 @@ function getIcon(type: string) {
   switch (type) {
     case "CASA":
       return <Image src={detailedHouseIcon} />;
+    case "LOTE_RESIDENCIALES":
     case "LOTE":
       return lotIcon;
     case "BODEGA":
