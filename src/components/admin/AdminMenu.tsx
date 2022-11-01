@@ -4,6 +4,7 @@ import {
   IconFilter,
   IconSettings,
   IconNotebook,
+  IconPictureInPicture
 } from "@tabler/icons";
 import { ThemeIcon, UnstyledButton, Group, Text } from "@mantine/core";
 import Link from "next/link";
@@ -74,6 +75,12 @@ const data = [
     color: "blue",
     label: "Pages",
     href: "/admin/pages",
+  },
+  {
+    icon: <IconPictureInPicture size={16} />,
+    color: "red",
+    label: "Images",
+    href: "/admin/images",
   },
 ];
 

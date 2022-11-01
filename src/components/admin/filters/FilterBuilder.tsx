@@ -101,6 +101,7 @@ const FilterBuilder = () => {
             dispatch({ type: "UPDATE_FILTER_SAVED_STATUS", payload: false });
             form.setValues(values);
           }}
+          form={form}
         />
         <div className="space r2" />
       </ScrollArea>

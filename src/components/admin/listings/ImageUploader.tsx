@@ -114,8 +114,7 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
   ) {
     return new Promise<string>((resolve, reject) => {
       const fileName = image.name;
-      const bucketPath =
-        process.env.NODE_ENV === "development" ? "test/" : "images/";
+      const bucketPath = "images/";
 
       const storageRef = ref(storage, bucketPath + fileName);
       const metadata: UploadMetadata = { contentType: image.type };
@@ -252,17 +251,18 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
 
   const updateUrl = (id: string, url: string, action: "add" | "remove") => {
     if (action === "add") {
-      setImages((prev) => [
-        ...prev,
-        {
-          id,
-          url,
-          uploaded: true,
-          uploading: false,
-          uploadProgress: 100,
-          error: false,
-        },
-      ]);
+      setImages((prev) => {
+          prev.push({
+              id,
+              url,
+              uploaded: true,
+              uploading: false,
+              uploadProgress: 100,
+              error: false,
+            })
+            return prev
+        }
+      );
     } else {
       const id = images.find((e) => e.url === url)?.id as string;
       setImages((prev) => replaceById(prev, id));
@@ -323,7 +323,7 @@ const ImagePreview = ({
       const regexp = /(\.[^.]*?\?)/;
       return image.url.replace(regexp, "_1280x720.jpeg?");
     }
-    return image.url
+    return image.url;
   }, []);
 
   return (
