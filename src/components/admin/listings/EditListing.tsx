@@ -32,6 +32,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import * as R from "rambda";
 import { WebsiteMetadata } from "../../../../pages/admin/filters";
+import EditJsonModal from "../filters/EditJsonModal";
 
 type ListingData = {
   address: string;
@@ -232,6 +233,7 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
         </Paper>
         <Space h="md" />
         <ImageUploader {...form.getInputProps("imageUrls")} />
+        <EditJsonModal onClose={(values) => {form.setValues(values); setUploaded(false)}} form={form} />
       </form>
     </ScrollArea>
   );

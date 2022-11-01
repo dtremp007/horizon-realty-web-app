@@ -14,6 +14,7 @@ import houseThumbnail from "../../../public/country-home-unsplash.jpg";
 import detailedHouseIcon from "../../../public/Icons/detailed-home-icon.svg";
 import ranchLandIcon from "../../../public/Icons/farm-land-icon.svg";
 import casaBodegaIcon from "../../../public/Icons/casabodega-icon.svg";
+import apartmentIcon from "../../../public/Icons/apartments-icon.svg";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -81,6 +82,8 @@ function getIcon(type: string) {
       return <IconBuildingCommunity size={80} />;
     case "LABORES/RANCHOS":
       return <Image src={ranchLandIcon} />;
+    case "APARTMENTS":
+      return <Image src={apartmentIcon} />;
     default:
       return <IconLayout2 />;
   }

@@ -3,13 +3,14 @@ import { useState } from "react";
 import { useFormContext } from "./FilterBuilder";
 import { IconEdit } from "@tabler/icons";
 import { FilterElement_V2_Props } from "../../../../lib/interfaces/FilterTypes";
+import { UseFormReturnType } from "@mantine/form";
 
-type EditJsonModal = {
-  onClose: (values: FilterElement_V2_Props) => void;
+type EditJsonModal<T> = {
+  onClose: (values: T) => void;
+  form: UseFormReturnType<T>
 };
 
-const EditJsonModal = ({ onClose }: EditJsonModal) => {
-  const form = useFormContext();
+const EditJsonModal = <T,>({ onClose, form }: EditJsonModal<T>) => {
   const [opened, setOpened] = useState(false);
   const [json, setJson] = useState("");
 
