@@ -72,6 +72,7 @@ export default function ListingCard({
         price={price}
         currency={currency}
         imageUrl={thumbnail}
+        backupUrl={imageUrls[0]}
         status={status}
         availability={availability}
       />

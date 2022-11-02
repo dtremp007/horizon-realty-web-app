@@ -73,13 +73,14 @@ const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  const fileName = path.join(process.cwd(), "lib", "filters.json");
+  const filtersFile = readFileSync(fileName, { encoding: "utf8" });
+
   const querySnapshot = await getDocs(collection(db, "listings"));
   const firebaseDocs = querySnapshot.docs.map((listing) => ({
     id: listing.id,
     data: listing.data(),
   }));
-  // const fileName = path.join(process.cwd(),"lib", "filters.json");
-  // const filters = readFileSync(fileName, { encoding: "utf8" });
   const filterQuerySnapshot = await getDocs(collection(db, "filters"));
   const filters = filterQuerySnapshot.docs.map((filter) => {
     return filter.data();
@@ -88,8 +89,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
   return {
     props: {
       firebaseDocs,
-      //   filters: JSON.parse(filters).filters
-      filters,
+      filters:
+        process.env.NODE_ENV === "development"
+          ? JSON.parse(filtersFile).filters
+          : filters,
     },
   };
 };

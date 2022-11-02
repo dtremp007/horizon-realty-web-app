@@ -1,5 +1,5 @@
 import { Button, Group } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
 import { RadioButtonGroupProps } from "../filter/RadioButtonGroup";
 import {
@@ -17,6 +17,7 @@ import casaBodegaIcon from "../../../public/Icons/casabodega-icon.svg";
 import apartmentIcon from "../../../public/Icons/apartments-icon.svg";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Spinner from "../../shared/Spinner";
 
 type ListingBuffetProps = {
   listingTypeFilter: FilterElement_V2_Props<RadioButtonGroupProps>;
@@ -24,50 +25,70 @@ type ListingBuffetProps = {
 
 const ListingBuffet = ({ listingTypeFilter }: ListingBuffetProps) => {
   const [filter, setFilter] = useState(listingTypeFilter);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   return (
     <section className="listing-buffet">
       <div className="listing-buffet__grid-layout">
-        {filter.filterProps.data.slice(1).map(({ label, value }, index) => (
-          <Link
-            href={{ pathname: "/listings", query: { listingType: value } }}
-            key={value}
-          >
-            <div className="listing-buffet__card">
-              {/* <div className="listing-buffet__background">
-                <Image
-                  src={listingTypeBackgrounds[index]}
-                  layout="fill"
-                  objectFit="cover"
-                  // objectFit="contain"
-                />
-              </div> */}
-              <Group
-                position="center"
-                pt={22}
-                align="center"
-                style={{ height: "100%" }}
-              >
-                {getIcon(value)}
-              </Group>
-              <Group
-                className="listing-buffet__label"
-                position="center"
-                pt={10}
-                pb={10}
-              >
-                {/* {getIcon(value)} */}
-                {label}
-              </Group>
-            </div>
-          </Link>
+        {filter.filterProps.data.slice(1).map((values, index) => (
+          <ListingBuffetCard key={index} {...values} />
         ))}
       </div>
     </section>
   );
 };
 export default ListingBuffet;
+
+type ListingBuffetCardProps = {
+  value: string;
+  label: string;
+};
+
+const ListingBuffetCard = ({ label, value }: ListingBuffetCardProps) => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleLoadingState = (route: string) => {
+      const re = /\?.*/;
+      const url = new URLSearchParams(route.match(re)?.at(0));
+
+      if (url.get("listingType") === value) {
+        setLoading(true);
+      }
+    };
+    router.events.on("routeChangeStart", handleLoadingState);
+
+    return () => router.events.off("routeChangeStart", handleLoadingState);
+  }, []);
+
+  return (
+    <Link
+      href={{ pathname: "/listings", query: { listingType: value } }}
+      key={value}
+    >
+      <div className="listing-buffet__card">
+        <Group
+          position="center"
+          pt={22}
+          align="center"
+          style={{ height: "100%" }}
+        >
+          {loading ? <Spinner /> : getIcon(value)}
+        </Group>
+        <Group
+          className="listing-buffet__label"
+          position="center"
+          pt={10}
+          pb={10}
+        >
+          {label}
+        </Group>
+      </div>
+    </Link>
+  );
+};
 
 function getIcon(type: string) {
   switch (type) {

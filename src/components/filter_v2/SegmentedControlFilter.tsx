@@ -69,7 +69,7 @@ const SegmentedControlFilter = (
           {...filterProps}
           // @ts-ignore
           onChange={handleOnChange}
-        //   value={filterValue}
+          value={filterValue}
           fullWidth
           radius="md"
           size="md"

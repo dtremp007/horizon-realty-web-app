@@ -12,7 +12,27 @@ export default function InfoTagWrapper({
   electricity,
   water,
 }: DocumentData) {
-  if (listingType === "CASA" || listingType === "BODEGA") {
+
+  if ((listingType as string).startsWith("LOTE") ) {
+    return (
+      <div className="listing-card__info-tag-wrapper">
+        {landArea > 0 && (
+          <ListingInfotag
+            quantity={landArea}
+            variant="land"
+            units={landAreaUnits}
+          />
+        )}
+        {
+          <ListingInfotag
+            quantity=""
+            variant={electricity ? "electricity" : "no_electricity"}
+          />
+        }
+        {<ListingInfotag quantity="" variant={water ? "water" : "no_water"} />}
+      </div>
+    );
+  } else {
     return (
       <>
         <div className="listing-card__info-tag-wrapper">
@@ -40,27 +60,5 @@ export default function InfoTagWrapper({
       </>
     );
   }
-
-  if ((listingType as string).startsWith("LOTE")) {
-    return (
-      <div className="listing-card__info-tag-wrapper">
-        {landArea > 0 && (
-          <ListingInfotag
-            quantity={landArea}
-            variant="land"
-            units={landAreaUnits}
-          />
-        )}
-        {
-          <ListingInfotag
-            quantity=""
-            variant={electricity ? "electricity" : "no_electricity"}
-          />
-        }
-        {<ListingInfotag quantity="" variant={water ? "water" : "no_water"} />}
-      </div>
-    );
-  }
-
   return null;
 }

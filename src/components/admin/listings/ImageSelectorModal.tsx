@@ -187,7 +187,7 @@ const ImageItem = ({
   return (
     <div className="image-selector__item">
       <Checkbox checked={checked} onChange={handleChange} />
-      <Image src={url} height={100} width={200} />
+      <Image src={url} height={100} width={200} withPlaceholder/>
       <p>{metadata.name}</p>
       <ActionIcon>
         <IconTrash />

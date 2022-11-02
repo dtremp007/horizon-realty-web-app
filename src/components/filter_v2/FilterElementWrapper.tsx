@@ -10,7 +10,7 @@ import R, {
   map,
   when,
 } from "rambda";
-import { useCallback, useContext, useEffect } from "react";
+import { MutableRefObject, useCallback, useContext, useEffect } from "react";
 import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
 import ListingsContext, {
   ListingsContextType,
@@ -30,7 +30,11 @@ import SegmentedControlFilter from "./SegmentedControlFilter";
 import { extractor } from "../../../lib/util";
 import useUrlState from "../../hooks/useUrlState";
 
-const FilterElementWrapper = (props: FilterElement_V2_Props<any, any>) => {
+type FilterElementWrapperProps = {
+  props: FilterElement_V2_Props<any, any>;
+};
+
+const FilterElementWrapper = ({ props }: FilterElementWrapperProps) => {
   const { listingsState, dispatch } = useContext(ListingsContext);
   const [value, setValue] = useUrlState({
     [props.fieldKey]: props.filterValue,
@@ -40,7 +44,9 @@ const FilterElementWrapper = (props: FilterElement_V2_Props<any, any>) => {
     [props.id]: filterValue,
   });
 
-  const updateFilterWith = (payload: any) => setValue(payload);
+  const updateFilterWith = (payload: any) => {
+    setValue(payload);
+  };
   const updateFilterWithPayload = pipe(returnsPayload, updateFilterWith);
 
   switch (props.type) {

@@ -1,18 +1,21 @@
 import { RangeSlider, RangeSliderProps } from "@mantine/core";
 import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
 import { ListingsContextType } from "../../context/listingsContext/listingsContext";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { equals, isNil } from "rambda";
+import { useRouter } from "next/router";
 
 const RangeSliderFilter = ({
   id,
   fieldsetStyle,
+  fallback,
   legend,
   filterValue,
   filterProps,
   handleOnChange,
 }: FilterElement_V2_Props<RangeSliderProps, RangeSliderProps["onChange"]>) => {
   const [state, setState] = useState(filterValue);
+  const router = useRouter();
   const parsedLabel = useMemo(() => {
     const label = filterProps.label;
 
@@ -22,6 +25,12 @@ const RangeSliderFilter = ({
       return parseLabelFunction(label);
     }
   }, [filterProps.label]);
+
+  useEffect(() => {
+    if (router.query[id] && state && state.toString() !== router.query[id]?.toString()) {
+        setState(fallback)
+    }
+  }, [router.query])
 
   return (
     <fieldset

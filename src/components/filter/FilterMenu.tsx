@@ -10,6 +10,7 @@ import {
   ActionIcon,
   Modal,
   Indicator,
+  Group,
 } from "@mantine/core";
 import RadioButtonGroup from "./RadioButtonGroup";
 import { useRouter } from "next/router";
@@ -30,10 +31,36 @@ export default function FilterMenu() {
 
   const toggle_filter = getToggleFunction("open", nav_state.isFilterOpen);
 
+  const resetFilters = () => {
+    const payload = {} as { [key: string]: any };
+    for (const [id, filter] of listingsState.filters) {
+      if (filter.type === "CheckboxList") {
+        // make sure there's children
+        if (filter.children && filter.children.length > 0) {
+          for (const checkbox of filter.children) {
+            payload[checkbox.id] = checkbox.fallback;
+          }
+          continue;
+
+        } else continue;
+      }
+      payload[filter.id] = filter.fallback;
+    }
+    const currentQuery = router.query;
+    router.push({query: Object.assign(currentQuery, payload)})
+  };
+
   return (
     <>
       <div className="filter-menu__toggle-btn">
-        <Indicator color="green" size={22} disabled={listingsState.activeFiltersCount === 0} label={listingsState.activeFiltersCount} inline position="bottom-start">
+        <Indicator
+          color="green"
+          size={22}
+          disabled={listingsState.activeFiltersCount === 0}
+          label={listingsState.activeFiltersCount}
+          inline
+          position="bottom-start"
+        >
           <ActionIcon
             size="lg"
             onClick={() => dispatch_to_nav({ type: "TOGGLE_FILTER" })}
@@ -52,17 +79,16 @@ export default function FilterMenu() {
               toggle_filter={toggle_filter}
               offset={index}
             >
-              <FilterElementWrapper {...filter} />
+              <FilterElementWrapper props={filter} />
             </WrapsTheWrapper>
           ))}
-          {/* <WrapsTheWrapper
-            toggle_filter={toggle_filter}
-            offset={listingsState.filters.size}
-          >
-            <Button onClick={() => dispatch({ type: "APPLY_FILTERS" })}>
-              Apply Filters
+          <Group position="right">
+            <Button
+              onClick={() => resetFilters()}
+            >
+              Reset
             </Button>
-          </WrapsTheWrapper> */}
+          </Group>
           <Space />
         </form>
       </div>

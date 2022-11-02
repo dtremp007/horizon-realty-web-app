@@ -3,7 +3,7 @@ import Image from "next/image";
 import ListingInfotag from "../listing-card/ListingInfotag";
 import { Button } from "@mantine/core";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import house from "../../../public/country-home-unsplash.jpg"
 
 type Props = {
@@ -14,11 +14,11 @@ type Props = {
 const ListingCardAlt = ({ data, id }: Props) => {
   const { title, imageUrls, price, landArea, currency } = data;
   const router = useRouter();
+  const [thumbnail, setThumbnail] = useState(() => {
+      const regexp = /(\.[^.]*?\?)/
+      return imageUrls[0].replace(regexp, "_1280x720.jpeg?")
+  })
 
-  const thumbnail = useMemo(() => {
-    const regexp = /(\.[^.]*?\?)/
-    return imageUrls[0].replace(regexp, "_1280x720.jpeg?")
-  }, [imageUrls]);
 
   return (
     <div className="listing-cardv2">
@@ -26,6 +26,7 @@ const ListingCardAlt = ({ data, id }: Props) => {
         <Image
           src={thumbnail}
           alt="thumbnail"
+          onError={() => setThumbnail(imageUrls[0])}
           layout="fill"
           objectFit="cover"
         />

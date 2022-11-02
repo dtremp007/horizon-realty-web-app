@@ -327,10 +327,9 @@ function transformFilters(
 export const getServerSideProps: GetServerSideProps = async () => {
   const metadataFile = path.join(process.cwd(), "lib", "metadata.json");
   const metadata = JSON.parse(readFileSync(metadataFile, { encoding: "utf8" }));
-    // const filtersFile = path.join(process.cwd(), "lib", "filters.json");
-    // const filters = JSON.parse(
-    //   readFileSync(filtersFile, { encoding: "utf8" }) // I removed .toString(), I'm not sure why it was here. I don't think it's necessary.
-    // ).filters;
+  const fileName = path.join(process.cwd(), "lib", "filters.json");
+  const filtersFile = readFileSync(fileName, { encoding: "utf8" });
+
     const querySnapshot = await getDocs(collection(db, "filters"));
     const filters = querySnapshot.docs.map((filter) => {
       return filter.data();
@@ -338,7 +337,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {
-      filters,
+      filters:
+        process.env.NODE_ENV === "development"
+          ? JSON.parse(filtersFile).filters
+          : filters,
       metadata,
     },
   };

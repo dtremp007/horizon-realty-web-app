@@ -425,7 +425,6 @@ export function getOptionsForFieldKey(metadata: LocalMetadata, filter: FilterEle
     const field = metadata.listings.fields.get(filter.fieldKey)
 
     if (!isNil(field) && field.options !== "None") {
-        console.log(field.options)
         return concat(["ALL"], field.options)
     }
 
@@ -436,6 +435,9 @@ export function deserializeQueryParams(value: string | string[]) {
   if (!isNaN(+value)) return +value;
   if (value === "true") return true;
   if (value === "false") return false;
+  if (Array.isArray(value)) {
+    return value.map(x => +x)
+  }
   return value;
 }
 

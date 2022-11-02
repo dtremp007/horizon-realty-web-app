@@ -1,7 +1,6 @@
 import { GetServerSideProps, NextPage } from "next";
 import {
   Card,
-  Image,
   Text,
   Badge,
   Button,
@@ -25,6 +24,7 @@ import { useRouter } from "next/router";
 import { ListingSchema } from "../../../lib/interfaces/Listings";
 import { WebsiteMetadata } from "../filters";
 import { IconTrash, IconEdit, IconCirclePlus } from "@tabler/icons";
+import Image from "next/image";
 
 type Props = {
   firebaseDocs: {
@@ -55,10 +55,10 @@ const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
   const router = useRouter();
 
   const removeListing = async (id: string) => {
-    await deleteDoc(doc(db, "listings", id))
+    await deleteDoc(doc(db, "listings", id));
 
-    setListings(prev => prev.filter(l => l.id !== id))
-  }
+    setListings((prev) => prev.filter((l) => l.id !== id));
+  };
 
   function handleAddBtn() {
     const newDoc = doc(collection(db, "listings"));
@@ -70,10 +70,14 @@ const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
   }
 
   return (
-    <ScrollArea style={{height: "calc(100vh - 60px)"}}>
+    <ScrollArea style={{ height: "calc(100vh - 60px)" }}>
       <div style={{ margin: "1rem" }} className="listings__container">
         {listings.map((listing) => (
-          <AdminListingCard key={listing.id} listing={listing} removeListing={removeListing}/>
+          <AdminListingCard
+            key={listing.id}
+            listing={listing}
+            removeListing={removeListing}
+          />
         ))}
         <div className="admin-listings__add-listing" onClick={handleAddBtn}>
           <p>+</p>
@@ -85,15 +89,19 @@ const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
 export default AdminListngs;
 
 type AdminListingCardProps = {
-    listing: {
-  id: string;
-  data: ListingSchema & { thumbnail?: string };
-    },
-    removeListing: (id: string) => void;
+  listing: {
+    id: string;
+    data: ListingSchema & { thumbnail?: string };
+  };
+  removeListing: (id: string) => void;
 };
 
-const AdminListingCard = ({listing, removeListing}: AdminListingCardProps) => {
+const AdminListingCard = ({
+  listing,
+  removeListing,
+}: AdminListingCardProps) => {
   const [availability, setAvailability] = useState(listing.data.availability);
+  const [thumbnail, setThumbnail] = useState(listing.data.thumbnail!);
 
   const handleAvailabilityChange = () => {
     const listingRef = doc(db, "listings", listing.id);
@@ -108,9 +116,12 @@ const AdminListingCard = ({listing, removeListing}: AdminListingCardProps) => {
     <Card shadow="sm" p="lg" radius="md" withBorder>
       <Card.Section>
         <Image
-          src={listing.data.thumbnail}
+          src={thumbnail}
           height={160}
+          layout="fill"
+          objectFit="cover"
           alt="listing-thumbnail"
+          onError={() => setThumbnail(listing.data.imageUrls[0])}
         />
       </Card.Section>
 
@@ -130,15 +141,11 @@ const AdminListingCard = ({listing, removeListing}: AdminListingCardProps) => {
             Edit
           </Button>
         </Link>
-        <Button
-          color="green"
-          radius="md"
-          onClick={handleAvailabilityChange}
-        >
+        <Button color="green" radius="md" onClick={handleAvailabilityChange}>
           {availability === "sold" ? "Mark as Available" : "Mark as Sold"}
         </Button>
         <ActionIcon onClick={() => removeListing(listing.id)}>
-            <IconTrash/>
+          <IconTrash />
         </ActionIcon>
       </Group>
     </Card>
