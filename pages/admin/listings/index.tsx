@@ -25,6 +25,7 @@ import { ListingSchema } from "../../../lib/interfaces/Listings";
 import { WebsiteMetadata } from "../filters";
 import { IconTrash, IconEdit, IconCirclePlus } from "@tabler/icons";
 import Image from "next/image";
+import houseThumbnail from "../../../public/country-home-unsplash.jpg"
 
 type Props = {
   firebaseDocs: {
@@ -114,9 +115,9 @@ const AdminListingCard = ({
 
   return (
     <Card shadow="sm" p="lg" radius="md" withBorder>
-      <Card.Section>
+      <Card.Section style={{height: "150px", position: "relative", overflow: "hidden"}}>
         <Image
-          src={thumbnail}
+          src={process.env.NODE_ENV === "development" ? houseThumbnail : thumbnail}
           height={160}
           layout="fill"
           objectFit="cover"
