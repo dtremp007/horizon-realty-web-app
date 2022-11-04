@@ -87,7 +87,7 @@ const FilterBuilder = () => {
       <ScrollArea style={{ height: "calc(100vh - 78px)" }}>
         <form>
         <Group position="right" m={18}>
-          <Button type="submit" disabled={state.filterSaved} onClick={() => saveFilters()}>
+          <Button type="submit" disabled onClick={() => saveFilters()}>
             Save
           </Button>
         </Group>

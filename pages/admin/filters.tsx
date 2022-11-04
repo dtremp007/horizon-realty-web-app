@@ -61,7 +61,7 @@ import R, {
 } from "rambda";
 import FilterBuilder from "../../src/components/admin/filters/FilterBuilder";
 import FilterBuffet from "../../src/components/admin/filters/FilterBuffet";
-import { updateFallbackValues } from "../../lib/util";
+import { adjustForDeletedFilter, updateFallbackValues } from "../../lib/util";
 import {
   doc,
   collection,
@@ -72,7 +72,8 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../lib/firebase.config";
-import { nextTick } from "process";
+import useSWR from "swr";
+import ConfirmationModal from "../../src/shared/ComfirmationModal";
 
 type AdminFilterProps = {
   filters: FilterElement_V2_Props[];
@@ -124,17 +125,28 @@ type EditFilterContextType = {
   dispatch: Dispatch<EditFilterActions>;
   metadata: LocalMetadata;
   saveFilters: () => void;
-  deleteFilter: (id: string) => void;
+  deleteFilter: (id: string, index: number) => void;
+  confirmAction: (message: string, action: () => void) => void;
 };
 
 export const EditFilterContext = createContext<EditFilterContextType>(
   {} as EditFilterContextType
 );
 
+const fetcher = (path: string) => fetch(path).then((res) => res.json());
+
 const AdminFilters: NextPage<AdminFilterProps> = ({
   filters,
   metadata: metadata_from_json,
 }) => {
+  const [resetAll, setResetAll] = useState(false);
+  const [confirmState, setConfirmState] = useState({
+    opened: false,
+    message: "",
+    action: () => console.log("hello"),
+  });
+
+  const { data } = useSWR(resetAll ? "/api/filter-backup" : null, fetcher);
   const initialState: EditFilterState = {
     savedFilters: filters.length > 0 ? parseFilters(filters) : new Map(),
     isModalOpen: false,
@@ -148,17 +160,12 @@ const AdminFilters: NextPage<AdminFilterProps> = ({
 
   const [state, dispatch] = useReducer(editFiltersReducer, initialState);
 
-  const resetFilters = () => {
-    const getFilterBackup = async () => {
-      return await fetch("/api/filter-backup");
-    };
-
-    getFilterBackup()
-      .then((res) => res.json())
-      .then((filters) => {
-        dispatch({ type: "SET_ALL_FILTERS", payload: filters });
-      });
-  };
+  useEffect(() => {
+    if (data) {
+      dispatch({ type: "SET_ALL_FILTERS", payload: data });
+      setResetAll(false);
+    }
+  }, [data]);
 
   const saveFilters = async () => {
     const filters = transformFilters(state.savedFilters, [
@@ -172,18 +179,58 @@ const AdminFilters: NextPage<AdminFilterProps> = ({
     dispatch({ type: "UPDATE_FILTER_SAVED_STATUS", payload: true });
   };
 
-  const deleteFilter = async (id: string) => {
+  const confirmAction = (message: string, action: () => void) => {
+    setConfirmState({
+      opened: true,
+      message,
+      action,
+    });
+  };
+
+  const deleteFilter = async (id: string, index: number) => {
     await deleteDoc(doc(db, "filters", id));
+    adjustForDeletedFilter(state.savedFilters, index)
 
     dispatch({ type: "DELETE_FILTER", payload: id });
   };
 
   return (
     <EditFilterContext.Provider
-      value={{ state, dispatch, metadata, saveFilters, deleteFilter }}
+      value={{
+        state,
+        dispatch,
+        metadata,
+        saveFilters,
+        deleteFilter,
+        confirmAction,
+      }}
     >
+      <ConfirmationModal
+        opened={confirmState.opened}
+        onClose={() => setConfirmState((prev) => ({ ...prev, opened: false }))}
+        message={confirmState.message}
+        onConfirm={confirmState.action}
+      />
       <SimpleGrid cols={2}>
-        <FilterPreview />
+        <Group direction="column" position="center" grow>
+          <Group mt={16} ml={16} position="left">
+            <Button
+              color="red"
+              onClick={() =>
+                confirmAction(
+                  "Are you sure you want to reset all filters? \n This can not be undone.",
+                  setResetAll.bind(null, true)
+                )
+              }
+            >
+              Reset All
+            </Button>
+            <Button disabled={state.filterSaved} onClick={() => saveFilters()}>
+              Save All
+            </Button>
+          </Group>
+          <FilterPreview />
+        </Group>
         {!isNil(state.filterBeingEdited) && (
           <FilterBuilder key={state.filterBeingEdited} />
         )}
@@ -298,6 +345,7 @@ const editFiltersReducer: Reducer<EditFilterState, EditFilterActions> = (
     case "SET_ALL_FILTERS":
       return {
         ...state,
+        filterSaved: false,
         savedFilters: parseFilters(action.payload),
       };
     default:
@@ -320,7 +368,6 @@ function transformFilters(
     f: any
   ) => FilterElement_V2_Props[];
 
-
   return transform(Array.from(filters).map(([key, filter]) => filter));
 }
 
@@ -330,10 +377,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const fileName = path.join(process.cwd(), "lib", "filters.json");
   const filtersFile = readFileSync(fileName, { encoding: "utf8" });
 
-    const querySnapshot = await getDocs(collection(db, "filters"));
-    const filters = querySnapshot.docs.map((filter) => {
-      return filter.data();
-    });
+  const querySnapshot = await getDocs(collection(db, "filters"));
+  const filters = querySnapshot.docs.map((filter) => {
+    return filter.data();
+  });
 
   return {
     props: {

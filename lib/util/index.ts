@@ -407,6 +407,12 @@ export function makeRoomForNewFilter(filterMap: FiltersMap, index: number) {
   });
 }
 
+export function adjustForDeletedFilter(filterMap: FiltersMap, index: number) {
+  Array.from(filterMap).forEach(([_, filter]) => {
+    if (filter.position >= index) filter.position--;
+  });
+}
+
 export function getFallbackValue(filter: FilterElement_V2_Props) {
   if (filter.type === "RangeSlider") {
     return [filter.filterProps.min, filter.filterProps.max];

@@ -1,5 +1,5 @@
 import { EditFilterContext } from "../../../../pages/admin/filters";
-import { ActionIcon, Group, ScrollArea, Space } from "@mantine/core";
+import { ActionIcon, Button, Group, ScrollArea, Space } from "@mantine/core";
 import { extractor } from "../../../../lib/util";
 import R, {
   any,
@@ -32,7 +32,10 @@ import { IconTrash, IconEdit, IconCirclePlus } from "@tabler/icons";
 const FilterPreview = () => {
   const { state, dispatch } = useContext(EditFilterContext);
 
-  const sortedFilter = Array.from(state.savedFilters).sort(([key_1, filter_1],[key_2, filter_2]) => filter_1.position - filter_2.position)
+  const sortedFilter = Array.from(state.savedFilters).sort(
+    ([key_1, filter_1], [key_2, filter_2]) =>
+      filter_1.position - filter_2.position
+  );
 
   return (
     <ScrollArea style={{ height: "calc(100vh - 60px)" }}>
@@ -121,13 +124,14 @@ export const FilterWrapper = (props: FilterElement_V2_Props) => {
 };
 
 const FilterUIOverlay = ({
-    filter_id,
+  filter_id,
   filterProps,
 }: {
-    filter_id: string;
+  filter_id: string;
   filterProps: FilterElement_V2_Props;
 }) => {
-  const { state, dispatch, deleteFilter } = useContext(EditFilterContext);
+  const { state, dispatch, deleteFilter, confirmAction } =
+    useContext(EditFilterContext);
 
   return (
     <div className="filter-ui-overlay__container">
@@ -144,7 +148,10 @@ const FilterUIOverlay = ({
         </ActionIcon>
         <ActionIcon
           onClick={() =>
-            deleteFilter(filter_id)
+            confirmAction(
+              `Are you sure you want to delete the ${filterProps.id} filter?`,
+              () => deleteFilter(filter_id, filterProps.position)
+            )
           }
         >
           <IconTrash />
@@ -153,7 +160,12 @@ const FilterUIOverlay = ({
       <FilterWrapper {...filterProps} />
       <Group position="center" className="filter-ui-overlay">
         <ActionIcon
-          onClick={() => dispatch({ type: "TO_FILTER_CREATION_MODE", payload: filterProps.position + 1})}
+          onClick={() =>
+            dispatch({
+              type: "TO_FILTER_CREATION_MODE",
+              payload: filterProps.position + 1,
+            })
+          }
         >
           <IconCirclePlus />
         </ActionIcon>

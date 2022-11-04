@@ -2,7 +2,7 @@
   "filters": [
     {
       "id": "listingType",
-      "type": "RadioButtonGroup",
+      "type": "NativeSelect",
       "fieldKey": "listingType",
       "comparisonOperator": "===",
       "filterValue": "ALL",
@@ -10,10 +10,11 @@
         "data": [
           { "label": "Todos", "value": "ALL" },
           { "label": "Casas", "value": "CASA" },
+          { "label": "Casa Bodegas", "value": "BODEGA" },
           { "label": "Aparments", "value": "APARTMENTS" },
-          { "label": "Lotes Residenciales", "value": "LOTE_RESIDENCIALES" },
-          { "label": "Bodegas", "value": "BODEGA" },
-          { "label": "Lotes Commerciales", "value": "LOTES_COMERCIALES" }
+          { "label": "Lotes Residenciales", "value": "LOTES_RESIDENCIALES" },
+          { "label": "Lotes Commerciales", "value": "LOTES_COMERCIALES" },
+          { "label": "Labores/Ranchos", "value": "LABORES/RANCHOS" }
         ],
         "filterName": "listingType"
       },

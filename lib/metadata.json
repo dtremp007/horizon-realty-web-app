@@ -273,7 +273,7 @@
               "type": "Checkbox",
               "fallback": false,
               "filterProps": {
-                "label": "{nextBoolean.replace(/^./, uppercase)}"
+                "label": "Option1"
               }
             }
           ]
