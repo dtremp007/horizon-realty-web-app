@@ -13,7 +13,7 @@ export default function InfoTagWrapper({
   water,
 }: DocumentData) {
 
-  if ((listingType as string).startsWith("LOTE") ) {
+  if ((listingType as string).startsWith("LOTE") || listingType === "LABORES/RANCHOS") {
     return (
       <div className="listing-card__info-tag-wrapper">
         {landArea > 0 && (
