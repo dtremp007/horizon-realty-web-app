@@ -12,7 +12,7 @@ export default function ListingInfotag({ variant, quantity, units }: Props) {
   return (
     <div className="listing-card__info-tag">
       {icon}
-      {`${quantity}${units === "SQ.FT." ? " pies²" : units === "ACRES" ? " ac." : ""}`}
+      {`${quantity}${parseUnits(units)}`}
     </div>
   );
 }
@@ -130,10 +130,15 @@ function getIcon(variant: string) {
   }
 }
 
-function getDescription(quantity: number, variant: string) {
-  if (variant === "bedroom") {
-    return quantity === 1 ? "1 Bedroom" : `${quantity} Bedrooms`;
-  } else if (variant === "bathroom") {
-    return quantity === 1 ? "1 Bathroom" : `${quantity} Bathrooms`;
-  }
+function parseUnits(units?: string) {
+    switch (units) {
+        case "SQ.FT.":
+            return " pies²"
+        case "ACRES":
+            return " ac."
+        case "HECTARES":
+            return " ha."
+        default:
+            return "";
+    }
 }

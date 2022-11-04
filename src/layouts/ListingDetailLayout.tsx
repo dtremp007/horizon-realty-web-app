@@ -38,43 +38,44 @@ const ListingDetailLayout = ({ data }: Props) => {
   } = data;
 
   const [show, setShow] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0)
+  const [lastScrollY, setLastScrollY] = useState(0);
   const timeoutId = useRef<any>();
 
   const handleScroll = (e?: Event) => {
     if (typeof window !== "undefined") {
-        clearTimeout(timeoutId.current)
+      clearTimeout(timeoutId.current);
 
-        if (window.scrollY > (document.body.scrollHeight - window.innerHeight)) return
+      if (window.scrollY > document.body.scrollHeight - window.innerHeight)
+        return;
 
-        if (window.scrollY < lastScrollY) {
-            setShow(false)
-        } else {
-            setShow(true)
-        }
-        setLastScrollY(window.scrollY)
+      if (window.scrollY < lastScrollY) {
+        setShow(false);
+      } else {
+        setShow(true);
+      }
+      setLastScrollY(window.scrollY);
 
-        timeoutId.current = setTimeout(() => {
-            setShow(false)
-        }, 2000);
+      timeoutId.current = setTimeout(() => {
+        setShow(false);
+      }, 2000);
     }
-  }
+  };
 
-  const toggleCTA = getToggleFunction("hide", !show)
+  const toggleCTA = getToggleFunction("hide", !show);
 
-  useEffect(() => {handleScroll()}, [])
+  useEffect(() => {
+    handleScroll();
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-        window.addEventListener("scroll", handleScroll)
+      window.addEventListener("scroll", handleScroll);
 
-
-        return () => {
-            window.removeEventListener("scroll", handleScroll)
-        }
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
     }
-
-  }, [lastScrollY])
+  }, [lastScrollY]);
 
   return (
     <>
@@ -96,38 +97,25 @@ const ListingDetailLayout = ({ data }: Props) => {
               dangerouslySetInnerHTML={{ __html: description }}
             />
           </div>
-          {/* <Accordion iconPosition="right">
-                <AccordionItem label={<h2>Payments Options</h2>}>
-                  <p>1 Payment - $50,000</p>
-                  <p>2 Payments - $60,000</p>
-                  <p>3 Payments - $70,000</p>
-                </AccordionItem>
-                <AccordionItem label={<h2>Utilities</h2>}>
-                  <ul>
-                    <li>Water</li>
-                    <li>Power</li>
-                    <li>Gas</li>
-                  </ul>
-                </AccordionItem>
-                <AccordionItem label={<h2>Features</h2>}>
-                  <ul>
-                    <li>Private Residence</li>
-                    <li>Lawn</li>
-                    <li>Paved Street</li>
-                  </ul>
-                </AccordionItem>
-              </Accordion> */}
-          <h2 style={{}}>Ubicación</h2>
-          <SingleMapView coordinates={coordinates} />
-          <Group mt={18} position="center">
-            <a
-              href={`http://www.google.com/maps/place/${coordinates[0]},${coordinates[1]}?zoom=14`}
-            >
-              <Button color="charcoal-gray" leftIcon={googleMapsLogo} size="xl">
-                Google Maps
-              </Button>
-            </a>
-          </Group>
+          {(coordinates && coordinates.length > 0) ? (
+            <>
+              <h2 style={{}}>Ubicación</h2>
+              <SingleMapView coordinates={coordinates} />
+              <Group mt={18} position="center">
+                <a
+                  href={`http://www.google.com/maps/place/${coordinates[0]},${coordinates[1]}?zoom=14`}
+                >
+                  <Button
+                    color="charcoal-gray"
+                    leftIcon={googleMapsLogo}
+                    size="xl"
+                  >
+                    Google Maps
+                  </Button>
+                </a>
+              </Group>
+            </>
+          ) : null}
           <Divider />
           <p style={{ textAlign: "center" }}>Visitas: N/A</p>
         </div>

@@ -175,7 +175,7 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
               <Select
                 label="Units"
                 placeholder="Pick one"
-                data={["ACRES"]}
+                data={["ACRES", "HECTARES"]}
                 {...form.getInputProps("landAreaUnits")}
               />
             </Group>

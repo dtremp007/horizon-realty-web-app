@@ -55,7 +55,7 @@
       },
       "landAreaUnits": {
         "dataType": "number",
-        "options": ["ACRES"],
+        "options": ["ACRES", "HECTARES"],
         "filterIncompatible": true
       },
       "listingType": {
@@ -191,6 +191,10 @@
                 {
                   "label": "Acres",
                   "value": "(value) => { return `${value} ac.`;}"
+                },
+                {
+                  "label": "Hectares",
+                  "value": "(value) => { return `${value} ha.`;}"
                 }
               ]
             },

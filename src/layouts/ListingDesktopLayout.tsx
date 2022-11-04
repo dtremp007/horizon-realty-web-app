@@ -135,17 +135,25 @@ const ListingDesktopLayout = ({ data }: Props) => {
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
               </div>
-              <h2 style={{}}>Ubicación</h2>
-              <SingleMapView coordinates={coordinates} />
-              <Group mt={18} position="center">
-              <a
-                href={`http://www.google.com/maps/place/${coordinates[0]},${coordinates[1]}?zoom=14`}
-                >
-                <Button color="charcoal-gray" leftIcon={googleMapsLogo} size="xl">
-                  Google Maps
-                </Button>
-              </a>
+              {(coordinates && coordinates.length > 0) ? (
+                <>
+                  <h2 style={{}}>Ubicación</h2>
+                  <SingleMapView coordinates={coordinates} />
+                  <Group mt={18} position="center">
+                    <a
+                      href={`http://www.google.com/maps/place/${coordinates[0]},${coordinates[1]}?zoom=14`}
+                    >
+                      <Button
+                        color="charcoal-gray"
+                        leftIcon={googleMapsLogo}
+                        size="xl"
+                      >
+                        Google Maps
+                      </Button>
+                    </a>
                   </Group>
+                </>
+              ) : null}
 
               <Divider />
               <p style={{ textAlign: "center" }}>Visitas: N/A</p>
