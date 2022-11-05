@@ -132,7 +132,7 @@ const ImageInfoCard = ({
           {variants.length > 0 ? (
             <>
           {variants.map((variant, index) => (
-              <Group>
+              <Group key={index}>
               <Text>
               {variant.sizeModifier.length === 0
                 ? "Full size"

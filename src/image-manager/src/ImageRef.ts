@@ -9,8 +9,8 @@ import {
 import { createImageCell, siftOutSizeModifier } from "./ImageCell";
 import { FirebaseDoc, ImageCellType, ImageRefType } from "./types";
 import { v4 as uuidv4 } from "uuid";
+import { storage } from "../../../lib/firebase.config";
 
-const storage = getStorage();
 
 async function parseStorageItems(
   items: ListResult["items"]
