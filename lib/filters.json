@@ -11,7 +11,7 @@
           { "label": "Todos", "value": "ALL" },
           { "label": "Casas", "value": "CASA" },
           { "label": "Casa Bodegas", "value": "BODEGA" },
-          { "label": "Aparments", "value": "APARTMENTS" },
+          { "label": "Apartments", "value": "APARTMENTS" },
           { "label": "Lotes Residenciales", "value": "LOTES_RESIDENCIALES" },
           { "label": "Lotes Commerciales", "value": "LOTES_COMERCIALES" },
           { "label": "Labores/Ranchos", "value": "LABORES/RANCHOS" }
