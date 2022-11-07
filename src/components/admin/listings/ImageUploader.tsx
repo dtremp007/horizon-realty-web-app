@@ -8,13 +8,9 @@ import React, {
 import { useDropzone } from "react-dropzone";
 import { DropzoneOptions } from "react-dropzone";
 import {
-  Grid,
   RingProgress,
   Image,
   ActionIcon,
-  NativeSelect,
-  Select,
-  Modal,
   Button,
 } from "@mantine/core";
 import {

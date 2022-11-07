@@ -1,6 +1,6 @@
 import { SegmentedControl, SegmentedControlProps, Group } from "@mantine/core";
 import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
-import React, { ChangeEvent, useCallback } from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import { ListingsContextType } from "../../context/listingsContext/listingsContext";
 import { pipe } from "rambda";
 
@@ -20,44 +20,7 @@ const SegmentedControlFilter = (
     filterProps,
     handleOnChange,
   } = props;
-
-  const extractValue = useCallback(
-    (value: string) => {
-      if (isNaN(+value)) {
-        if (value === fallback) {
-          return {
-            id,
-            filterValue: value,
-            active: false,
-          };
-        } else {
-          let operator = "";
-          let numberString = "";
-          for (const char of value) {
-            if (isNaN(+char)) {
-              operator += char;
-            } else {
-              numberString += char;
-            }
-          }
-          return {
-            id,
-            filterValue: +numberString,
-            comparisonOperator: operator,
-            active: true,
-          };
-        }
-      } else {
-        return {
-          id,
-          filterValue: +value,
-          comparisonOperator: "===",
-          active: true
-        };
-      }
-    },
-    [props]
-  );
+  const [state, setState] = useState(fallback)
 
   return (
     <fieldset>
@@ -68,8 +31,11 @@ const SegmentedControlFilter = (
         <SegmentedControl
           {...filterProps}
           // @ts-ignore
-          onChange={handleOnChange}
-          value={filterValue}
+          onChange={(v) => {
+            handleOnChange!(v)
+            setState(v)
+          }}
+          value={state}
           fullWidth
           radius="md"
           size="md"

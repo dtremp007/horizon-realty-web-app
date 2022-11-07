@@ -23,11 +23,13 @@ import { IconAdjustmentsHorizontal } from "@tabler/icons";
 import { NavContext } from "../../layouts/AltMainLayout";
 import { getToggleFunction } from "../../../lib/util";
 import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
+import AuthUserContext from "../../context/authUserContext";
 
 export default function FilterMenu() {
   const router = useRouter();
   const { listingsState, dispatch } = useContext(ListingsContext);
   const { nav_state, dispatch_to_nav } = useContext(NavContext);
+  const { user } = useContext(AuthUserContext);
 
   const toggle_filter = getToggleFunction("open", nav_state.isFilterOpen);
 
@@ -41,13 +43,12 @@ export default function FilterMenu() {
             payload[checkbox.id] = checkbox.fallback;
           }
           continue;
-
         } else continue;
       }
       payload[filter.id] = filter.fallback;
     }
     const currentQuery = router.query;
-    router.push({query: Object.assign(currentQuery, payload)})
+    router.push({ query: Object.assign(currentQuery, payload) });
   };
 
   return (
@@ -69,7 +70,7 @@ export default function FilterMenu() {
           </ActionIcon>
         </Indicator>
       </div>
-      <FilterDebugConsole listingsState={listingsState} />
+      {user ? <FilterDebugConsole listingsState={listingsState} /> : null}
       <div className={toggle_filter("filter-menu__container")}>
         <form className={toggle_filter("filter-menu__form flow-content")}>
           <Space />
@@ -82,13 +83,15 @@ export default function FilterMenu() {
               <FilterElementWrapper props={filter} />
             </WrapsTheWrapper>
           ))}
-          <Group position="right">
-            <Button
-              onClick={() => resetFilters()}
-            >
-              Reset
-            </Button>
-          </Group>
+          <WrapsTheWrapper
+            key="reset_btn"
+            toggle_filter={toggle_filter}
+            offset={listingsState.filters.size}
+          >
+            <Group position="right">
+              <Button onClick={() => resetFilters()}>Reset</Button>
+            </Group>
+          </WrapsTheWrapper>
           <Space />
         </form>
       </div>

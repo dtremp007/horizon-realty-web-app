@@ -12,7 +12,6 @@ import { analytics } from "../lib/firebase.config";
 
 const AdminLayout = dynamic(() => import("../src/layouts/AdminLayout"));
 
-//TODO: make router path a global property
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 

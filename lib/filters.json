@@ -15,8 +15,7 @@
           { "label": "Lotes Residenciales", "value": "LOTES_RESIDENCIALES" },
           { "label": "Lotes Commerciales", "value": "LOTES_COMERCIALES" },
           { "label": "Labores/Ranchos", "value": "LABORES/RANCHOS" }
-        ],
-        "filterName": "listingType"
+        ]
       },
       "fallback": "ALL",
       "legend": "Tipo",

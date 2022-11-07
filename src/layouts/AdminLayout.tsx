@@ -1,14 +1,10 @@
 import { NextPage } from "next";
 import React, { useContext, useEffect } from "react";
-import EditListing from "../components/admin/listings/EditListing";
 import {
   AppShell,
   Navbar,
   Header,
-  Aside,
-  Footer,
   Button,
-  Group,
   Tooltip,
 } from "@mantine/core";
 import AdminMenu from "../components/admin/AdminMenu";

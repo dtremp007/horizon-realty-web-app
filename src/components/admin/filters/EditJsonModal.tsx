@@ -1,13 +1,11 @@
 import { Button, Group, JsonInput, Modal } from "@mantine/core";
 import { useState } from "react";
-import { useFormContext } from "./FilterBuilder";
 import { IconEdit } from "@tabler/icons";
-import { FilterElement_V2_Props } from "../../../../lib/interfaces/FilterTypes";
 import { UseFormReturnType } from "@mantine/form";
 
 type EditJsonModal<T> = {
   onClose: (values: T) => void;
-  form: UseFormReturnType<T>
+  form: UseFormReturnType<T>;
 };
 
 const EditJsonModal = <T,>({ onClose, form }: EditJsonModal<T>) => {

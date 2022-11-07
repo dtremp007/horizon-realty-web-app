@@ -246,33 +246,34 @@ export function updateMultipleFilters(
 
 export function queryParamsToFilterValues(
   filtersMap: FiltersMap,
-  params: {[key: string]: any}
+  params: { [key: string]: any }
 ) {
-   for (const [key, filter] of filtersMap) {
-    let newValue = deserializeQueryParams(params[key])
-    if (newValue !== undefined) {
-        // Don't change anything if the values haven't changed.
-        if (equals(newValue, filter.filterValue)) continue;
+  for (const [key, filter] of filtersMap) {
+    let {new_value, comp_op} = deserializeQueryParams(params[key]);
+    if (new_value !== undefined) {
+      // Don't change anything if the values haven't changed.
+      if (equals(new_value, filter.filterValue)) continue;
 
-        filter.active = !equals(newValue, filter.fallback)
-        filter.filterValue = newValue;
+      filter.active = !equals(new_value, filter.fallback);
+      filter.filterValue = new_value;
+      filter.comparisonOperator = comp_op;
     }
     if (filter.type === "CheckboxList" && filter.children) {
-        let filterActive = false;
-        for (const child of filter.children) {
-            newValue = deserializeQueryParams(params[child.id]) as boolean
-            if (newValue === undefined) continue;
+      let filterActive = false;
+      for (const child of filter.children) {
+        new_value = deserializeQueryParams(params[child.id]).new_value as boolean;
+        if (new_value === undefined) continue;
 
-            child.filterValue = newValue;
-            child.active = newValue;
+        child.filterValue = new_value;
+        child.active = new_value;
 
-            if (newValue) filterActive = true;
-        }
-        filter.active = filterActive;
+        if (new_value) filterActive = true;
+      }
+      filter.active = filterActive;
     }
-   }
+  }
 
-   return filtersMap;
+  return filtersMap;
 }
 
 export function curryStringInput(f: GetInputProps<any>, seperator?: string) {
@@ -427,31 +428,49 @@ export function getFallbackValueSelection(filter: FilterElement_V2_Props) {
   }
 }
 
-export function getOptionsForFieldKey(metadata: LocalMetadata, filter: FilterElement_V2_Props) {
-    const field = metadata.listings.fields.get(filter.fieldKey)
+export function getOptionsForFieldKey(
+  metadata: LocalMetadata,
+  filter: FilterElement_V2_Props
+) {
+  const field = metadata.listings.fields.get(filter.fieldKey);
 
-    if (!isNil(field) && field.options !== "None") {
-        return concat(["ALL"], field.options)
-    }
+  if (!isNil(field) && field.options !== "None") {
+    return concat(["ALL"], field.options);
+  }
 
-    return ["ALL"]
+  return ["ALL"];
 }
 
 export function deserializeQueryParams(value: string | string[]) {
-  if (!isNaN(+value)) return +value;
-  if (value === "true") return true;
-  if (value === "false") return false;
+  let new_value;
+  let comp_op: ComparisonOpType = "===";
+  if (!isNaN(+value)) new_value = +value;
+  if (value === "true") new_value = true;
+  if (value === "false") new_value = false;
   if (Array.isArray(value)) {
-    return value.map(x => +x)
+    new_value = value.map((x) => +x);
+    comp_op = "range";
   }
-  return value;
+  if (typeof value === "string" && ["<", ">", "!", "="].includes((value as string).charAt(0))) {
+    let operator = "";
+    let numberString = "";
+    for (const char of value) {
+      if (isNaN(+char)) {
+        operator += char;
+      } else {
+        numberString += char;
+      }
+    }
+    (new_value = +numberString), (comp_op = operator as ComparisonOpType);
+  }
+  return { new_value, comp_op };
 }
 
 export function updateFallbackValues(filters: FilterElement_V2_Props[]) {
-    for (const filter of filters) {
-        if (filter.type === "RangeSlider") {
-            filter.fallback = [filter.filterProps.min, filter.filterProps.max]
-        }
+  for (const filter of filters) {
+    if (filter.type === "RangeSlider") {
+      filter.fallback = [filter.filterProps.min, filter.filterProps.max];
     }
-    return filters
+  }
+  return filters;
 }

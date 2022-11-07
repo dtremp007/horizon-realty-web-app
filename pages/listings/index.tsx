@@ -17,6 +17,7 @@ import { readFileSync } from "fs";
 import { FilterElement_V2_Props } from "../../lib/interfaces/FilterTypes";
 import AuthUserContext from "../../src/context/authUserContext";
 import { getToggleFunction } from "../../lib/util";
+import { NavContext } from "../../src/layouts/AltMainLayout";
 
 const MapView = dynamic(() => import("../../src/components/map/MapView"));
 const MapListingsOverlay = dynamic(
@@ -41,15 +42,10 @@ const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
   const router = useRouter();
   const [view, setView] = useState(router.query.view);
   const { user } = useContext(AuthUserContext);
+  const { nav_state, dispatch_to_nav } = useContext(NavContext);
 
   const shouldShowFilter = user || process.env.NODE_ENV === "development";
-  const toggleFilterView = getToggleFunction("show-filter", !shouldShowFilter);
 
-  useEffect(() => {
-    if (router.query.foo) {
-      /* some code */
-    }
-  }, [router.query.foo]);
 
   useEffect(() => {
     setView(router.query.view);
@@ -63,7 +59,7 @@ const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
           <MapView />
         </>
       ) : (
-        <div className={toggleFilterView("listing-page__layout")}>
+        <div className="listing-page__layout">
           {shouldShowFilter && <FilterMenu />}
           <ListingsLayout />
         </div>

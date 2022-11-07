@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { Modal, Image, Checkbox, ActionIcon, Group } from "@mantine/core";
+import { Image, Checkbox, ActionIcon, Group, Modal } from "@mantine/core";
 import {
   getDownloadURL,
   listAll,
