@@ -31,7 +31,7 @@ type NavContext = {
 
 export const NavContext = createContext({} as NavContext);
 
-type Links = Omit<AltNavMenuItem, "index" | "activeLink" | "toggle" | "open">;
+export type Links = Omit<AltNavMenuItem, "index" | "activeLink" | "toggle" | "open">;
 
 const links: Links[] = [
   { href: "/", label: "Home", isActive: (router) => router.pathname === "/" },
