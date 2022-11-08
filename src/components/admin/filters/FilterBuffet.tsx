@@ -16,7 +16,7 @@ const FilterBuffet = () => {
   return (
     <ScrollArea type="auto" style={{height: "calc(100vh - 78px)"}}>
       <div style={{ maxWidth: "500px", margin: "auto" }}>
-        <Group direction="column" position="center" grow mt={18} mb={18}>
+        <Flex direction="column" justify="center" mt={18} mb={18}>
           {Array.from(filterTypes).map(([name, filterCreationOptions]) => (
             <FilterSelection
               key={name}
@@ -27,7 +27,7 @@ const FilterBuffet = () => {
               }
             />
           ))}
-        </Group>
+        </Flex>
       </div>
     </ScrollArea>
   );

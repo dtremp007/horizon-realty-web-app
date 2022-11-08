@@ -10,6 +10,7 @@ import React from "react";
 import AuthUserContext from "../../context/authUserContext";
 import { NavContext } from "../../layouts/AltMainLayout";
 import { useWindowScroll } from "@mantine/hooks";
+import { navTracker } from "../../../pages/_app";
 
 const links: Links[] = [
   { href: "/", label: "Home", isActive: (router) => router.pathname === "/" },
@@ -37,10 +38,11 @@ const links: Links[] = [
       {
         href: {
           pathname: "/listings",
-          query: { filter: "LOTE" },
+          query: { filter: "LOTE_RESEDENCIALES" },
         },
         label: "Lotes",
-        isActive: (router) => "/listings" && router.query.filter === "LOTE",
+        isActive: (router) =>
+          "/listings" && router.query.filter === "LOTES_RESIDENCIALES",
       },
       {
         href: {
@@ -130,7 +132,19 @@ const AltNavbar = () => {
           when={!nav_state.youHaveToGoBack}
           breakpoint="(max-width: 694px)"
           initialValue
-          alt={<BackButton />}
+          alt={
+            <BackButton
+              onClick={() => {
+                if (navTracker.userMadePitstop()) {
+                  router.back();
+                } else {
+                  router.push({
+                    pathname: "/listings",
+                  });
+                }
+              }}
+            />
+          }
         >
           <Burger
             opened={nav_state.isMenuOpen || nav_state.isFilterOpen}

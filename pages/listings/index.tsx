@@ -18,6 +18,7 @@ import { FilterElement_V2_Props } from "../../lib/interfaces/FilterTypes";
 import AuthUserContext from "../../src/context/authUserContext";
 import { getToggleFunction } from "../../lib/util";
 import { NavContext } from "../../src/layouts/AltMainLayout";
+import { navTracker } from "../_app";
 
 const MapView = dynamic(() => import("../../src/components/map/MapView"));
 const MapListingsOverlay = dynamic(
@@ -44,8 +45,11 @@ const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
   const { user } = useContext(AuthUserContext);
   const { nav_state, dispatch_to_nav } = useContext(NavContext);
 
-  const shouldShowFilter = user || process.env.NODE_ENV === "development";
+  const shouldShowFilter = true;
 
+  useEffect(() => {
+    navTracker.userWasHere();
+  }, [])
 
   useEffect(() => {
     setView(router.query.view);

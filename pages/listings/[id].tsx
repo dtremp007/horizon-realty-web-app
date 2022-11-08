@@ -20,9 +20,10 @@ import { ActionIcon } from "@mantine/core";
 import { ParsedUrlQuery } from "querystring";
 import { useMediaQuery } from "@mantine/hooks";
 import ListingDesktopLayout from "../../src/layouts/ListingDesktopLayout";
+import { ListingSchema } from "../../lib/interfaces/Listings";
 
 type Props = {
-  data: DocumentData;
+  data: ListingSchema;
 };
 
 const DetailedPage: NextPage<Props> = ({ data }) => {

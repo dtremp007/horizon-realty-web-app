@@ -1,4 +1,4 @@
-import { CheckboxGroup, Checkbox,Flex, Text } from "@mantine/core";
+import { Checkbox,Flex, Text } from "@mantine/core";
 
 type Props = {
   filterProps: any;
@@ -8,11 +8,11 @@ type Props = {
 
 const CheckboxGroupWrapper = ({ filterProps, legend, handleChange }: Props) => {
   return (
-    <Group direction="column">
+    <Flex direction="column">
       {filterProps.data.map((item: any) => (
         <Checkbox key={item.value} onChange={handleChange} {...item} />
       ))}
-    </Group>
+    </Flex>
   );
 };
 export default CheckboxGroupWrapper;

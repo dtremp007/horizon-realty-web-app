@@ -9,8 +9,10 @@ import Head from "next/head";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { useEffect } from "react";
 import { analytics } from "../lib/firebase.config";
+import NavTracker from "../src/utils/NavTracker";
 
 const AdminLayout = dynamic(() => import("../src/layouts/AdminLayout"));
+export const navTracker = new NavTracker();
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();

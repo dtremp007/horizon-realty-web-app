@@ -25,13 +25,16 @@ type NavContext = {
   nav_state: NavState;
   dispatch_to_nav: Dispatch<NavActions>;
   links: Links[];
-  toggle_menu: (className: string) => string
-  toggle_header: (className: string) => string
+  toggle_menu: (className: string) => string;
+  toggle_header: (className: string) => string;
 };
 
 export const NavContext = createContext({} as NavContext);
 
-export type Links = Omit<AltNavMenuItem, "index" | "activeLink" | "toggle" | "open">;
+export type Links = Omit<
+  AltNavMenuItem,
+  "index" | "activeLink" | "toggle" | "open"
+>;
 
 const links: Links[] = [
   { href: "/", label: "Home", isActive: (router) => router.pathname === "/" },
@@ -54,15 +57,8 @@ const links: Links[] = [
           query: { listingType: "CASA" },
         },
         label: "Casas",
-        isActive: (router) => "/listings" && router.query.listingType === "CASA",
-      },
-      {
-        href: {
-          pathname: "/listings",
-          query: { listingType: "LOTE" },
-        },
-        label: "Lotes",
-        isActive: (router) => "/listings" && router.query.listingType === "LOTES_RESIDENCIALES",
+        isActive: (router) =>
+          "/listings" && router.query.listingType === "CASA",
       },
       {
         href: {
@@ -70,7 +66,26 @@ const links: Links[] = [
           query: { listingType: "BODEGA" },
         },
         label: "Casa Bodegas",
-        isActive: (router) => "/listings" && router.query.listingType === "BODEGA",
+        isActive: (router) =>
+          "/listings" && router.query.listingType === "BODEGA",
+      },
+      {
+        href: {
+          pathname: "/listings",
+          query: { listingType: "APARTMENTS" },
+        },
+        label: "Apartments",
+        isActive: (router) =>
+          "/listings" && router.query.listingType === "APARTMENTS",
+      },
+      {
+        href: {
+          pathname: "/listings",
+          query: { filter: "LOTES_RESIDENCIALES" },
+        },
+        label: "Lotes",
+        isActive: (router) =>
+          "/listings" && router.query.filter === "LOTES_RESIDENCIALES",
       },
     ],
     isActive: (router) => false,
@@ -88,14 +103,15 @@ const AltMainLayout = ({ children }: Props) => {
     previousScrollY: 0,
   };
 
-
   const [nav_state, dispatch_to_nav] = useReducer(navReducer, initialState);
 
-  const toggle_menu = getToggleFunction("open", nav_state.isMenuOpen)
-  const toggle_header = getToggleFunction("open", nav_state.isHeaderExpanded)
+  const toggle_menu = getToggleFunction("open", nav_state.isMenuOpen);
+  const toggle_header = getToggleFunction("open", nav_state.isHeaderExpanded);
 
   return (
-    <NavContext.Provider value={{ nav_state, dispatch_to_nav, links, toggle_menu, toggle_header }}>
+    <NavContext.Provider
+      value={{ nav_state, dispatch_to_nav, links, toggle_menu, toggle_header }}
+    >
       <AltNavbar />
       <main className="alt-layout__main">{children}</main>
       <Show blacklistRoutes={["/listings/[id]", "/test"]}>
@@ -107,7 +123,15 @@ const AltMainLayout = ({ children }: Props) => {
 export default AltMainLayout;
 
 type NavActions = {
-  type: "TOGGLE_HEADER" | "TOGGLE_MENU" | "WE'RE_AT_A_DEADEND" | "GO_AS_YOU_PLEASE" | "TOGGLE_IS_BLACK" | "TOGGLE_FILTER" | "UPDATE_SCROLL_Y" | "TOGGLE_MENU_WATCH_FILTER";
+  type:
+    | "TOGGLE_HEADER"
+    | "TOGGLE_MENU"
+    | "WE'RE_AT_A_DEADEND"
+    | "GO_AS_YOU_PLEASE"
+    | "TOGGLE_IS_BLACK"
+    | "TOGGLE_FILTER"
+    | "UPDATE_SCROLL_Y"
+    | "TOGGLE_MENU_WATCH_FILTER";
   payload?: any;
 };
 
@@ -119,39 +143,39 @@ const navReducer: Reducer<NavState, NavActions> = (state, action) => {
         isHeaderExpanded: action.payload ?? !state.isHeaderExpanded,
       };
     case "TOGGLE_MENU":
-        return {
-            ...state,
-            isHeaderExpanded: action.payload ?? !state.isHeaderExpanded,
-            isMenuOpen: action.payload ?? !state.isHeaderExpanded
-        }
+      return {
+        ...state,
+        isHeaderExpanded: action.payload ?? !state.isHeaderExpanded,
+        isMenuOpen: action.payload ?? !state.isHeaderExpanded,
+      };
     case "WE'RE_AT_A_DEADEND":
       return {
         ...state,
         youHaveToGoBack: true,
       };
     case "GO_AS_YOU_PLEASE":
-        return {
-            ...state,
-            youHaveToGoBack: false
-        }
+      return {
+        ...state,
+        youHaveToGoBack: false,
+      };
     case "TOGGLE_IS_BLACK":
-        return {
-            ...state,
-            burgerIsBlack: action.payload ?? !state.burgerIsBlack
-        }
+      return {
+        ...state,
+        burgerIsBlack: action.payload ?? !state.burgerIsBlack,
+      };
     case "TOGGLE_FILTER":
-        return {
-            ...state,
-            isHeaderExpanded: action.payload ?? !state.isHeaderExpanded,
-            isFilterOpen: action.payload ?? !state.isFilterOpen
-        }
+      return {
+        ...state,
+        isHeaderExpanded: action.payload ?? !state.isHeaderExpanded,
+        isFilterOpen: action.payload ?? !state.isFilterOpen,
+      };
     case "TOGGLE_MENU_WATCH_FILTER":
-        if (state.isFilterOpen) return state
-        return {
-            ...state,
-            isHeaderExpanded: action.payload ?? !state.isHeaderExpanded,
-            isMenuOpen: action.payload ?? !state.isHeaderExpanded
-        }
+      if (state.isFilterOpen) return state;
+      return {
+        ...state,
+        isHeaderExpanded: action.payload ?? !state.isHeaderExpanded,
+        isMenuOpen: action.payload ?? !state.isHeaderExpanded,
+      };
     default:
       return state;
   }

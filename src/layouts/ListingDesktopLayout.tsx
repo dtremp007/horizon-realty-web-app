@@ -17,9 +17,12 @@ import { useMemo } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
 import BackButton from "../components/navigation/BackButton";
+import { useRouter } from "next/router";
+import { navTracker } from "../../pages/_app";
+import { ListingSchema } from "../../lib/interfaces/Listings";
 
 type Props = {
-  data: any;
+  data: ListingSchema;
 };
 
 const ListingDesktopLayout = ({ data }: Props) => {
@@ -34,7 +37,9 @@ const ListingDesktopLayout = ({ data }: Props) => {
     landAreaUnits,
     description,
     paymentType,
+    listingType
   } = data;
+  const router = useRouter();
 
   const enhancedUrls = useMemo(() => {
     return imageUrls.map((url: string, index: number, arr: any) => {
@@ -64,7 +69,18 @@ const ListingDesktopLayout = ({ data }: Props) => {
   return (
     <>
       <div className="desktop-page__bbtn">
-        <BackButton />
+        <BackButton onClick={(router) => {
+            if (navTracker.userMadePitstop()) {
+                router.back()
+            } else {
+                router.push({
+                    pathname: "/listings",
+                    query: {
+                        listingType
+                    }
+                })
+            }
+        }}/>
       </div>
       <div className="desktop-page__container">
         <div className="wrap-the-wrapper">

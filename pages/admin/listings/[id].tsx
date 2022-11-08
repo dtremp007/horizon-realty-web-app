@@ -9,9 +9,10 @@ import { ParsedUrlQuery } from "querystring";
 import {readFileSync} from "fs"
 import path from "path"
 import { WebsiteMetadata } from "../filters";
+import { ListingSchema } from "../../../lib/interfaces/Listings";
 
 type Props = {
-  firebaseDoc: DocumentData;
+  firebaseDoc: ListingSchema;
   metadata: WebsiteMetadata;
 };
 
