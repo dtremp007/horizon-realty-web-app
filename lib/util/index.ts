@@ -442,7 +442,7 @@ export function getOptionsForFieldKey(
 }
 
 export function deserializeQueryParams(value: string | string[]) {
-  let new_value;
+  let new_value: any = value;
   let comp_op: ComparisonOpType = "===";
   if (!isNaN(+value)) new_value = +value;
   if (value === "true") new_value = true;
