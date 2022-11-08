@@ -4,7 +4,7 @@ import {
   ActionIcon,
   Button,
   Divider,
-  Group,
+ Flex,
   ScrollArea,
   Select,
   Space,
@@ -86,11 +86,11 @@ const FilterBuilder = () => {
     <FormProvider form={form}>
       <ScrollArea style={{ height: "calc(100vh - 78px)" }}>
         <form>
-        <Group position="right" m={18}>
+        <Flex justify="flex-end" m={18}>
           <Button type="submit" disabled onClick={() => saveFilters()}>
             Save
           </Button>
-        </Group>
+        </Flex>
           <FormGroup
             inputs={configOptions}
             pathToInput={createPathSnowball({})}

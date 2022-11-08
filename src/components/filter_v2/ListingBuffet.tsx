@@ -1,4 +1,4 @@
-import { Button, Group } from "@mantine/core";
+import { Button,Flex } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
 import { RadioButtonGroupProps } from "../filter/RadioButtonGroup";
@@ -69,22 +69,22 @@ const ListingBuffetCard = ({ label, value }: ListingBuffetCardProps) => {
       key={value}
     >
       <div className="listing-buffet__card">
-        <Group
-          position="center"
+        <Flex
+          justify="center"
           pt={22}
           align="center"
           style={{ height: "100%" }}
         >
           {loading ? <Spinner /> : getIcon(value)}
-        </Group>
-        <Group
+        </Flex>
+        <Flex
           className="listing-buffet__label"
-          position="center"
+          justify="center"
           pt={10}
           pb={10}
         >
           {label}
-        </Group>
+        </Flex>
       </div>
     </Link>
   );

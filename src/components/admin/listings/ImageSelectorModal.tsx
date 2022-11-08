@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { Image, Checkbox, ActionIcon, Group, Modal } from "@mantine/core";
+import { Image, Checkbox, ActionIcon,Flex, Modal } from "@mantine/core";
 import {
   getDownloadURL,
   listAll,
@@ -144,7 +144,7 @@ const ImageSelectorModal = ({
         ) : (
           <Spinner />
         )}
-        <Group position="apart">
+        <Flex justify="space-between">
           <ActionIcon
             onClick={() => fetchNext("prev").then((data) => setImages(data))}
           >
@@ -155,7 +155,7 @@ const ImageSelectorModal = ({
           >
             <IconArrowRight />
           </ActionIcon>
-        </Group>
+        </Flex>
       </div>
     </Modal>
   );

@@ -3,7 +3,7 @@ import {
   Button,
   Center,
   Checkbox,
-  Group,
+ Flex,
   NumberInput,
   Select,
   TextInput,
@@ -102,7 +102,7 @@ const DataList = ({ pathToInput, listInputs }: DataListProps) => {
   const form = useFormContext();
 
   return (
-    <Group position="center" direction="column">
+    <Flex justify="center" direction="column">
       <div style={{ width: "100%" }}>
         <div style={{ display: "flex", justifyContent: "space-around", width: "calc(100% - 40px)" }}>
           <p style={{fontSize: "16px"}}>Label</p>
@@ -110,7 +110,7 @@ const DataList = ({ pathToInput, listInputs }: DataListProps) => {
         </div>
       </div>
       {(getObjectPath(pathToInput(), form.values) as {}[]).map((_, index) => (
-        <Group key={index} position="center" direction="row">
+        <Flex key={index} justify="center" direction="row">
           <MapsOverEntries
             inputs={listInputs}
             pathToInput={pathToInput(index.toString())}
@@ -118,7 +118,7 @@ const DataList = ({ pathToInput, listInputs }: DataListProps) => {
           <ActionIcon onClick={() => form.removeListItem(pathToInput(), index)}>
             <IconX />
           </ActionIcon>
-        </Group>
+        </Flex>
       ))}
       <Button
         leftIcon={<IconSquarePlus />}
@@ -133,7 +133,7 @@ const DataList = ({ pathToInput, listInputs }: DataListProps) => {
       >
         Add Field
       </Button>
-    </Group>
+    </Flex>
   );
 };
 
@@ -144,8 +144,8 @@ type FormGroupProps = {
 
 export const FormGroup = ({ inputs, pathToInput }: FormGroupProps) => {
   return (
-    <Group position="center" direction="column">
+    <Flex align="center" direction="column">
       <MapsOverEntries inputs={inputs} pathToInput={pathToInput} />
-    </Group>
+    </Flex>
   );
 };

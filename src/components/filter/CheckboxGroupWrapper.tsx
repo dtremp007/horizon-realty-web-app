@@ -1,4 +1,4 @@
-import { CheckboxGroup, Checkbox, Group, Text } from "@mantine/core";
+import { CheckboxGroup, Checkbox,Flex, Text } from "@mantine/core";
 
 type Props = {
   filterProps: any;

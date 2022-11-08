@@ -15,13 +15,17 @@ import {
   ActionIcon,
   Button,
   Divider,
-  Group,
+  Flex,
   Image,
   List,
   ScrollArea,
   Text,
+  CopyButton,
+  Tooltip,
+  Menu,
+  Switch,
+  NumberInput,
 } from "@mantine/core";
-import { CopyButton, Flex, Tooltip, Menu, Switch } from "@mantine/core-5.7.0";
 import { ImageCellType, ImageRefType } from "../../src/image-manager/src/types";
 import {
   deleteObject,
@@ -52,6 +56,7 @@ const Images: NextPage<Props> = ({ firebaseDocs: docs }) => {
   const [IRCMap, setIRCMap] = useState<Map<string, ImageRefType>>();
   const [saveTime, setTimeSaver] = useState(true);
   const [opened, setOpened] = useState(false);
+  const [pageSize, setPageSize] = useState(50);
 
   const handleAnalyzer = useCallback(() => {
     analyzeDocs("images", firebaseDocs).then((map) => {
@@ -64,34 +69,39 @@ const Images: NextPage<Props> = ({ firebaseDocs: docs }) => {
       <Flex align="center" justify="space-between">
         <h1 style={{ padding: "1rem" }}>Image Analyzer</h1>
         <Flex align="center">
-          <Menu opened={opened} onChange={setOpened}>
-            <Menu.Target>
-              <ActionIcon>
-                <IconDotsVertical />
-              </ActionIcon>
-            </Menu.Target>
+          <Flex gap={8} align="center">
+            <Menu opened={opened} onChange={setOpened}>
+              <Menu.Target>
+                <ActionIcon>
+                  <IconDotsVertical />
+                </ActionIcon>
+              </Menu.Target>
 
-            <Menu.Dropdown>
-              <Menu.Label>Options</Menu.Label>
-              <Menu.Item>
-                <Switch
-                  checked={saveTime}
-                  onChange={(event) =>
-                    setTimeSaver(event.currentTarget.checked)
-                  }
-                  label="Don't load heavy images"
-                />
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-          <Button onClick={handleAnalyzer} mr={18}>Analyze</Button>
+              <Menu.Dropdown>
+                <Menu.Label>Options</Menu.Label>
+                <Menu.Item>
+                  <Switch
+                    checked={saveTime}
+                    onChange={(event) =>
+                      setTimeSaver(event.currentTarget.checked)
+                    }
+                    label="Don't load heavy images"
+                  />
+                </Menu.Item>
+                <Menu.Item>
+                    <NumberInput label="Show the most recent:" value={pageSize} onChange={(n) => setPageSize(n!)}/>
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            <Button onClick={handleAnalyzer}>Analyze</Button>
+          </Flex>
           <Button>Save</Button>
         </Flex>
       </Flex>
       <ScrollArea style={{ height: "calc(100vh - 180px)", width: "100%" }}>
         {IRCMap ? (
           <Flex direction="column" style={{ width: "100%" }}>
-            {[...IRCMap].sort(sortIRCMap).map(([key, imageRef]) => (
+            {[...IRCMap].sort(sortIRCMap).slice(0, pageSize).map(([key, imageRef]) => (
               <ImageInfoCard
                 key={key}
                 imageRef={imageRef}

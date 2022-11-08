@@ -4,8 +4,7 @@ import {
   Divider,
   Space,
   Accordion,
-  AccordionItem,
-  Group,
+ Flex,
   Button,
   ActionIcon,
 } from "@mantine/core";
@@ -101,7 +100,7 @@ const ListingDetailLayout = ({ data }: Props) => {
             <>
               <h2 style={{}}>Ubicación</h2>
               <SingleMapView coordinates={coordinates} />
-              <Group mt={18} position="center">
+              <Flex mt={18} justify="center">
                 <a
                   href={`http://www.google.com/maps/place/${coordinates[0]},${coordinates[1]}?zoom=14`}
                 >
@@ -113,7 +112,7 @@ const ListingDetailLayout = ({ data }: Props) => {
                     Google Maps
                   </Button>
                 </a>
-              </Group>
+              </Flex>
             </>
           ) : null}
           <Divider />

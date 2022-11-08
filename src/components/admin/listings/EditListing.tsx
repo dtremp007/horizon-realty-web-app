@@ -2,18 +2,16 @@ import {
   TextInput,
   Checkbox,
   Button,
-  Group,
   Box,
   Accordion,
-  AccordionItem,
   NumberInput,
   Select,
   Paper,
   Space,
   ActionIcon,
-  CheckboxGroup,
   Text,
   ScrollArea,
+  Flex
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DocumentData, query, setDoc } from "firebase/firestore";
@@ -106,13 +104,13 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
         onSubmit={form.onSubmit(handleSubmit)}
         style={{ margin: "1rem 3rem" }}
       >
-        <Group position="apart" mb={18}>
+        <Flex justify="space-between" mb={18}>
           <Link href="/admin/listings">
             <ActionIcon>
               <IconArrowLeft />
             </ActionIcon>
           </Link>
-          <Group>
+          <Flex gap={18} align="center">
             {uploaded && <IconCheck />}
             <Button disabled={!form.isDirty()} type="submit">
               Save
@@ -120,8 +118,8 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
             <Link href={`/listings/${id}`}>
               <Button disabled={!uploaded}>View Listing</Button>
             </Link>
-          </Group>
-        </Group>
+          </Flex>
+        </Flex>
         <TextInput
           style={{ marginLeft: ".75rem" }}
           variant="unstyled"
@@ -129,8 +127,10 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
           size="xl"
           {...form.getInputProps("title")}
         />
-        <Accordion style={{ textAlign: "left" }} iconPosition="right">
-          <AccordionItem label={<p>Details</p>}>
+        <Accordion style={{ textAlign: "left" }}>
+          <Accordion.Item value="details">
+            <Accordion.Control>Details</Accordion.Control>
+            <Accordion.Panel>
             <Select
               label="Type"
               data={metadata.listings.fields.listingType.options}
@@ -138,7 +138,7 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
               placeholder="Listing type"
               {...form.getInputProps("listingType")}
             />
-            <Group>
+            <Flex>
               <NumberInput
                 label="Price"
                 defaultValue={5000}
@@ -165,8 +165,8 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
                 label="Payment Type"
                 {...form.getInputProps("paymentType")}
               />
-            </Group>
-            <Group>
+            </Flex>
+            <Flex>
               <TextInput
                 type="number"
                 label="Lot Size"
@@ -178,8 +178,8 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
                 data={["ACRES", "HECTARES"]}
                 {...form.getInputProps("landAreaUnits")}
               />
-            </Group>
-            <Group>
+            </Flex>
+            <Flex>
               <TextInput
                 type="number"
                 label="House Size"
@@ -191,14 +191,14 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
                 data={["SQ.FT."]}
                 {...form.getInputProps("houseSizeUnits")}
               />
-            </Group>
+            </Flex>
             <TextInput
               type="text"
               label="Address"
               {...form.getInputProps("address")}
             />
             <CoordinatesInput {...form.getInputProps("coordinates")} />
-            <Group>
+            <Flex>
               <NumberInput
                 label="Bathrooms"
                 step={1}
@@ -209,10 +209,9 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
                 step={1}
                 {...form.getInputProps("bedrooms")}
               />
-            </Group>
+            </Flex>
             <Space h="lg" />
-            {/* I tried using CheckboxGroup, but it made form.getInputProps not work right, but thinking abount it, I probably should have used the function inside the Group tag. */}
-            <Group direction="column">
+            <Flex direction="column">
               <Text>Ulitities</Text>
               <Checkbox
                 label="Water"
@@ -224,8 +223,9 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
                 value="electricity"
                 {...form.getInputProps("electricity", { type: "checkbox" })}
               />
-            </Group>
-          </AccordionItem>
+            </Flex>
+            </Accordion.Panel>
+          </Accordion.Item>
         </Accordion>
         <Space h="md" />
         <Paper p="md">
@@ -254,7 +254,7 @@ const CoordinatesInput = ({ value, onChange }: CoordinatesInputProps) => {
   }
 
   return (
-    <Group align="flex-end">
+    <Flex align="flex-end">
       <TextInput type="text" label="Coordinates" onChange={handleChange} />
       <div
         style={{
@@ -265,6 +265,6 @@ const CoordinatesInput = ({ value, onChange }: CoordinatesInputProps) => {
           fontSize: ".75rem",
         }}
       >{`Latitude: ${value[0]}, Longitude: ${value[1]}`}</div>
-    </Group>
+    </Flex>
   );
 };

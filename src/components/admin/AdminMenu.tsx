@@ -6,7 +6,7 @@ import {
   IconNotebook,
   IconPictureInPicture
 } from "@tabler/icons";
-import { ThemeIcon, UnstyledButton, Group, Text } from "@mantine/core";
+import { ThemeIcon, UnstyledButton,Flex, Text } from "@mantine/core";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -39,13 +39,13 @@ function AdminLink({ icon, color, label, href }: MainLinkProps) {
           },
         })}
       >
-        <Group>
+        <Flex>
           <ThemeIcon color={color} variant="light">
             {icon}
           </ThemeIcon>
 
           <Text size="sm">{label}</Text>
-        </Group>
+        </Flex>
       </UnstyledButton>
     </Link>
   );

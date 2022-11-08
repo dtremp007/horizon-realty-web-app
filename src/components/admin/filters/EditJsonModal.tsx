@@ -1,4 +1,4 @@
-import { Button, Group, JsonInput, Modal } from "@mantine/core";
+import { Button,Flex, JsonInput, Modal } from "@mantine/core";
 import { useState } from "react";
 import { IconEdit } from "@tabler/icons";
 import { UseFormReturnType } from "@mantine/form";
@@ -28,7 +28,7 @@ const EditJsonModal = <T,>({ onClose, form }: EditJsonModal<T>) => {
         />
       </Modal>
 
-      <Group position="center" mt={18}>
+      <Flex justify="center" mt={18}>
         <Button
           leftIcon={<IconEdit />}
           variant="light"
@@ -40,7 +40,7 @@ const EditJsonModal = <T,>({ onClose, form }: EditJsonModal<T>) => {
         >
           Edit JSON
         </Button>
-      </Group>
+      </Flex>
     </>
   );
 };

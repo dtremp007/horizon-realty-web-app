@@ -4,7 +4,7 @@ import {
   Text,
   Badge,
   Button,
-  Group,
+ Flex,
   ScrollArea,
   ActionIcon,
   Center,
@@ -132,7 +132,7 @@ const AdminListingCard = ({
         />
       </Card.Section>
 
-      <Group direction="column" position="right" mt={16}>
+      <Flex direction="column" align="flex-end" mt={16}>
         <Badge
           color={availability === "sold" ? "red" : "green"}
           variant="light"
@@ -140,9 +140,9 @@ const AdminListingCard = ({
           {availability === "sold" ? "Sold" : "Available"}
         </Badge>
         <Text weight={500}>{listing.data.title}</Text>
-      </Group>
+      </Flex>
 
-      <Group position="center" mt={16}>
+      <Flex align="center" justify="flex-end" gap={16} mt={16}>
         <Link href={`/admin/listings/${listing.id}`}>
           <Button color="blue" radius="md">
             Edit
@@ -154,7 +154,7 @@ const AdminListingCard = ({
         <ActionIcon onClick={() => removeListing(listing.id)}>
           <IconTrash />
         </ActionIcon>
-      </Group>
+      </Flex>
     </Card>
   );
 };

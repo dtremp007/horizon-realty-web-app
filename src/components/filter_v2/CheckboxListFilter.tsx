@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxProps, Group } from "@mantine/core";
+import { Checkbox, CheckboxProps,Flex } from "@mantine/core";
 import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
 import {
   ChangeEvent,
@@ -52,7 +52,7 @@ const CheckboxListFilter = (props: FilterElement_V2_Props<CheckboxProps>) => {
   return (
     <fieldset>
       <legend>{legend}</legend>
-      <Group direction="column" spacing={9}>
+      <Flex direction="column" align="flex-start" gap={9}>
         {children!.map((filter, index) => (
           <CheckboxWrapper
             key={filter.id}
@@ -60,7 +60,7 @@ const CheckboxListFilter = (props: FilterElement_V2_Props<CheckboxProps>) => {
             handleOnChange={extractValue(index)}
           />
         ))}
-      </Group>
+      </Flex>
     </fieldset>
   );
 };

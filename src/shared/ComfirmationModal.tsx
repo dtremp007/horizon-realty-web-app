@@ -1,4 +1,4 @@
-import { Button, Group, Modal, Text } from "@mantine/core";
+import { Button,Flex, Modal, Text } from "@mantine/core";
 import { IconThumbUp } from "@tabler/icons";
 
 type ConfirmationModalProps = {
@@ -17,7 +17,7 @@ const ConfirmationModal = ({
   return (
     <Modal opened={opened} onClose={onClose}>
       <Text>{message}</Text>
-      <Group spacing="md" position="right" mt={16}>
+      <Flex justify="flex-end" mt={16}>
         <Button color="red" onClick={onClose}>
           Cancel
         </Button>
@@ -31,7 +31,7 @@ const ConfirmationModal = ({
         >
           Confirm{" "}
         </Button>
-      </Group>
+      </Flex>
     </Modal>
   );
 };

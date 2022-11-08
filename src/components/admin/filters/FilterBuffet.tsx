@@ -1,4 +1,4 @@
-import { Button, Card, Group, ScrollArea, Space } from "@mantine/core";
+import { Button, Card,Flex, ScrollArea, Space } from "@mantine/core";
 import { lensProp, mergeRight, set } from "rambda";
 import { useContext } from "react";
 import { FilterElement_V2_Props } from "../../../../lib/interfaces/FilterTypes";

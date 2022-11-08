@@ -1,8 +1,6 @@
-import { SegmentedControl, SegmentedControlProps, Group } from "@mantine/core";
+import { SegmentedControl, SegmentedControlProps,Flex } from "@mantine/core";
 import { FilterElement_V2_Props } from "../../../lib/interfaces/FilterTypes";
 import React, { ChangeEvent, useCallback, useState } from "react";
-import { ListingsContextType } from "../../context/listingsContext/listingsContext";
-import { pipe } from "rambda";
 
 const SegmentedControlFilter = (
   props: FilterElement_V2_Props<
@@ -24,7 +22,7 @@ const SegmentedControlFilter = (
 
   return (
     <fieldset>
-      <Group>
+      <Flex>
         {fieldKey === "bathrooms" || fieldKey === "bedrooms"
           ? getIcon(fieldKey)
           : null}
@@ -41,7 +39,7 @@ const SegmentedControlFilter = (
           size="md"
           color="blue"
         />
-      </Group>
+      </Flex>
     </fieldset>
   );
 };

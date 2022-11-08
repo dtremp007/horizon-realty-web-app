@@ -1,5 +1,5 @@
 import { EditFilterContext } from "../../../../pages/admin/filters";
-import { ActionIcon, Button, Group, ScrollArea, Space } from "@mantine/core";
+import { ActionIcon, Button,Flex, ScrollArea, Space } from "@mantine/core";
 import { extractor } from "../../../../lib/util";
 import R, {
   any,
@@ -38,7 +38,7 @@ const FilterPreview = () => {
   );
 
   return (
-    <ScrollArea style={{ height: "calc(100vh - 60px)" }}>
+    <ScrollArea style={{ height: "calc(100vh - 130px)", width: "100%" }}>
       <form
         className="flow-content"
         style={{ maxWidth: "400px", margin: "auto" }}
@@ -135,8 +135,8 @@ const FilterUIOverlay = ({
 
   return (
     <div className="filter-ui-overlay__container">
-      <Group
-        position="right"
+      <Flex
+        justify="flex-end"
         className="filter-ui-overlay filter-ui-overlay--padding"
       >
         <ActionIcon
@@ -156,9 +156,9 @@ const FilterUIOverlay = ({
         >
           <IconTrash />
         </ActionIcon>
-      </Group>
+      </Flex>
       <FilterWrapper {...filterProps} />
-      <Group position="center" className="filter-ui-overlay">
+      <Flex justify="center" className="filter-ui-overlay">
         <ActionIcon
           onClick={() =>
             dispatch({
@@ -169,7 +169,7 @@ const FilterUIOverlay = ({
         >
           <IconCirclePlus />
         </ActionIcon>
-      </Group>
+      </Flex>
     </div>
   );
 };

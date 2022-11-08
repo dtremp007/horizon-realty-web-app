@@ -10,7 +10,7 @@ import {
   ActionIcon,
   Menu,
   Modal,
-  Group,
+ Flex,
 } from "@mantine/core";
 import {
   FilterElement,
@@ -212,8 +212,8 @@ const AdminFilters: NextPage<AdminFilterProps> = ({
         onConfirm={confirmState.action}
       />
       <SimpleGrid cols={2}>
-        <Group direction="column" position="center" grow>
-          <Group mt={16} ml={16} position="left">
+        <Flex direction="column" align="center">
+          <Flex mt={16} ml={16} align="flex-start">
             <Button
               color="red"
               onClick={() =>
@@ -228,9 +228,9 @@ const AdminFilters: NextPage<AdminFilterProps> = ({
             <Button disabled={state.filterSaved} onClick={() => saveFilters()}>
               Save All
             </Button>
-          </Group>
+          </Flex>
           <FilterPreview />
-        </Group>
+        </Flex>
         {!isNil(state.filterBeingEdited) && (
           <FilterBuilder key={state.filterBeingEdited} />
         )}

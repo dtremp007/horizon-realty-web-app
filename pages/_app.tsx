@@ -38,6 +38,13 @@ function MyApp({ Component, pageProps }: AppProps) {
     <MantineProvider
       theme={{
         colorScheme: "dark",
+        components: {
+            Flex: {
+                defaultProps: {
+                    gap: 18
+                }
+            }
+        },
         colors: {
           "charcoal-gray": [
             "#f2f2f2",

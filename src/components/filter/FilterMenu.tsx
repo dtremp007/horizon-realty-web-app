@@ -5,12 +5,11 @@ import {
   Space,
   SegmentedControl,
   Checkbox,
-  CheckboxGroup,
   Button,
   ActionIcon,
   Modal,
   Indicator,
-  Group,
+ Flex,
 } from "@mantine/core";
 import RadioButtonGroup from "./RadioButtonGroup";
 import { useRouter } from "next/router";
@@ -88,9 +87,9 @@ export default function FilterMenu() {
             toggle_filter={toggle_filter}
             offset={listingsState.filters.size}
           >
-            <Group position="right">
+            <Flex justify="right">
               <Button onClick={() => resetFilters()}>Reset</Button>
-            </Group>
+            </Flex>
           </WrapsTheWrapper>
           <Space />
         </form>
