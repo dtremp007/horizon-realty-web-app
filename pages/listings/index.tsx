@@ -33,10 +33,6 @@ type Props = {
   filters: FilterElement_V2_Props[];
 };
 
-/*
-    TODO:
-    - Renable filter
-*/
 
 const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
   const isDesktop = useMediaQuery("(min-width: 695px)", true);
@@ -52,6 +48,9 @@ const Listings: NextPage<Props> = ({ firebaseDocs, filters }) => {
   }, [])
 
   useEffect(() => {
+    if (router.query.view === "map") {
+
+    }
     setView(router.query.view);
   }, [router.query.view]);
 
