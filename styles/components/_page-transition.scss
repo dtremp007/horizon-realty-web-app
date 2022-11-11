@@ -1,0 +1,129 @@
+@use "../abstracts" as *;
+@use "sass:map";
+
+$ANIMATION_DURATION: 400ms;
+$INTERVAL_SHORT: 50ms;
+$INTERVAL_LONG: 75ms;
+
+$keyframe-list: (
+  (
+    enter__right,
+    (0%, translateX(25vw)),
+    (100%, translateX(0)),
+    ("forward", $ANIMATION_DURATION, $INTERVAL_SHORT)
+  ),
+  (
+    exit__right,
+    (100%, translateX(0)),
+    (0%, translateX(25vw)),
+    ("reverse", $ANIMATION_DURATION, $INTERVAL_SHORT)
+  ),
+  (
+    enter__left,
+    (0%, translateX(-25vw)),
+    (100%, translateX(0)),
+    ("forward", $ANIMATION_DURATION, $INTERVAL_SHORT)
+  ),
+  (
+    exit__left,
+    (100%, translateX(0)),
+    (0%, translateX(-25vw)),
+    ("reverse", $ANIMATION_DURATION, $INTERVAL_SHORT)
+  ),
+  (
+    enter__top,
+    (0%, translateY(var(--offset-x)) scale(0.5)),
+    (100%, translateY(0) scale(1)),
+    ("forward", $ANIMATION_DURATION, $INTERVAL_LONG)
+  ),
+  (
+    exit__top,
+    (100%, translateY(0) scale(1)),
+    (0%, translateY(var(--offset-x)) scale(0.5)),
+    ("reverse", $ANIMATION_DURATION, $INTERVAL_LONG)
+  )
+);
+
+@mixin keyframe-factory($name, $from, $to) {
+  @keyframes #{$name} {
+    from {
+      opacity: nth($from, 1);
+      transform: nth($from, 2);
+    }
+    to {
+      opacity: nth($to, 1);
+      transform: nth($to, 2);
+    }
+  }
+}
+
+// Creates a keyframe for each element in the keyframe-list
+@each $name, $from, $to, $_ in $keyframe-list {
+  @include keyframe-factory($name, $from, $to);
+}
+
+// Usefull when you need to count backwards in a list
+@function get-position($index, $direction, $len) {
+  @if $direction == "forward" {
+    @return $index;
+  } @else {
+    @return $index * -1 + $len + 1;
+  }
+}
+
+// Creates a selector for each positional div
+@mixin positional-factory(
+  $len,
+  $animation,
+  $initial_opacity,
+  $initial_transform,
+  $direction,
+  $duration,
+  $interval
+) {
+  @for $i from 1 through $len {
+    div:nth-child(#{get-position($i, $direction, $len)}) {
+      animation-name: $animation;
+      animation-duration: $duration;
+      animation-timing-function: ease-out;
+      animation-fill-mode: forwards;
+      animation-direction: normal;
+
+      --offset-x: #{get-position($i, $direction, $len) * -20px};
+      opacity: $initial_opacity;
+      transform: $initial_transform;
+      animation-delay: #{$i * $interval - $interval};
+    }
+  }
+}
+
+// Creates a class for every movement in the keyframe-list
+@mixin class-factory($keyframe-list, $len) {
+  @each $animation, $from, $_, $options in $keyframe-list {
+    &.#{$animation} {
+      div {
+        width: max-content;
+      }
+
+      @include positional-factory(
+        $len,
+        // # of elements
+        $animation,
+        // animation to call
+        nth($from, 1),
+        // initial opacity
+        nth($from, 2),
+        // initial transform
+        nth($options, 1),
+        // direction
+        nth($options, 2),
+        // duration
+        nth($options, 3) // interalval
+      );
+    }
+  }
+}
+
+.transition {
+  @include class-factory($keyframe-list, 4);
+}
