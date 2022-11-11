@@ -80,7 +80,7 @@ const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
             removeListing={removeListing}
           />
         ))}
-        <Center>
+        <Center h={200}>
           <ActionIcon onClick={handleAddBtn} size="xl">
             <IconCirclePlus size={48} />
           </ActionIcon>
