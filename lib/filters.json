@@ -14,7 +14,8 @@
           { "label": "Apartments", "value": "APARTMENTS" },
           { "label": "Lotes Residenciales", "value": "LOTES_RESIDENCIALES" },
           { "label": "Lotes Commerciales", "value": "LOTES_COMERCIALES" },
-          { "label": "Labores/Ranchos", "value": "LABORES/RANCHOS" }
+          { "label": "Labores/Ranchos", "value": "LABORES/RANCHOS" },
+          { "label": "Vendido", "value": "VENDIDO" }
         ]
       },
       "fallback": "ALL",

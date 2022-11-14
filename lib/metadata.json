@@ -60,7 +60,16 @@
       },
       "listingType": {
         "dataType": "array",
-        "options": ["LOTE", "CASA", "BODEGA", "LOTES_COMERCIALES", "LOTES_RESIDENCIALES", "LABORES/RANCHOS", "APARTMENTS"],
+        "options": [
+          "LOTE",
+          "CASA",
+          "BODEGA",
+          "LOTES_COMERCIALES",
+          "LOTES_RESIDENCIALES",
+          "LABORES/RANCHOS",
+          "APARTMENTS",
+          "VENDIDO"
+        ],
         "arrayDataType": "string"
       },
       "paymentType": {
