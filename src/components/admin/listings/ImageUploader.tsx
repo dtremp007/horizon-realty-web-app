@@ -110,9 +110,10 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
   ) {
     return new Promise<string>((resolve, reject) => {
       const fileName = image.name;
+      const ext = fileName.split('.').pop();
       const bucketPath = "images/";
 
-      const storageRef = ref(storage, bucketPath + fileName);
+      const storageRef = ref(storage, `${id}.${ext}`);
       const metadata: UploadMetadata = { contentType: image.type };
 
       const uploadTask = uploadBytesResumable(storageRef, image, metadata);
