@@ -18,6 +18,7 @@ import apartmentIcon from "../../../public/Icons/apartments-icon.svg";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Spinner from "../../shared/Spinner";
+import {MdAttachMoney} from "react-icons/md"
 
 type ListingBuffetProps = {
   listingTypeFilter: FilterElement_V2_Props<RadioButtonGroupProps>;
@@ -31,7 +32,7 @@ const ListingBuffet = ({ listingTypeFilter }: ListingBuffetProps) => {
   return (
     <section className="listing-buffet">
       <div className="listing-buffet__grid-layout">
-        {filter.filterProps.data.slice(1).map((values, index) => (
+        {filter.filterProps.data.map((values, index) => (
           <ListingBuffetCard key={index} {...values} />
         ))}
       </div>
@@ -105,8 +106,10 @@ function getIcon(type: string) {
       return <Image src={ranchLandIcon} />;
     case "APARTMENTS":
       return <Image src={apartmentIcon} />;
+    case "VENDIDO":
+        return <MdAttachMoney size={80}/>
     default:
-      return <IconLayout2 />;
+      return <IconLayout2 size={80}/>;
   }
 }
 

@@ -89,7 +89,10 @@ $keyframe-list: (
       animation-fill-mode: forwards;
       animation-direction: normal;
 
-      --offset-x: #{get-position($i, $direction, $len) * -20px};
+      //   --offset-x: #{get-position($i, $direction, $len) * -20px};
+      --offset-x: calc(
+        #{get-position($i, $direction, $len)} * var(--cascadeOffset)
+      );
       opacity: $initial_opacity;
       transform: $initial_transform;
       animation-delay: #{$i * $interval - $interval};
@@ -125,5 +128,6 @@ $keyframe-list: (
 }
 
 .transition {
+  --cascadeOffset: -20px;
   @include class-factory($keyframe-list, 4);
 }

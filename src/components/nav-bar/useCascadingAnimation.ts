@@ -1,49 +1,108 @@
-import { useState, useRef } from "react"
+import { isNil, move } from "rambda";
+import { useState, useRef, useEffect } from "react";
 
-type MovementTypes = "enter__right" | "exit__right" | "enter__left" | "exit__left" | "enter__top" | "exit__top";
+type MovementTypes =
+  | "enter__right"
+  | "exit__right"
+  | "enter__left"
+  | "exit__left"
+  | "enter__top"
+  | "exit__top";
+
+const movementType: MovementTypes[] = [
+  "enter__right",
+  "exit__right",
+  "enter__left",
+  "exit__left",
+  "enter__top",
+  "exit__top",
+];
 
 type UseCascadingAnimationProps = {
-    slides?: number;
-}
+    cascadeOffset: number;
+};
 
-const useCascadingAnimation = ({slides = 1}: UseCascadingAnimationProps) => {
-    const root = useRef<HTMLDivElement>(null);
-    const _queue = useRef<MovementTypes[]>([]);
-    const _cursor = useRef(0);
+const useCascadingAnimation = ({cascadeOffset = 25}: UseCascadingAnimationProps) => {
+  const root = useRef<HTMLDivElement>(null);
+  const _cursor = useRef(0);
 
-    const pushToQueue = (movement: MovementTypes) => {
-        if (_queue.current.length === 0) {
-            _root().classList.add(movement)
-        } else {
-            if (_queue.current.length > 5) {
-                _queue.current.shift()
-            }
-            const last = _queue.current.at(-1)!
-            _root().classList.replace(last, movement)
+  const _root = () => {
+    if (!root.current) {
+      throw new Error("Please pass the rootRef into HTML element");
+    } else {
+      return root.current;
+    }
+  };
 
-        }
+  useEffect(() => {
+    ([..._root().children] as HTMLDivElement[]).forEach((el) => {
+      el.style.display = "none";
+      el.classList.add("transition");
+      el.style.setProperty("--cascadeOffset", `-${cascadeOffset}px`)
+    });
+  }, []);
+
+  const setCursor = (value?: ((n: number) => number) | number) => {
+    if (typeof value === "undefined") {
+      return _cursor.current;
     }
 
-    const _root = () => {
-        if (!root.current) {
-            throw new Error("Please pass the rootRef into HTML element");
-        } else {
-            return root.current
-        }
-    }
+    const cursor = typeof value === "function" ? value(_cursor.current) : value;
+    _cursor.current = cursor;
 
-    const expand = () => {
-        pushToQueue("enter__top")
-    }
+    ([..._root().children] as HTMLDivElement[]).forEach((el, i) => {
+      if (i === cursor - 1) {
+        el.style.display = "";
+      } else {
+        el.style.display = "none";
+      }
+    });
 
-    const page_right = () => {
-        pushToQueue("exit__left")
-        if (_cursor.current >= slides) return
-        setTimeout(() => {
-            pushToQueue("enter__right")
-        }, 400);
-    }
+    return cursor;
+  };
 
-    return {root, page_right, expand}
-}
-export default useCascadingAnimation
+  const moveSlides = (
+    movement?: MovementTypes,
+    cursorValue?: ((n: number) => number) | number
+  ) => {
+    const cursor = setCursor(cursorValue);
+
+    const activeSlide = _root().children.item(cursor - 1);
+    if (activeSlide && movement) {
+      // remove any previous movement types
+      activeSlide.classList.forEach((cx, _, list) =>
+        movementType.includes(cx as any) ? list.remove(cx) : null
+      );
+
+      activeSlide.classList.add(movement);
+    }
+  };
+
+  const open = () => {
+    moveSlides("enter__top", 1);
+  };
+
+  const close = () => {
+    moveSlides("exit__top");
+    setTimeout(() => {
+      setCursor(0);
+    }, 400);
+  };
+
+  const go_right = () => {
+    moveSlides("exit__left");
+    setTimeout(() => {
+      moveSlides("enter__right", (x) => ++x);
+    }, 400);
+  };
+
+  const go_left = () => {
+    moveSlides("exit__right");
+    setTimeout(() => {
+      moveSlides("enter__left", (x) => --x);
+    }, 400);
+  };
+
+  return { open, close, go_right, go_left, root };
+};
+export default useCascadingAnimation;

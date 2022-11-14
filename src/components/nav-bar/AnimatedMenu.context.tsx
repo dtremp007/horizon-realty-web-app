@@ -2,6 +2,7 @@ import { createContext, useContext } from "react"
 
 interface AnimatedMenuContext {
     cursor: number;
+    classes: string;
     getItemIndex: (node: HTMLElement) => number;
 }
 
