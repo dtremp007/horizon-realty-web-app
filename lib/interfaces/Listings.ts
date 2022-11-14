@@ -20,6 +20,11 @@ export interface ListingSchema {
   availability: "sold" | "available" | "pending";
   title: string;
   water: boolean;
+  status: {
+    show: boolean;
+    content: string;
+    color: string;
+  };
 }
 
 export type ListingFieldKey = keyof ListingSchema;

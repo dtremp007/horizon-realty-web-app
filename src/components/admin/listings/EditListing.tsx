@@ -11,7 +11,10 @@ import {
   ActionIcon,
   Text,
   ScrollArea,
-  Flex
+  Flex,
+  ColorInput,
+  Switch,
+  Divider,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DocumentData, query, setDoc } from "firebase/firestore";
@@ -50,6 +53,11 @@ type ListingData = {
   bedrooms: number;
   water: boolean;
   electricity: boolean;
+  status: {
+    show: boolean;
+    content: string;
+    color: string;
+  };
 };
 
 type EditListingProps = {
@@ -80,6 +88,11 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
     bedrooms: 0,
     water: false,
     electricity: false,
+    status: {
+      show: false,
+      content: "MEJORAMOS PRECIO",
+      color: "#008000",
+    },
   };
 
   const form = useForm({
@@ -99,7 +112,7 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
   }
 
   return (
-    <ScrollArea type="auto" style={{height: "calc(100vh - 60px)"}}>
+    <ScrollArea type="auto" style={{ height: "calc(100vh - 60px)" }}>
       <form
         onSubmit={form.onSubmit(handleSubmit)}
         style={{ margin: "1rem 3rem" }}
@@ -131,99 +144,116 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
           <Accordion.Item value="details">
             <Accordion.Control>Details</Accordion.Control>
             <Accordion.Panel>
-            <Select
-              label="Type"
-              data={metadata.listings.fields.listingType.options}
-              searchable
-              placeholder="Listing type"
-              {...form.getInputProps("listingType")}
-            />
-            <Flex>
-              <NumberInput
-                label="Price"
-                defaultValue={5000}
-                step={100}
-                parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
-                formatter={(value) =>
-                  !Number.isNaN(parseFloat(value || "0"))
-                    ? `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                    : "$ "
-                }
-                {...form.getInputProps("price")}
-              />
               <Select
-                label="Currency"
-                placeholder="Pick one"
-                data={[
-                  { value: "USD", label: "USD" },
-                  { value: "MXN", label: "MXN" },
-                ]}
-                {...form.getInputProps("currency")}
+                label="Type"
+                data={metadata.listings.fields.listingType.options}
+                searchable
+                placeholder="Listing type"
+                {...form.getInputProps("listingType")}
               />
+              <Flex>
+                <NumberInput
+                  label="Price"
+                  defaultValue={5000}
+                  step={100}
+                  parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+                  formatter={(value) =>
+                    !Number.isNaN(parseFloat(value || "0"))
+                      ? `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      : "$ "
+                  }
+                  {...form.getInputProps("price")}
+                />
+                <Select
+                  label="Currency"
+                  placeholder="Pick one"
+                  data={[
+                    { value: "USD", label: "USD" },
+                    { value: "MXN", label: "MXN" },
+                  ]}
+                  {...form.getInputProps("currency")}
+                />
+                <TextInput
+                  type="text"
+                  label="Payment Type"
+                  {...form.getInputProps("paymentType")}
+                />
+              </Flex>
+              <Flex>
+                <TextInput
+                  type="number"
+                  label="Lot Size"
+                  {...form.getInputProps("landArea")}
+                />
+                <Select
+                  label="Units"
+                  placeholder="Pick one"
+                  data={["ACRES", "HECTARES"]}
+                  {...form.getInputProps("landAreaUnits")}
+                />
+              </Flex>
+              <Flex>
+                <TextInput
+                  type="number"
+                  label="House Size"
+                  {...form.getInputProps("houseSize")}
+                />
+                <Select
+                  label="Units"
+                  placeholder="Pick one"
+                  data={["SQ.FT."]}
+                  {...form.getInputProps("houseSizeUnits")}
+                />
+              </Flex>
               <TextInput
                 type="text"
-                label="Payment Type"
-                {...form.getInputProps("paymentType")}
+                label="Address"
+                {...form.getInputProps("address")}
               />
-            </Flex>
-            <Flex>
-              <TextInput
-                type="number"
-                label="Lot Size"
-                {...form.getInputProps("landArea")}
-              />
-              <Select
-                label="Units"
-                placeholder="Pick one"
-                data={["ACRES", "HECTARES"]}
-                {...form.getInputProps("landAreaUnits")}
-              />
-            </Flex>
-            <Flex>
-              <TextInput
-                type="number"
-                label="House Size"
-                {...form.getInputProps("houseSize")}
-              />
-              <Select
-                label="Units"
-                placeholder="Pick one"
-                data={["SQ.FT."]}
-                {...form.getInputProps("houseSizeUnits")}
-              />
-            </Flex>
-            <TextInput
-              type="text"
-              label="Address"
-              {...form.getInputProps("address")}
-            />
-            <CoordinatesInput {...form.getInputProps("coordinates")} />
-            <Flex>
-              <NumberInput
-                label="Bathrooms"
-                step={1}
-                {...form.getInputProps("bathrooms")}
-              />
-              <NumberInput
-                label="Bedrooms"
-                step={1}
-                {...form.getInputProps("bedrooms")}
-              />
-            </Flex>
-            <Space h="lg" />
-            <Flex direction="column">
-              <Text>Ulitities</Text>
-              <Checkbox
-                label="Water"
-                value="water"
-                {...form.getInputProps("water", { type: "checkbox" })}
-              />
-              <Checkbox
-                label="Electricity"
-                value="electricity"
-                {...form.getInputProps("electricity", { type: "checkbox" })}
-              />
-            </Flex>
+              <CoordinatesInput {...form.getInputProps("coordinates")} />
+              <Flex>
+                <NumberInput
+                  label="Bathrooms"
+                  step={1}
+                  {...form.getInputProps("bathrooms")}
+                />
+                <NumberInput
+                  label="Bedrooms"
+                  step={1}
+                  {...form.getInputProps("bedrooms")}
+                />
+              </Flex>
+              <Flex direction="column" mt={16}>
+                <Divider label="Utilities" />
+                <Checkbox
+                  label="Water"
+                  value="water"
+                  {...form.getInputProps("water", { type: "checkbox" })}
+                />
+                <Checkbox
+                  label="Electricity"
+                  value="electricity"
+                  {...form.getInputProps("electricity", { type: "checkbox" })}
+                />
+              </Flex>
+              <Flex direction="column" gap={8} mt={16}>
+                <Divider label="Status Pill" />
+                <Flex align="flex-end">
+                  <TextInput
+                    type="text"
+                    label="Content"
+                    {...form.getInputProps("status.content")}
+                  />
+                  <ColorInput
+                    label="Color of status pill"
+                    {...form.getInputProps("status.color")}
+                  />
+                  <Checkbox
+                    label="Show"
+                    {...form.getInputProps("status.show", {type: "checkbox"})}
+                  />
+                </Flex>
+              </Flex>
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
@@ -233,7 +263,13 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
         </Paper>
         <Space h="md" />
         <ImageUploader {...form.getInputProps("imageUrls")} />
-        <EditJsonModal onClose={(values) => {form.setValues(values); setUploaded(false)}} form={form} />
+        <EditJsonModal
+          onClose={(values) => {
+            form.setValues(values);
+            setUploaded(false);
+          }}
+          form={form}
+        />
       </form>
     </ScrollArea>
   );

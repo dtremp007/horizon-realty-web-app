@@ -202,6 +202,10 @@
                   "value": "(value) => { return `${value} ac.`;}"
                 },
                 {
+                  "label": "Money (max. 500)",
+                  "value": "(value) => { return `${value >= 500_000 ? '+ ' : ''}\\$${value.toLocaleString('en')}`;}"
+                },
+                {
                   "label": "Hectares",
                   "value": "(value) => { return `${value} ha.`;}"
                 }

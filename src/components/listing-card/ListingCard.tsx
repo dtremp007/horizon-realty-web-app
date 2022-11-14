@@ -10,10 +10,11 @@ import { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
 import Spinner from "../../shared/Spinner";
 import InfoTagWrapper from "./InfoTagWrapper"
+import { ListingSchema } from "../../../lib/interfaces/Listings";
 
 type Props = {
   id: string;
-  data: DocumentData;
+  data: ListingSchema;
   variant: "full" | "map" | "minimal" | "custom";
   className?: string;
 };

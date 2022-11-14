@@ -75,24 +75,24 @@
 }
 
 .listing-card--sold {
-    &::before {
-        content: "";
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        background-color: rgba(255,255,255, .3);
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
-    }
+  &::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.3);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
 
   &::after {
     content: "VENDIDO";
-    color:rgba(0, 0, 0, 0.4);
+    color: rgba(0, 0, 0, 0.4);
     position: absolute;
     font-weight: 600;
-    letter-spacing: .125rem;
+    letter-spacing: 0.125rem;
     top: 50%;
     left: 50%;
     font-size: 3.25rem;
@@ -107,11 +107,14 @@
 }
 
 .listing-card__status {
-  background-color: $button-primary-default;
+  background-color: green;
   width: fit-content;
   height: fit-content;
   padding: 0.1rem 0.5rem;
   border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
 .listing-card__price {
@@ -213,15 +216,15 @@
   padding: 0 0.5rem;
 }
 
-@media screen and (max-width: 694px){
-    .listing-card__info-wrapper {
-        padding: 0.8rem 0.2rem;
-    }
+@media screen and (max-width: 694px) {
+  .listing-card__info-wrapper {
+    padding: 0.8rem 0.2rem;
+  }
 
-   .listing-card__info-tag {
-    gap: .3rem;
-    padding: 0 .2;
-   }
+  .listing-card__info-tag {
+    gap: 0.3rem;
+    padding: 0 0.2;
+  }
 }
 
 .listing-card__info-tag + * {
