@@ -113,7 +113,7 @@ const ImageUploader = ({ value, onChange }: ImageUploaderProps) => {
       const ext = fileName.split('.').pop();
       const bucketPath = "images/";
 
-      const storageRef = ref(storage, `${id}.${ext}`);
+      const storageRef = ref(storage, `images/${id}.${ext}`);
       const metadata: UploadMetadata = { contentType: image.type };
 
       const uploadTask = uploadBytesResumable(storageRef, image, metadata);
