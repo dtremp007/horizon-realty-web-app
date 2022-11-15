@@ -10,12 +10,14 @@ import { getAnalytics, logEvent } from "firebase/analytics";
 import { useEffect } from "react";
 import { analytics } from "../lib/firebase.config";
 import NavTracker from "../src/utils/NavTracker";
+import SpotlightProvider from "../src/components/spotlight/SpotlightProvider";
 
 const AdminLayout = dynamic(() => import("../src/layouts/AdminLayout"));
 export const navTracker = new NavTracker();
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+
 
   useEffect(() => {
     if (typeof window !== "undefined") analytics();
@@ -41,11 +43,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       theme={{
         colorScheme: "dark",
         components: {
-            Flex: {
-                defaultProps: {
-                    gap: 18
-                }
-            }
+          Flex: {
+            defaultProps: {
+              gap: 18,
+            },
+          },
         },
         colors: {
           "charcoal-gray": [
@@ -76,19 +78,21 @@ function MyApp({ Component, pageProps }: AppProps) {
       }}
     >
       <AuthUserProvider>
-        <DecideLayout>
-          <>
-            <Head>
-              <title>Horizon Real Estate</title>
-              <meta
-                name="description"
-                content="Website designed and developed by David Rempel"
-              />
-              <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Component {...pageProps} />
-          </>
-        </DecideLayout>
+        <SpotlightProvider>
+          <DecideLayout>
+            <>
+              <Head>
+                <title>Horizon Real Estate</title>
+                <meta
+                  name="description"
+                  content="Website designed and developed by David Rempel"
+                />
+                <link rel="icon" href="/favicon.ico" />
+              </Head>
+              <Component {...pageProps} />
+            </>
+          </DecideLayout>
+        </SpotlightProvider>
       </AuthUserProvider>
     </MantineProvider>
   );

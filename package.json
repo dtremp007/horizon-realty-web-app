@@ -23,6 +23,7 @@
     "@mantine/hooks": "^5.7.1",
     "@mantine/next": "^5.7.1",
     "@mantine/rte": "^5.1.6",
+    "@mantine/spotlight": "^5.7.2",
     "@next/bundle-analyzer": "^12.3.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
