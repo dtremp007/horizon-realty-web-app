@@ -11,10 +11,6 @@ const Slide = ({ children }: SlideProps) => {
   const { cursor, classes, getItemIndex } = useMenuContext();
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    console.log(getItemIndex(ref.current))
-  }, [])
-
   return (
     <Flex
       data-menu-slide
