@@ -3,7 +3,15 @@ export {};
 export interface ListingSchema {
   address: string;
   id: number;
-  listingType: "LOTE" | "CASA" | "BODEGA";
+  listingType:
+    | "LOTE"
+    | "CASA"
+    | "BODEGA"
+    | "LOTES_COMERCIALES"
+    | "LOTES_RESIDENCIALES"
+    | "LABORES/RANCHOS"
+    | "APARTMENTS"
+    | "VENDIDO";
   price: number;
   bedrooms: number;
   bathrooms: number;

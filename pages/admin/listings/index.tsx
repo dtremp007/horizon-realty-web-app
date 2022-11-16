@@ -4,12 +4,14 @@ import {
   Text,
   Badge,
   Button,
- Flex,
+  Flex,
   ScrollArea,
   ActionIcon,
   Center,
+  Tabs,
+  Indicator,
 } from "@mantine/core";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   getDocs,
   collection,
@@ -17,6 +19,7 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  DocumentReference,
 } from "firebase/firestore";
 import { db } from "../../../lib/firebase.config";
 import Link from "next/link";
@@ -67,26 +70,82 @@ const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
   }
 
   if (!listings) {
-    return <h1>No products</h1>;
+    return <h1>No listings</h1>;
   }
 
   return (
-    <ScrollArea style={{ height: "calc(100vh - 60px)" }}>
-      <div style={{ margin: "1rem" }} className="listings__container">
-        {listings.map((listing) => (
-          <AdminListingCard
-            key={listing.id}
-            listing={listing}
-            removeListing={removeListing}
-          />
-        ))}
-        <Center h={200}>
-          <ActionIcon onClick={handleAddBtn} size="xl">
-            <IconCirclePlus size={48} />
-          </ActionIcon>
-        </Center>
-      </div>
-    </ScrollArea>
+    <Tabs defaultValue="available" pt={16}>
+      <Tabs.List>
+        <Tabs.Tab value="available" pr={32}>
+          <Indicator
+            label={
+              <Text>
+                {
+                  listings.filter((l) => l.data.listingType !== "VENDIDO")
+                    .length
+                }
+              </Text>
+            }
+            position="middle-end"
+            size={18}
+            offset={-16}
+          >
+            Available
+          </Indicator>
+        </Tabs.Tab>
+        <Tabs.Tab value="sold" pr={32}>
+          <Indicator
+            label={
+              <Text>
+                {listings.filter((l) => l.data.listingType === "VENDIDO").length}
+              </Text>
+            }
+            position="middle-end"
+            size={18}
+            offset={-16}
+            color="red"
+          >
+            Sold
+          </Indicator>
+        </Tabs.Tab>
+      </Tabs.List>
+
+      <Tabs.Panel value="available">
+        <ScrollArea style={{ height: "calc(100vh - 112px)" }}>
+          <div style={{ margin: "1rem" }} className="listings__container">
+            {listings
+              .filter((l) => l.data.listingType !== "VENDIDO")
+              .map((listing) => (
+                <AdminListingCard
+                  key={listing.id}
+                  listing={listing}
+                  removeListing={removeListing}
+                />
+              ))}
+            <Center h={200}>
+              <ActionIcon onClick={handleAddBtn} size="xl">
+                <IconCirclePlus size={48} />
+              </ActionIcon>
+            </Center>
+          </div>
+        </ScrollArea>
+      </Tabs.Panel>
+      <Tabs.Panel value="sold">
+        <ScrollArea style={{ height: "calc(100vh - 112px)" }}>
+          <div style={{ margin: "1rem" }} className="listings__container">
+            {listings
+              .filter((l) => l.data.listingType === "VENDIDO")
+              .map((listing) => (
+                <AdminListingCard
+                  key={listing.id}
+                  listing={listing}
+                  removeListing={removeListing}
+                />
+              ))}
+          </div>
+        </ScrollArea>
+      </Tabs.Panel>
+    </Tabs>
   );
 };
 export default AdminListngs;
@@ -105,11 +164,18 @@ const AdminListingCard = ({
 }: AdminListingCardProps) => {
   const [availability, setAvailability] = useState(listing.data.availability);
   const [thumbnail, setThumbnail] = useState(listing.data.thumbnail!);
+  const prevListingType = useRef(listing.data.listingType);
 
   const handleAvailabilityChange = () => {
-    const listingRef = doc(db, "listings", listing.id);
-    updateDoc(listingRef, {
+    const listingRef = doc(
+      db,
+      "listings",
+      listing.id
+    ) as DocumentReference<ListingSchema>;
+    updateDoc<ListingSchema>(listingRef, {
       availability: availability === "sold" ? "available" : "sold",
+      listingType:
+        availability === "sold" ? prevListingType.current : "VENDIDO",
     });
 
     setAvailability((prev) => (prev === "sold" ? "available" : "sold"));

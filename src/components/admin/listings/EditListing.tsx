@@ -34,10 +34,12 @@ import { useEffect, useState } from "react";
 import * as R from "rambda";
 import { WebsiteMetadata } from "../../../../pages/admin/filters";
 import EditJsonModal from "../filters/EditJsonModal";
+import { ListingSchema } from "../../../../lib/interfaces/Listings";
 
 type ListingData = {
   address: string;
-  coordinates: string | string[];
+  availability: "sold" | "available" | "pending";
+  coordinates: [number, number];
   currency: "USD" | "MXN";
   description: string;
   imageUrls: string[];
@@ -62,7 +64,7 @@ type ListingData = {
 
 type EditListingProps = {
   id?: string;
-  data?: DocumentData;
+  data?: ListingSchema;
   mode: "edit" | "new";
   metadata: WebsiteMetadata;
 };
@@ -72,7 +74,8 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
   const [metadata, setMetadata] = useState(md);
   const defaultPropertyValues: ListingData = {
     address: "",
-    coordinates: [],
+    availability: "available",
+    coordinates: [NaN, NaN],
     currency: "USD",
     description: "Description",
     imageUrls: [],
@@ -80,7 +83,7 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
     landAreaUnits: "ACRES",
     houseSize: 0,
     houseSizeUnits: "SQ.FT.",
-    listingType: "",
+    listingType: "CASA",
     paymentType: "",
     price: 1000,
     title: "",
@@ -95,7 +98,7 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
     },
   };
 
-  const form = useForm({
+  const form = useForm<ListingData>({
     initialValues: R.mergeAll([defaultPropertyValues, data as ListingData]),
   });
 
@@ -105,7 +108,7 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
     }
   }, [form.isDirty()]);
 
-  async function handleSubmit(values: undefined) {
+  async function handleSubmit(values: ListingData) {
     await setDoc(doc(db, "listings", id as string), values);
     setUploaded(true);
     form.resetDirty();
@@ -146,10 +149,20 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
             <Accordion.Panel>
               <Select
                 label="Type"
-                data={metadata.listings.fields.listingType.options}
+                data={metadata.listings.fields.listingType.options as string[]}
                 searchable
                 placeholder="Listing type"
-                {...form.getInputProps("listingType")}
+                value={form.values.listingType}
+                onChange={(value) => {
+                  if (value === "VENDIDO") {
+                    form.setFieldValue("listingType", value);
+                    form.setFieldValue("availability", "sold");
+                  } else {
+                    form.setFieldValue("listingType", value || "");
+                    form.setFieldValue("availability", "available");
+                  }
+                }}
+                // {...form.getInputProps("listingType")}
               />
               <Flex>
                 <NumberInput
@@ -250,7 +263,7 @@ const EditListing = ({ id, data, mode, metadata: md }: EditListingProps) => {
                   />
                   <Checkbox
                     label="Show"
-                    {...form.getInputProps("status.show", {type: "checkbox"})}
+                    {...form.getInputProps("status.show", { type: "checkbox" })}
                   />
                 </Flex>
               </Flex>

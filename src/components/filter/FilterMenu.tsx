@@ -9,7 +9,7 @@ import {
   ActionIcon,
   Modal,
   Indicator,
- Flex,
+  Flex,
 } from "@mantine/core";
 import RadioButtonGroup from "./RadioButtonGroup";
 import { useRouter } from "next/router";
@@ -52,23 +52,25 @@ export default function FilterMenu() {
 
   return (
     <>
-      <div className="filter-menu__toggle-btn">
-        <Indicator
-          color="green"
-          size={22}
-          disabled={listingsState.activeFiltersCount === 0}
-          label={listingsState.activeFiltersCount}
-          inline
-          position="bottom-start"
-        >
-          <ActionIcon
-            size="lg"
-            onClick={() => dispatch_to_nav({ type: "TOGGLE_FILTER" })}
+      {nav_state.isMenuOpen ? null : (
+        <div className="filter-menu__toggle-btn">
+          <Indicator
+            color="green"
+            size={22}
+            disabled={listingsState.activeFiltersCount === 0}
+            label={listingsState.activeFiltersCount}
+            inline
+            position="bottom-start"
           >
-            <IconAdjustmentsHorizontal size={30} />
-          </ActionIcon>
-        </Indicator>
-      </div>
+            <ActionIcon
+              size="lg"
+              onClick={() => dispatch_to_nav({ type: "TOGGLE_FILTER" })}
+            >
+              <IconAdjustmentsHorizontal size={30} />
+            </ActionIcon>
+          </Indicator>
+        </div>
+      )}
       {user ? <FilterDebugConsole listingsState={listingsState} /> : null}
       <div className={toggle_filter("filter-menu__container")}>
         <form className={toggle_filter("filter-menu__form flow-content")}>
