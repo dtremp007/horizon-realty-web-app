@@ -10,6 +10,9 @@ import {
 } from "firebase/firestore";
 import ListingsContext from "../context/listingsContext/listingsContext";
 import Spinner from "../shared/Spinner";
+import { ListingSchema } from "../../lib/interfaces/Listings";
+
+const BASEPOINT: Point = [28.474188510761923, -106.91194010234048];
 
 /**
  * I was thinking maybe I should wrap the listing view in a component that manages
@@ -18,15 +21,11 @@ import Spinner from "../shared/Spinner";
  */
 export default function ListingsLayout() {
   const { listingsState, dispatch } = useContext(ListingsContext);
-  const [listings, setListings] = useState<
-    QueryDocumentSnapshot<DocumentData>[]
-  >([]);
   const router = useRouter();
 
   const { firebaseDocs, loading } = listingsState;
 
   useEffect(() => {
-
     if (router.query) {
       dispatch({
         type: "UPDATE_AND_APPLY_MULTIPLE_FILTER",
@@ -42,17 +41,36 @@ export default function ListingsLayout() {
   return (
     <div className="listings__container">
       {!loading ? (
-        firebaseDocs.filter(listing => listing.data.imageUrls.length > 0).map((listing) => (
-          <ListingCard
-            key={listing.id}
-            id={listing.id}
-            data={listing.data}
-            variant="full"
-          />
-        ))
+        firebaseDocs
+          .filter((listing) => listing.data.imageUrls.length > 0)
+          .sort(
+            (a, b) =>
+              distanceFromBasePoint(a.data.coordinates) -
+              distanceFromBasePoint(b.data.coordinates)
+          )
+          .map((listing) => (
+            <ListingCard
+              key={listing.id}
+              id={listing.id}
+              data={listing.data}
+              variant="full"
+            />
+          ))
       ) : (
         <Spinner />
       )}
     </div>
   );
+}
+
+type Point = [number, number];
+
+function distanceBtwnPoints([p1, p2]: Point, [y1, y2]: Point) {
+  return Math.sqrt(
+    Math.abs(Math.pow(y2 - y1, 2)) + Math.abs(Math.pow(p2 - p1, 2))
+  );
+}
+
+function distanceFromBasePoint(point: Point) {
+  return distanceBtwnPoints(BASEPOINT, point);
 }
