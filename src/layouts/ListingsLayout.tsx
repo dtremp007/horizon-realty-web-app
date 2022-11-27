@@ -71,6 +71,6 @@ function distanceBtwnPoints([p1, p2]: Point, [y1, y2]: Point) {
   );
 }
 
-function distanceFromBasePoint(point: Point) {
+export function distanceFromBasePoint(point: Point) {
   return distanceBtwnPoints(BASEPOINT, point);
 }

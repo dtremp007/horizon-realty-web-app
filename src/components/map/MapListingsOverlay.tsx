@@ -4,6 +4,7 @@ import ListingsContext from "../../context/listingsContext/listingsContext";
 import ListingCard from "../listing-card/ListingCard";
 import ListingCardAlt from "../listingCardAlt/ListingCardAlt";
 import { ListingsState } from "../../context/listingsContext/listingsContext";
+import { distanceFromBasePoint } from "../../layouts/ListingsLayout";
 
 const MapListingsOverlay = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start" });
@@ -18,33 +19,39 @@ const MapListingsOverlay = () => {
 
   useEffect(() => {
     function handleScroll() {
-        const payload = {
-            sender: "carousel",
-            index: emblaApi?.selectedScrollSnap(),
-        }
+      const payload = {
+        sender: "carousel",
+        index: emblaApi?.selectedScrollSnap(),
+      };
 
-       dispatch({type: "UPDATE_MAP_FOCUS_POINT", payload})
+      dispatch({ type: "UPDATE_MAP_FOCUS_POINT", payload });
     }
 
     if (emblaApi) {
-        emblaApi.on("select", handleScroll)
+      emblaApi.on("select", handleScroll);
     }
 
     return () => {
-        if (emblaApi) {
-            emblaApi.off("select", handleScroll)
-        }
-    }
-  })
+      if (emblaApi) {
+        emblaApi.off("select", handleScroll);
+      }
+    };
+  });
 
   return (
     <div className="embla" ref={emblaRef}>
       <div className="embla__container">
-        {firebaseDocs.map(listing => (
+        {firebaseDocs
+          .sort(
+            (a, b) =>
+              distanceFromBasePoint(a.data.coordinates) -
+              distanceFromBasePoint(b.data.coordinates)
+          )
+          .map((listing) => (
             <div className="embla__slide" key={listing.id}>
-            <ListingCardAlt data={listing.data} id={listing.id}/>
+              <ListingCardAlt data={listing.data} id={listing.id} />
             </div>
-            ))}
+          ))}
       </div>
     </div>
   );
