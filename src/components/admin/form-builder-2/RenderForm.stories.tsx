@@ -42,17 +42,6 @@ export function SlideInOut() {
           schema={testDummy}
           context={{ listingTypes: ["CASA", "LOTE", "BODEGA"] }}
           inputTypeExtensions={[PricePlugin]}
-          useFormInput={{
-            validate: {
-              price: {
-                amount: (value) =>
-                  (value as unknown as number) > 200
-                    ? "Price must be greater than 200"
-                    : undefined,
-              },
-            },
-            validateInputOnBlur: true,
-          }}
         />
       </div>
     </MantineProvider>

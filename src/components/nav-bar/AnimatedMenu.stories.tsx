@@ -5,7 +5,7 @@ import useCascadingAnimation from "./useCascadingAnimation";
 export default { title: "AnimatedMenu" };
 
 export function ItOpens() {
-  const { open, close, go_left, go_right, root } = useCascadingAnimation({});
+  const { open, close, go_left, go_right, root } = useCascadingAnimation({cascadeOffset: 10});
 
   return (
     <>
