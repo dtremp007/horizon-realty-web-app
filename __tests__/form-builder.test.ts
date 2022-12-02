@@ -7,7 +7,7 @@ import {
   TextInputProps,
 } from "@mantine/core";
 import { formConstructor } from "../src/components/admin/form-builder-2/FormConstructor";
-import { mountChild } from "../src/components/admin/form-builder-2/InputFieldNode";
+import { mountToParent } from "../src/components/admin/form-builder-2/InputFieldNode";
 import inputTypeConstructor from "../src/components/admin/form-builder-2/InputTypeConstructor";
 
 const { createInputType, done } = inputTypeConstructor();
@@ -15,7 +15,7 @@ const { createInputType, done } = inputTypeConstructor();
 createInputType<"PRIMITIVE", TextInputProps>("TextInput", {
   element: TextInput,
   baseClass: "PRIMITIVE",
-  parseFieldDefinition: ({ key, initialValue, ...props }) => ({
+  parser: ({ key, initialValue, ...props }) => ({
     key,
     initialValue,
     props,
@@ -25,7 +25,7 @@ createInputType<"PRIMITIVE", TextInputProps>("TextInput", {
 createInputType<"PRIMITIVE", SelectProps>("Select", {
   element: Select,
   baseClass: "PRIMITIVE",
-  parseFieldDefinition: ({ key, initialValue, ...props }) => ({
+  parser: ({ key, initialValue, ...props }) => ({
     key,
     initialValue,
     props,
@@ -35,7 +35,7 @@ createInputType<"PRIMITIVE", SelectProps>("Select", {
 createInputType<"ABSTRACT", TextInputProps>("Group", {
   element: TextInput,
   baseClass: "ABSTRACT",
-  parseFieldDefinition: ({ key, ...props }) => ({
+  parser: ({ key, ...props }) => ({
     key,
     initialValue: null,
     props,
@@ -46,7 +46,7 @@ const { getTypeSettings } = done();
 
 const { addField, addGroup, returnForm } = formConstructor(
   getTypeSettings,
-  mountChild
+  mountToParent
 );
 
 addField("TextInput").define({

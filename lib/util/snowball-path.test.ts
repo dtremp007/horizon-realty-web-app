@@ -51,3 +51,15 @@ it("supports being called, and then continuing to snowball", () => {
 
   expect(c2()).toBe("filterProps.data.1");
 });
+
+it("pathSnowball can be called immediately", () => {
+  const pathSnowball = createPathSnowball({});
+
+  expect(pathSnowball()).toBe("");
+});
+
+it("supports being called twice in a row", () => {
+  const pathSnowball = createPathSnowball({});
+
+  expect(pathSnowball("title")()).toBe("title");
+})

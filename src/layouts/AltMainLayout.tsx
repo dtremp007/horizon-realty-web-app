@@ -4,8 +4,9 @@ import AltNavbar, {
 import Show from "../../src/components/HOC/Show";
 import { FaWhatsapp, FaFacebook, FaInstagram } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
-import { createContext, Dispatch, Reducer, useReducer } from "react";
+import { createContext, Dispatch, Reducer, useReducer, useState } from "react";
 import { getToggleFunction } from "../../lib/util";
+import { useRouter } from "next/router";
 
 type Props = {
   children: React.ReactNode;
@@ -47,7 +48,11 @@ const links: Links[] = [
     isActive: (router) =>
       router.pathname === "/listings" && router.query.view === "map",
   },
-  { href: "/categories", label: "Propiedades", isActive: (router) => router.pathname === "/categories" },
+  {
+    href: "/categories",
+    label: "Propiedades",
+    isActive: (router) => router.pathname === "/categories",
+  },
   //   {
   //     label: "Propiedades",
   //     containsChildren: true,
@@ -104,7 +109,15 @@ const AltMainLayout = ({ children }: Props) => {
     previousScrollY: 0,
   };
 
+  const [backgroundStyle, setBackgroundStyle] = useState({
+    backgroundImage: "url('IMG_0224.jpg')",
+    backgroundAttachment: "fixed",
+    backgroundSize: "cover",
+  });
+  const [affectedPages, setAffectedPages] = useState(["/categories"])
+
   const [nav_state, dispatch_to_nav] = useReducer(navReducer, initialState);
+  const router = useRouter();
 
   const toggle_menu = getToggleFunction("open", nav_state.isMenuOpen);
   const toggle_header = getToggleFunction("open", nav_state.isHeaderExpanded);
@@ -114,7 +127,9 @@ const AltMainLayout = ({ children }: Props) => {
       value={{ nav_state, dispatch_to_nav, links, toggle_menu, toggle_header }}
     >
       <AltNavbar />
-      <main className="alt-layout__main">{children}</main>
+      <main className="alt-layout__main" style={affectedPages.includes(router.pathname) ? backgroundStyle : {}}>
+        {children}
+      </main>
       <Show blacklistRoutes={["/listings/[id]", "/test"]}>
         <Footer />
       </Show>

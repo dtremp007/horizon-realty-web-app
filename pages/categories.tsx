@@ -20,7 +20,7 @@ type CategoryPageProps = {
 
 const CategoryPage: NextPage<CategoryPageProps> = ({ listingTypeFilter }) => {
   return (
-    <div style={{ marginTop: "calc(60px + 1rem)" }}>
+    <div>
       <ListingBuffet listingTypeFilter={listingTypeFilter} />
     </div>
   );
@@ -30,12 +30,12 @@ export default CategoryPage;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   if (process.env.NODE_ENV === "development") {
-      const filtersFile = path.join(process.cwd(), "lib", "filters.json");
-      const listingTypeFilter = (
-        JSON.parse(readFileSync(filtersFile, { encoding: "utf8" })) as {
-          filters: FilterElement_V2_Props[];
-        }
-      ).filters.find((filter) => filter.id === "listingType");
+    const filtersFile = path.join(process.cwd(), "lib", "filters.json");
+    const listingTypeFilter = (
+      JSON.parse(readFileSync(filtersFile, { encoding: "utf8" })) as {
+        filters: FilterElement_V2_Props[];
+      }
+    ).filters.find((filter) => filter.id === "listingType");
 
     return {
       props: {
