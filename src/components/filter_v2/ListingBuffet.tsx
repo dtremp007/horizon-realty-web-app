@@ -30,13 +30,11 @@ const ListingBuffet = ({ listingTypeFilter }: ListingBuffetProps) => {
   const router = useRouter();
 
   return (
-    <section className="listing-buffet">
       <div className="listing-buffet__grid-layout">
         {filter.filterProps.data.map((values, index) => (
           <ListingBuffetCard key={index} {...values} />
         ))}
       </div>
-    </section>
   );
 };
 export default ListingBuffet;

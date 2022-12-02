@@ -45,4 +45,3 @@ firestore.indexes.json
 
 # shit code
 /src/components/admin/form-builder
-/src/components/admin/form-builder-2

@@ -12,6 +12,8 @@ section.listing-buffet {
 
 .listing-buffet__grid-layout {
   display: grid;
+  padding: 1rem;
+  padding-top: calc(60px + 1rem);
   gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
