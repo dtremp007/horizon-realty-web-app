@@ -4,9 +4,18 @@ import AltNavbar, {
 import Show from "../../src/components/HOC/Show";
 import { FaWhatsapp, FaFacebook, FaInstagram } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
-import { createContext, Dispatch, Reducer, useReducer, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  Reducer,
+  useContext,
+  useReducer,
+  useState,
+} from "react";
 import { getToggleFunction } from "../../lib/util";
 import { useRouter } from "next/router";
+import StyleEditor from "../components/admin/style-editor/StyleEditor";
+import AuthUserContext from "../context/authUserContext";
 
 type Props = {
   children: React.ReactNode;
@@ -114,9 +123,10 @@ const AltMainLayout = ({ children }: Props) => {
     backgroundAttachment: "fixed",
     backgroundSize: "cover",
   });
-  const [affectedPages, setAffectedPages] = useState(["/categories"])
+  const [affectedPages, setAffectedPages] = useState(["/categories"]);
 
   const [nav_state, dispatch_to_nav] = useReducer(navReducer, initialState);
+  const { user } = useContext(AuthUserContext);
   const router = useRouter();
 
   const toggle_menu = getToggleFunction("open", nav_state.isMenuOpen);
@@ -127,12 +137,27 @@ const AltMainLayout = ({ children }: Props) => {
       value={{ nav_state, dispatch_to_nav, links, toggle_menu, toggle_header }}
     >
       <AltNavbar />
-      <main className="alt-layout__main" style={affectedPages.includes(router.pathname) ? backgroundStyle : {}}>
+      <main
+        className="alt-layout__main"
+        style={
+          affectedPages.includes(router.pathname) && user ? backgroundStyle : {}
+        }
+      >
         {children}
       </main>
       <Show blacklistRoutes={["/listings/[id]", "/test"]}>
         <Footer />
       </Show>
+      {user ? (
+        <StyleEditor
+          setUrl={(url) =>
+            setBackgroundStyle((prev) => ({
+              ...prev,
+              backgroundImage: `url(${url})`,
+            }))
+          }
+        />
+      ) : null}
     </NavContext.Provider>
   );
 };
