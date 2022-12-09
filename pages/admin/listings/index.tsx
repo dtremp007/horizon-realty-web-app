@@ -69,83 +69,109 @@ const AdminListngs: NextPage<Props> = ({ firebaseDocs }) => {
     router.push(`/admin/listings/${newDoc.id}`);
   }
 
+  function downloadObjectAsJson<T>(object: T, filename: string) {
+    const json = JSON.stringify(object);
+    const blob = new Blob([json], { type: "application/json" });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   if (!listings) {
     return <h1>No listings</h1>;
   }
 
   return (
-    <Tabs defaultValue="available" pt={16}>
-      <Tabs.List>
-        <Tabs.Tab value="available" pr={32}>
-          <Indicator
-            label={
-              <Text>
-                {
-                  listings.filter((l) => l.data.listingType !== "VENDIDO")
-                    .length
-                }
-              </Text>
-            }
-            position="middle-end"
-            size={18}
-            offset={-16}
-          >
-            Available
-          </Indicator>
-        </Tabs.Tab>
-        <Tabs.Tab value="sold" pr={32}>
-          <Indicator
-            label={
-              <Text>
-                {listings.filter((l) => l.data.listingType === "VENDIDO").length}
-              </Text>
-            }
-            position="middle-end"
-            size={18}
-            offset={-16}
-            color="red"
-          >
-            Sold
-          </Indicator>
-        </Tabs.Tab>
-      </Tabs.List>
+    <>
+      <Tabs defaultValue="available" pt={16}>
+        <Tabs.List>
+          <Tabs.Tab value="available" pr={32}>
+            <Indicator
+              label={
+                <Text>
+                  {
+                    listings.filter((l) => l.data.listingType !== "VENDIDO")
+                      .length
+                  }
+                </Text>
+              }
+              position="middle-end"
+              size={18}
+              offset={-16}
+            >
+              Available
+            </Indicator>
+          </Tabs.Tab>
+          <Tabs.Tab value="sold" pr={32}>
+            <Indicator
+              label={
+                <Text>
+                  {
+                    listings.filter((l) => l.data.listingType === "VENDIDO")
+                      .length
+                  }
+                </Text>
+              }
+              position="middle-end"
+              size={18}
+              offset={-16}
+              color="red"
+            >
+              Sold
+            </Indicator>
+          </Tabs.Tab>
+        </Tabs.List>
 
-      <Tabs.Panel value="available">
-        <ScrollArea style={{ height: "calc(100vh - 112px)" }}>
-          <div style={{ margin: "1rem" }} className="listings__container">
-            {listings
-              .filter((l) => l.data.listingType !== "VENDIDO")
-              .map((listing) => (
-                <AdminListingCard
-                  key={listing.id}
-                  listing={listing}
-                  removeListing={removeListing}
-                />
-              ))}
-            <Center h={200}>
-              <ActionIcon onClick={handleAddBtn} size="xl">
-                <IconCirclePlus size={48} />
-              </ActionIcon>
-            </Center>
-          </div>
-        </ScrollArea>
-      </Tabs.Panel>
-      <Tabs.Panel value="sold">
-        <ScrollArea style={{ height: "calc(100vh - 112px)" }}>
-          <div style={{ margin: "1rem" }} className="listings__container">
-            {listings
-              .filter((l) => l.data.listingType === "VENDIDO")
-              .map((listing) => (
-                <AdminListingCard
-                  key={listing.id}
-                  listing={listing}
-                  removeListing={removeListing}
-                />
-              ))}
-          </div>
-        </ScrollArea>
-      </Tabs.Panel>
-    </Tabs>
+        <Tabs.Panel value="available">
+          <ScrollArea style={{ height: "calc(100vh - 112px)" }}>
+            <div style={{ margin: "1rem" }} className="listings__container">
+              {listings
+                .filter((l) => l.data.listingType !== "VENDIDO")
+                .map((listing) => (
+                  <AdminListingCard
+                    key={listing.id}
+                    listing={listing}
+                    removeListing={removeListing}
+                  />
+                ))}
+              <Center h={200}>
+                <ActionIcon onClick={handleAddBtn} size="xl">
+                  <IconCirclePlus size={48} />
+                </ActionIcon>
+              </Center>
+            </div>
+          </ScrollArea>
+        </Tabs.Panel>
+        <Tabs.Panel value="sold">
+          <ScrollArea style={{ height: "calc(100vh - 112px)" }}>
+            <div style={{ margin: "1rem" }} className="listings__container">
+              {listings
+                .filter((l) => l.data.listingType === "VENDIDO")
+                .map((listing) => (
+                  <AdminListingCard
+                    key={listing.id}
+                    listing={listing}
+                    removeListing={removeListing}
+                  />
+                ))}
+            </div>
+          </ScrollArea>
+        </Tabs.Panel>
+      </Tabs>
+      <div style={{ position: "fixed", bottom: 16, left: "350px" }}>
+        <Button
+          onClick={() =>
+            downloadObjectAsJson(firebaseDocs, "horizon-listings.json")
+          }
+        >
+          Download
+        </Button>
+      </div>
+    </>
   );
 };
 export default AdminListngs;
