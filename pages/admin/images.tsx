@@ -25,6 +25,8 @@ import {
   Menu,
   Switch,
   NumberInput,
+  Select,
+  Popover,
 } from "@mantine/core";
 import { ImageCellType, ImageRefType } from "../../src/image-manager/src/types";
 import {
@@ -49,6 +51,18 @@ type Props = {
   }[];
 };
 
+const categories = [
+  "ANY",
+  "LOTE",
+  "CASA",
+  "BODEGA",
+  "LOTES_COMERCIALES",
+  "LOTES_RESIDENCIALES",
+  "LABORES/RANCHOS",
+  "APARTMENTS",
+  "VENDIDO",
+] as const;
+
 const Images: NextPage<Props> = ({ firebaseDocs: docs }) => {
   const [firebaseDocs, setFirebaseDocs] = useState(
     new Map([...docs].map((doc) => [doc.id, doc]))
@@ -57,11 +71,12 @@ const Images: NextPage<Props> = ({ firebaseDocs: docs }) => {
   const [dataSaverOn, setDataSaverOn] = useState(true);
   const [opened, setOpened] = useState(false);
   const [pageSize, setPageSize] = useState(50);
+  const [categoryFilter, setCategoryFilter] = useState("ANY");
+  const [filteredIds, setFilteredIds] = useState(docs.map((doc) => doc.id));
 
   const handleAnalyzer = useCallback(() => {
     analyzeDocs("images", firebaseDocs).then((map) => {
       setIRCMap(map);
-      console.log(map);
     });
   }, []);
 
@@ -71,16 +86,16 @@ const Images: NextPage<Props> = ({ firebaseDocs: docs }) => {
         <h1 style={{ padding: "1rem" }}>Image Analyzer</h1>
         <Flex align="center">
           <Flex gap={8} align="center">
-            <Menu opened={opened} onChange={setOpened}>
-              <Menu.Target>
-                <ActionIcon>
+            <Popover opened={opened} onChange={setOpened} width="auto">
+              <Popover.Target>
+                <ActionIcon onClick={() => setOpened((o) => !o)}>
                   <IconDotsVertical />
                 </ActionIcon>
-              </Menu.Target>
+              </Popover.Target>
 
-              <Menu.Dropdown>
-                <Menu.Label>Options</Menu.Label>
-                <Menu.Item>
+              <Popover.Dropdown>
+                <Flex direction="column" align="flex-start">
+                  <Text>Settings</Text>
                   <Switch
                     checked={dataSaverOn}
                     onChange={(event) =>
@@ -88,12 +103,31 @@ const Images: NextPage<Props> = ({ firebaseDocs: docs }) => {
                     }
                     label="Data Saver"
                   />
-                </Menu.Item>
-                <Menu.Item>
-                    <NumberInput label="Show the most recent:" value={pageSize} onChange={(n) => setPageSize(n!)}/>
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+                  <NumberInput
+                    label="Show the most recent:"
+                    value={pageSize}
+                    onChange={(n) => setPageSize(n!)}
+                  />
+                  <Select
+                    label="Filter by category"
+                    value={categoryFilter}
+                    data={categories as unknown as string[]}
+                    onChange={(value) => {
+                      setCategoryFilter(value as typeof categories[number]);
+                      setFilteredIds(
+                        docs
+                          .filter((doc) =>
+                            value === "ANY"
+                              ? true
+                              : doc.data.listingType === value
+                          )
+                          .map((doc) => doc.id)
+                      );
+                    }}
+                  />
+                </Flex>
+              </Popover.Dropdown>
+            </Popover>
             <Button onClick={handleAnalyzer}>Analyze</Button>
           </Flex>
           <Button>Save</Button>
@@ -102,14 +136,18 @@ const Images: NextPage<Props> = ({ firebaseDocs: docs }) => {
       <ScrollArea style={{ height: "calc(100vh - 180px)", width: "100%" }}>
         {IRCMap ? (
           <Flex direction="column" style={{ width: "100%" }}>
-            {[...IRCMap].sort(sortIRCMap).slice(0, pageSize).map(([key, imageRef]) => (
-              <ImageInfoCard
-                key={key}
-                imageRef={imageRef}
-                saveTime={dataSaverOn}
-                firebaseDocs={firebaseDocs}
-              />
-            ))}
+            {[...IRCMap]
+              .filter(filterIRCMap(filteredIds))
+              .sort(sortIRCMap)
+              .slice(0, pageSize)
+              .map(([key, imageRef]) => (
+                <ImageInfoCard
+                  key={key}
+                  imageRef={imageRef}
+                  saveTime={dataSaverOn}
+                  firebaseDocs={firebaseDocs}
+                />
+              ))}
           </Flex>
         ) : null}
       </ScrollArea>
@@ -155,6 +193,7 @@ const ImageInfoCard = ({
           height={120}
           width={200}
           placeholder={<IconPhotoOff />}
+          caption={imageRef.isThumbnail ? "Thumbnail" : undefined}
         />
         <Flex direction="column">
           <h3>{imageRef.co_owners.length > 0 ? "Used by:" : "NOT USED"}</h3>
@@ -162,7 +201,11 @@ const ImageInfoCard = ({
             {imageRef.co_owners.map((id) => (
               <Link key={id} href={`/admin/listings/${id}`}>
                 <a style={{ color: "white" }}>
-                 {`${firebaseDocs.get(id)?.data.title}${firebaseDocs.get(id)?.data.availability === "sold" ? " (SOLD)" : ""}`}
+                  {`${firebaseDocs.get(id)?.data.title}${
+                    firebaseDocs.get(id)?.data.availability === "sold"
+                      ? " (SOLD)"
+                      : ""
+                  }`}
                 </a>
               </Link>
             ))}
@@ -206,7 +249,9 @@ const ImageVariant = ({ index, variant, handleDelete }: ImageVariantProps) => {
   return (
     <Flex justify="space-between" gap={16} align="center">
       <Text>
-        {`${variant.sizeModifier.length === 0 ? "Full size" : variant.sizeModifier}.${variant.ext}`}
+        {`${
+          variant.sizeModifier.length === 0 ? "Full size" : variant.sizeModifier
+        }.${variant.ext}`}
       </Text>
       <Text>
         {variant.metadata.size < 1000 * 1000
@@ -244,6 +289,11 @@ function sortIRCMap(
       b.variants[0].metadata.updated
     ) * -1
   );
+}
+
+function filterIRCMap(filteredIds: string[]) {
+  return ([_, imageRef]: [string, ImageRefType]) =>
+    imageRef.co_owners.some((id) => filteredIds.includes(id));
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {

@@ -27,6 +27,7 @@ function groupImages(images: ImageCellType[], map: Map<string, ImageRefType>) {
         basename: image.basename,
         variants: [image],
         co_owners: [],
+        isThumbnail: false,
       });
     }
   }
@@ -63,13 +64,18 @@ function findImageOwners(
   refMap: Map<string, ImageRefType>
 ) {
   for (const [id, doc] of firebaseDocs) {
-    for (const url of doc.data.imageUrls) {
-      const imageRef = ref(storage, url);
-      const { basename, sizeModifier } = siftOutSizeModifier(imageRef.name);
-      if (refMap.has(basename)) {
-        refMap.get(basename)!.co_owners.push(id);
+    doc.data.imageUrls.forEach((url, index) => {
+        const imageRef = ref(storage, url);
+        const { basename } = siftOutSizeModifier(imageRef.name);
+        if (refMap.has(basename)) {
+            const imageRef = refMap.get(basename)!
+            imageRef.co_owners.push(id);
+
+            if (index === 0) {
+                imageRef.isThumbnail = true;
+            }
       }
-    }
+    });
   }
   return refMap;
 }

@@ -1,5 +1,3 @@
-export {};
-
 export interface ListingSchema {
   address: string;
   id: number;
@@ -45,3 +43,5 @@ export type ListingFieldOptions = {
   arrayDataType?: FirestoreDataTypes;
   filterIncompatible?: boolean;
 };
+
+export type ListingCategory = "LOTE" | "CASA" | "BODEGA" | "LOTES_COMERCIALES" | "LOTES_RESIDENCIALES" | "LABORES/RANCHOS" | "APARTMENTS" | "VENDIDO";

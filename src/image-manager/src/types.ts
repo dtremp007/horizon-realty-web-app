@@ -6,6 +6,7 @@ export interface ImageRefType {
     basename: string;
     variants: ImageCellType[];
     co_owners: string[];
+    isThumbnail: boolean;
 }
 
 export type ImageCellType = StorageReference & {
