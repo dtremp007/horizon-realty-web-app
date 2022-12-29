@@ -23,6 +23,10 @@ export type ImageCellType = StorageReference & {
      */
     basename: string;
     metadata: FullMetadata;
+    /**
+     * File extension of the image.
+     */
+    ext: string;
 }
 
 export type Listing = {

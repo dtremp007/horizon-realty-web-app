@@ -35,7 +35,7 @@ const MapView = () => {
     }
   }, [mapFocusPoint])
 
-  const points = firebaseDocs.map((listing) => {
+  const points = firebaseDocs.filter(listing => listing.data.availability !== "sold").map((listing) => {
     const {listingType, coordinates} = listing.data;
 
     return {

@@ -54,13 +54,14 @@ const Images: NextPage<Props> = ({ firebaseDocs: docs }) => {
     new Map([...docs].map((doc) => [doc.id, doc]))
   );
   const [IRCMap, setIRCMap] = useState<Map<string, ImageRefType>>();
-  const [saveTime, setTimeSaver] = useState(true);
+  const [dataSaverOn, setDataSaverOn] = useState(true);
   const [opened, setOpened] = useState(false);
   const [pageSize, setPageSize] = useState(50);
 
   const handleAnalyzer = useCallback(() => {
     analyzeDocs("images", firebaseDocs).then((map) => {
       setIRCMap(map);
+      console.log(map);
     });
   }, []);
 
@@ -81,11 +82,11 @@ const Images: NextPage<Props> = ({ firebaseDocs: docs }) => {
                 <Menu.Label>Options</Menu.Label>
                 <Menu.Item>
                   <Switch
-                    checked={saveTime}
+                    checked={dataSaverOn}
                     onChange={(event) =>
-                      setTimeSaver(event.currentTarget.checked)
+                      setDataSaverOn(event.currentTarget.checked)
                     }
-                    label="Don't load heavy images"
+                    label="Data Saver"
                   />
                 </Menu.Item>
                 <Menu.Item>
@@ -105,7 +106,7 @@ const Images: NextPage<Props> = ({ firebaseDocs: docs }) => {
               <ImageInfoCard
                 key={key}
                 imageRef={imageRef}
-                saveTime={saveTime}
+                saveTime={dataSaverOn}
                 firebaseDocs={firebaseDocs}
               />
             ))}
@@ -161,7 +162,7 @@ const ImageInfoCard = ({
             {imageRef.co_owners.map((id) => (
               <Link key={id} href={`/admin/listings/${id}`}>
                 <a style={{ color: "white" }}>
-                  {firebaseDocs.get(id)?.data.title}
+                 {`${firebaseDocs.get(id)?.data.title}${firebaseDocs.get(id)?.data.availability === "sold" ? " (SOLD)" : ""}`}
                 </a>
               </Link>
             ))}
@@ -205,7 +206,7 @@ const ImageVariant = ({ index, variant, handleDelete }: ImageVariantProps) => {
   return (
     <Flex justify="space-between" gap={16} align="center">
       <Text>
-        {variant.sizeModifier.length === 0 ? "Full size" : variant.sizeModifier}
+        {`${variant.sizeModifier.length === 0 ? "Full size" : variant.sizeModifier}.${variant.ext}`}
       </Text>
       <Text>
         {variant.metadata.size < 1000 * 1000
